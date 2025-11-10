@@ -6,7 +6,11 @@ module.exports = {
     '**/__tests__/**/*.ts',
     '**/?(*.)+(spec|test).ts'
   ],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '\\.d\\.ts$'
+  ],
   collectCoverageFrom: [
     'packages/core/src/**/*.ts',
     'packages/persona/src/**/*.ts',
@@ -25,6 +29,19 @@ module.exports = {
       branches: 80,
       functions: 90,
       lines: 90
+    },
+    './packages/telemetry/src/**/*.ts': {
+      statements: 95,
+      branches: 80,
+      functions: 95,
+      lines: 95
+    },
+    // Exclude legacy stub from function coverage requirement
+    './packages/telemetry/src/collector.ts': {
+      statements: 100,
+      branches: 100,
+      functions: 0,
+      lines: 100
     }
   },
   coverageDirectory: 'coverage',
@@ -46,7 +63,7 @@ module.exports = {
       }
     }
   },
-  // setupFiles: ['<rootDir>/tests/setup.ts'],
+  setupFiles: ['<rootDir>/tests/setup.ts'],
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,

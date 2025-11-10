@@ -7,7 +7,14 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git branch:*)",
-      "Bash(npm run ci:*)"
+      "Bash(npm run ci:*)",
+      "Bash(gh:*)",
+      "Bash(git push:*)",
+      "Bash(start https://github.com/apps/claude-code/installations/new)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []
