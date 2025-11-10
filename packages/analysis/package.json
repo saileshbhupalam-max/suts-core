@@ -1,0 +1,33 @@
+{
+  "name": "@suts/analysis",
+  "version": "1.0.0",
+  "description": "SUTS Analysis - Friction/value detection and insight generation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "type-check": "tsc --build",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [
+    "suts",
+    "analysis",
+    "insights",
+    "friction",
+    "value"
+  ],
+  "author": "SUTS Core Team",
+  "license": "MIT",
+  "dependencies": {
+    "@suts/core": "1.0.0",
+    "@suts/telemetry": "1.0.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  }
+}
