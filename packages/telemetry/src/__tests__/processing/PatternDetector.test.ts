@@ -479,5 +479,169 @@ describe('PatternDetector', () => {
       expect(friction.length).toBe(1);
       expect(value.length).toBe(1);
     });
+
+    it('should handle mixed events with some below threshold', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          action: 'action-a',
+          emotionalState: { frustration: 0.9, delight: 0.2, confidence: 0, confusion: 0 },
+        }),
+        createEvent({
+          personaId: 'p1',
+          action: 'action-b',
+          emotionalState: { frustration: 0.3, delight: 0.9, confidence: 0, confusion: 0 },
+        }),
+      ];
+
+      const friction = detector.detectFrictionPatterns(events, 0.6, 1);
+      const value = detector.detectValuePatterns(events, 0.7, 1);
+
+      expect(friction.length).toBe(1);
+      expect(friction[0]?.action).toBe('action-a');
+      expect(value.length).toBe(1);
+      expect(value[0]?.action).toBe('action-b');
+    });
+
+    it('should create new pattern for unique persona-action combinations', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          action: 'action-a',
+          emotionalState: { frustration: 0.8, delight: 0, confidence: 0.5, confusion: 0.3 },
+        }),
+        createEvent({
+          personaId: 'p2',
+          action: 'action-a',
+          emotionalState: { frustration: 0.7, delight: 0, confidence: 0.4, confusion: 0.2 },
+        }),
+        createEvent({
+          personaId: 'p1',
+          action: 'action-b',
+          emotionalState: { frustration: 0.9, delight: 0, confidence: 0.3, confusion: 0.6 },
+        }),
+      ];
+
+      const friction = detector.detectFrictionPatterns(events, 0.6, 1);
+
+      // Should have 3 unique patterns (p1:action-a, p2:action-a, p1:action-b)
+      expect(friction.length).toBe(3);
+    });
+
+    it('should accumulate emotional state for existing patterns', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          action: 'action-a',
+          emotionalState: { frustration: 0.6, delight: 0.1, confidence: 0.3, confusion: 0.5 },
+        }),
+        createEvent({
+          personaId: 'p1',
+          action: 'action-a',
+          emotionalState: { frustration: 0.8, delight: 0.2, confidence: 0.5, confusion: 0.7 },
+        }),
+      ];
+
+      const friction = detector.detectFrictionPatterns(events, 0.6, 1);
+
+      expect(friction.length).toBe(1);
+      expect(friction[0]?.occurrences).toBe(2);
+      expect(friction[0]?.avgEmotionalState['frustration']).toBeCloseTo(0.7, 1);
+      expect(friction[0]?.avgEmotionalState['delight']).toBeCloseTo(0.15, 2);
+      expect(friction[0]?.avgEmotionalState['confidence']).toBeCloseTo(0.4, 1);
+      expect(friction[0]?.avgEmotionalState['confusion']).toBeCloseTo(0.6, 1);
+    });
+
+    it('should handle value patterns with missing emotional state fields', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          action: 'action-a',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+          emotionalState: { delight: 0.9 } as any,
+        }),
+      ];
+
+      const value = detector.detectValuePatterns(events, 0.8, 1);
+
+      expect(value.length).toBe(1);
+      expect(value[0]?.avgEmotionalState['frustration']).toBe(0);
+      expect(value[0]?.avgEmotionalState['confidence']).toBe(0);
+      expect(value[0]?.avgEmotionalState['confusion']).toBe(0);
+    });
+
+    it('should handle friction patterns with missing frustration field', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          action: 'action-a',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+          emotionalState: {} as any,
+        }),
+      ];
+
+      // With no frustration value, should use default 0, which is below threshold
+      const friction = detector.detectFrictionPatterns(events, 0.6, 1);
+      expect(friction.length).toBe(0);
+    });
+
+    it('should create new friction pattern with undefined emotional fields', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          action: 'action-a',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+          emotionalState: { frustration: 0.8 } as any,
+        }),
+      ];
+
+      const friction = detector.detectFrictionPatterns(events, 0.6, 1);
+      expect(friction.length).toBe(1);
+      expect(friction[0]?.avgEmotionalState['delight']).toBe(0);
+      expect(friction[0]?.avgEmotionalState['confidence']).toBe(0);
+      expect(friction[0]?.avgEmotionalState['confusion']).toBe(0);
+    });
+
+    it('should create new value pattern with undefined emotional fields', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          action: 'action-a',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+          emotionalState: { delight: 0.9 } as any,
+        }),
+      ];
+
+      const value = detector.detectValuePatterns(events, 0.7, 1);
+      expect(value.length).toBe(1);
+      expect(value[0]?.avgEmotionalState['frustration']).toBe(0);
+      expect(value[0]?.avgEmotionalState['confidence']).toBe(0);
+      expect(value[0]?.avgEmotionalState['confusion']).toBe(0);
+    });
+
+    it('should handle sequence with undefined frustration', () => {
+      const baseTime = new Date('2024-01-01T00:00:00Z');
+
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          action: 'a1',
+          timestamp: new Date(baseTime.getTime()),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+          emotionalState: {} as any,
+        }),
+        createEvent({
+          personaId: 'p1',
+          action: 'a2',
+          timestamp: new Date(baseTime.getTime() + 1000),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+          emotionalState: {} as any,
+        }),
+      ];
+
+      const sequences = detector.detectFrictionSequences(events, 2);
+      // With no frustration values (defaults to 0), avgFrustration will be 0 < 0.5 threshold
+      expect(sequences.length).toBe(0);
+    });
   });
 });

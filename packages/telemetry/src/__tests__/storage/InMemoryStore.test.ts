@@ -297,5 +297,73 @@ describe('InMemoryStore', () => {
       store.storeBatch(events);
       expect(store.count()).toBe(10000);
     });
+
+    it('should filter when frustration equals minFrustration threshold', () => {
+      store.storeBatch([
+        createEvent({
+          id: 'e1',
+          emotionalState: { frustration: 0.5, delight: 0, confidence: 0, confusion: 0 },
+        }),
+        createEvent({
+          id: 'e2',
+          emotionalState: { frustration: 0.6, delight: 0, confidence: 0, confusion: 0 },
+        }),
+      ]);
+
+      const results = store.query({ minFrustration: 0.5 });
+      expect(results.length).toBe(2);
+    });
+
+    it('should filter when frustration equals maxFrustration threshold', () => {
+      store.storeBatch([
+        createEvent({
+          id: 'e1',
+          emotionalState: { frustration: 0.5, delight: 0, confidence: 0, confusion: 0 },
+        }),
+        createEvent({
+          id: 'e2',
+          emotionalState: { frustration: 0.6, delight: 0, confidence: 0, confusion: 0 },
+        }),
+      ]);
+
+      const results = store.query({ maxFrustration: 0.5 });
+      expect(results.length).toBe(1);
+      expect(results[0]?.id).toBe('e1');
+    });
+
+    it('should filter when delight equals maxDelight threshold', () => {
+      store.storeBatch([
+        createEvent({
+          id: 'e1',
+          emotionalState: { frustration: 0, delight: 0.8, confidence: 0, confusion: 0 },
+        }),
+        createEvent({
+          id: 'e2',
+          emotionalState: { frustration: 0, delight: 0.9, confidence: 0, confusion: 0 },
+        }),
+      ]);
+
+      const results = store.query({ maxDelight: 0.8 });
+      expect(results.length).toBe(1);
+      expect(results[0]?.id).toBe('e1');
+    });
+
+    it('should handle events with undefined emotional state values', () => {
+      const event = createEvent({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+        emotionalState: {} as any,
+      });
+      store.store(event);
+
+      // Should use default value of 0 for missing fields
+      const results1 = store.query({ minFrustration: 0 });
+      expect(results1.length).toBe(1);
+
+      const results2 = store.query({ maxFrustration: 0 });
+      expect(results2.length).toBe(1);
+
+      const results3 = store.query({ maxDelight: 0 });
+      expect(results3.length).toBe(1);
+    });
   });
 });

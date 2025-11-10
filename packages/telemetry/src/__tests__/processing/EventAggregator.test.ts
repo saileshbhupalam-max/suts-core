@@ -274,5 +274,46 @@ describe('EventAggregator', () => {
       const result = aggregator.aggregateByPersona(events);
       expect(result.size).toBe(1);
     });
+
+    it('should use default 0 for missing emotional state fields', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+          emotionalState: {} as any,
+        }),
+      ];
+
+      const result = aggregator.aggregateByPersona(events);
+      const p1 = result.get('p1')!;
+
+      expect(p1.avgFrustration).toBe(0);
+      expect(p1.avgDelight).toBe(0);
+      expect(p1.avgConfidence).toBe(0);
+      expect(p1.avgConfusion).toBe(0);
+    });
+
+    it('should handle undefined values when updating aggregated data', () => {
+      const events: TelemetryEvent[] = [
+        createEvent({
+          personaId: 'p1',
+          emotionalState: { frustration: 0.5, delight: 0.5, confidence: 0.5, confusion: 0.5 },
+        }),
+        createEvent({
+          personaId: 'p1',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+          emotionalState: {} as any,
+        }),
+      ];
+
+      const result = aggregator.aggregateByPersona(events);
+      const p1 = result.get('p1')!;
+
+      expect(p1.count).toBe(2);
+      expect(p1.avgFrustration).toBeCloseTo(0.25, 2);
+      expect(p1.avgDelight).toBeCloseTo(0.25, 2);
+      expect(p1.avgConfidence).toBeCloseTo(0.25, 2);
+      expect(p1.avgConfusion).toBeCloseTo(0.25, 2);
+    });
   });
 });
