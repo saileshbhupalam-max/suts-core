@@ -36,25 +36,30 @@ describe('SimulationEngine', () => {
   };
 
   it('should create instance', () => {
-    const engine = new SimulationEngine('test-api-key');
+    const engine = new SimulationEngine({ seed: 42 });
     expect(engine).toBeInstanceOf(SimulationEngine);
   });
 
   it('should create instance with custom model', () => {
-    const engine = new SimulationEngine('test-api-key', 'claude-opus-4-20250514');
+    const engine = new SimulationEngine({
+      seed: 42,
+      apiKey: 'test-api-key',
+      model: 'claude-opus-4-20250514',
+    });
     expect(engine).toBeInstanceOf(SimulationEngine);
   });
 
-  it('should return empty array from simulateUserJourney', async () => {
-    const engine = new SimulationEngine('test-api-key');
+  it('should run simulation for personas', async () => {
+    const engine = new SimulationEngine({ seed: 42 });
     const productState = {
       features: {},
       uiElements: {},
       data: {},
       version: '1.0.0',
     };
-    const result = await engine.simulateUserJourney(testPersona, productState, 1, 1.0);
-    expect(Array.isArray(result)).toBe(true);
-    expect(result).toHaveLength(0);
+    const result = await engine.run([testPersona], productState, 1);
+    expect(result).toBeDefined();
+    expect(result.personas).toBeDefined();
+    expect(result.events).toBeDefined();
   });
 });

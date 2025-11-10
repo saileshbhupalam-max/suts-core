@@ -10,12 +10,16 @@ describe('simulation package exports', () => {
   });
 
   it('should create SimulationEngine instance', () => {
-    const engine = new simulationExports.SimulationEngine('test-key');
+    const engine = new simulationExports.SimulationEngine({ seed: 42, apiKey: 'test-key' });
     expect(engine).toBeInstanceOf(simulationExports.SimulationEngine);
   });
 
   it('should create instance with custom model', () => {
-    const engine = new simulationExports.SimulationEngine('test-key', 'custom-model');
+    const engine = new simulationExports.SimulationEngine({
+      seed: 42,
+      apiKey: 'test-key',
+      model: 'custom-model',
+    });
     expect(engine).toBeInstanceOf(simulationExports.SimulationEngine);
   });
 });

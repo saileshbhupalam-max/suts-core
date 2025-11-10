@@ -6,7 +6,12 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { IPersonaGenerator, PersonaProfile } from '@suts/core';
 import { getPersonaGenerationPrompt, personaGenerationTool } from './templates/persona-generation';
-import { analyzeDiversity, validatePersonas, checkDuplicates } from './validation';
+import {
+  analyzeDiversity,
+  validatePersonas,
+  checkDuplicates,
+  validatePersona as validatePersonaSchema,
+} from './validation';
 
 /**
  * Configuration options for PersonaGenerator
@@ -35,7 +40,7 @@ const DEFAULT_CONFIG: Required<PersonaGeneratorConfig> = {
   maxTokens: 16000,
   maxRetries: 3,
   retryDelay: 1000,
-  diversityTarget: 0.70,
+  diversityTarget: 0.7,
 };
 
 /**
@@ -104,8 +109,9 @@ export class PersonaGenerator implements IPersonaGenerator {
 
     // Validate all personas
     const validationResults = validatePersonas(personas);
-    const invalidPersonas = Array.from(validationResults.entries())
-      .filter(([, result]) => !result.valid);
+    const invalidPersonas = Array.from(validationResults.entries()).filter(
+      ([, result]) => !result.valid
+    );
 
     if (invalidPersonas.length > 0) {
       const errors = invalidPersonas
@@ -211,9 +217,7 @@ export class PersonaGenerator implements IPersonaGenerator {
     }
 
     if (personas.length !== count) {
-      throw new PersonaGenerationError(
-        `Expected ${count} personas, got ${personas.length}`
-      );
+      throw new PersonaGenerationError(`Expected ${count} personas, got ${personas.length}`);
     }
 
     return personas;
@@ -224,9 +228,7 @@ export class PersonaGenerator implements IPersonaGenerator {
    * @param personas - Initial personas
    * @returns Diverse personas
    */
-  private ensureDiversity(
-    personas: PersonaProfile[]
-  ): PersonaProfile[] {
+  private ensureDiversity(personas: PersonaProfile[]): PersonaProfile[] {
     if (personas.length < 2) {
       return personas; // No diversity check needed for single persona
     }
@@ -300,7 +302,7 @@ export class PersonaGenerator implements IPersonaGenerator {
    * @returns Promise that resolves after delay
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -309,5 +311,222 @@ export class PersonaGenerator implements IPersonaGenerator {
    */
   getConfig(): Required<PersonaGeneratorConfig> {
     return { ...this.config };
+  }
+
+  // ============================================================
+  // IPersonaGenerator interface implementation
+  // ============================================================
+
+  /**
+   * Generate personas from stakeholder analysis documents (interface method)
+   * @param config - Configuration for persona generation
+   * @returns Promise resolving to generated personas with metadata
+   */
+  async generatePersonas(
+    config: import('@suts/core').PersonaGenerationConfig
+  ): Promise<import('@suts/core').PersonaGenerationResult> {
+    const startTime = Date.now();
+    const warnings: string[] = [];
+
+    // Extract configuration
+    const numPersonas = config.numPersonas ?? 30;
+    const diversityWeight = config.diversityWeight ?? 0.8;
+
+    // Load analysis documents
+    let analysisDocs: string[];
+    try {
+      const fs = await import('node:fs/promises');
+      analysisDocs = await Promise.all(
+        config.analysisDocs.map(async (doc) => {
+          // If it looks like a file path, read it
+          if (doc.includes('/') || doc.includes('\\\\')) {
+            try {
+              return await fs.readFile(doc, 'utf-8');
+            } catch {
+              // If file read fails, assume it's content
+              return doc;
+            }
+          }
+          // Otherwise treat as content
+          return doc;
+        })
+      );
+    } catch (error) {
+      throw new PersonaGenerationError(
+        `Failed to load analysis documents: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+
+    // Generate personas using existing method
+    const personas = await this.generateFromAnalysis(analysisDocs, numPersonas);
+
+    // Calculate diversity metrics
+    const diversity = analyzeDiversity(personas);
+
+    // Calculate distribution
+    const distribution: Record<string, number> = {};
+    for (const persona of personas) {
+      distribution[persona.archetype] = (distribution[persona.archetype] ?? 0) + 1;
+    }
+
+    // Check diversity meets weight threshold
+    if (diversity.diversityScore < diversityWeight) {
+      warnings.push(
+        `Diversity score ${(diversity.diversityScore * 100).toFixed(1)}% is below target ${(diversityWeight * 100).toFixed(1)}%`
+      );
+    }
+
+    const generationTimeMs = Date.now() - startTime;
+
+    return {
+      personas,
+      metadata: {
+        distribution,
+        diversity: {
+          riskToleranceSpread: this.calculateSpread(personas.map((p) => p.riskTolerance)),
+          experienceLevelSpread: this.calculateCategoricalSpread(
+            personas.map((p) => p.experienceLevel)
+          ),
+          companySizeSpread: this.calculateCategoricalSpread(personas.map((p) => p.companySize)),
+        },
+        generationTimeMs,
+        warnings,
+      },
+    };
+  }
+
+  /**
+   * Generate a single persona based on an archetype specification
+   * @param archetype - Archetype name
+   * @param variation - Optional variation within archetype
+   * @param context - Additional context for generation
+   * @returns Promise resolving to generated persona
+   */
+  async generateSinglePersona(
+    archetype: string,
+    variation?: string,
+    context?: Record<string, unknown>
+  ): Promise<PersonaProfile> {
+    // Create a minimal analysis doc for single persona generation
+    const analysisDoc = `
+# Persona Generation Request
+
+Generate a single persona with the following specifications:
+- Archetype: ${archetype}
+${variation !== undefined ? `- Variation: ${variation}` : ''}
+${context !== undefined ? `- Additional Context: ${JSON.stringify(context, null, 2)}` : ''}
+
+Create a realistic, detailed user persona that matches these requirements.
+`;
+
+    const personas = await this.generateFromAnalysis([analysisDoc], 1);
+
+    if (personas.length === 0) {
+      throw new PersonaGenerationError('Failed to generate persona');
+    }
+
+    return personas[0]!;
+  }
+
+  /**
+   * Validate a persona for completeness and consistency
+   * @param persona - Persona to validate
+   * @returns Validation result with any issues found
+   */
+  validatePersona(persona: PersonaProfile): {
+    valid: boolean;
+    issues: string[];
+    warnings: string[];
+  } {
+    const result = validatePersonaSchema(persona);
+    return {
+      valid: result.valid,
+      issues: result.errors,
+      warnings: result.warnings,
+    };
+  }
+
+  /**
+   * Save personas to persistent storage
+   * @param personas - Personas to save
+   * @param destination - Destination file path
+   * @returns Promise resolving when save is complete
+   */
+  async savePersonas(personas: PersonaProfile[], destination: string): Promise<void> {
+    try {
+      const fs = await import('node:fs/promises');
+      const path = await import('node:path');
+
+      // Ensure directory exists
+      const dir = path.dirname(destination);
+      await fs.mkdir(dir, { recursive: true });
+
+      // Save as JSON
+      const data = JSON.stringify(personas, null, 2);
+      await fs.writeFile(destination, data, 'utf-8');
+    } catch (error) {
+      throw new PersonaGenerationError(
+        `Failed to save personas: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  /**
+   * Load personas from persistent storage
+   * @param source - Source file path
+   * @returns Promise resolving to loaded personas
+   */
+  async loadPersonas(source: string): Promise<PersonaProfile[]> {
+    try {
+      const fs = await import('node:fs/promises');
+      const data = await fs.readFile(source, 'utf-8');
+      const personas = JSON.parse(data) as unknown[];
+
+      // Validate each persona
+      const validationResults = validatePersonas(personas);
+      const invalidPersonas = Array.from(validationResults.entries()).filter(
+        ([, result]) => !result.valid
+      );
+
+      if (invalidPersonas.length > 0) {
+        const errors = invalidPersonas
+          .map(([id, result]) => `${id}: ${result.errors.join(', ')}`)
+          .join('; ');
+        throw new PersonaGenerationError(`Loaded personas failed validation: ${errors}`);
+      }
+
+      return personas as PersonaProfile[];
+    } catch (error) {
+      throw new PersonaGenerationError(
+        `Failed to load personas: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  // ============================================================
+  // Private helper methods
+  // ============================================================
+
+  /**
+   * Calculate numerical spread (standard deviation)
+   */
+  private calculateSpread(values: number[]): number {
+    if (values.length === 0) {
+      return 0;
+    }
+    const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
+    const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+    return Math.sqrt(variance);
+  }
+
+  /**
+   * Calculate categorical spread (unique values / total)
+   */
+  private calculateCategoricalSpread(values: string[]): number {
+    if (values.length === 0) {
+      return 0;
+    }
+    const unique = new Set(values).size;
+    return unique / values.length;
   }
 }
