@@ -20,6 +20,8 @@ import {
   getErrorStack,
   wrapError,
   formatError,
+  withRetry,
+  tryCatch,
 } from '../../src/utils/errors';
 import { ERROR_CODES } from '../../src/constants';
 
@@ -244,5 +246,103 @@ describe('formatError', () => {
   it('should format non-error values', () => {
     expect(formatError('string error')).toBe('string error');
     expect(formatError(123)).toBe('123');
+  });
+
+  it('should include metadata in SUTS error formatting', () => {
+    const error = new SUTSError(ERROR_CODES.SIMULATION_FAILED, 'Test', { key: 'value' });
+    const formatted = formatError(error);
+    expect(formatted).toContain('Metadata');
+    expect(formatted).toContain('key');
+  });
+
+  it('should include stack trace when available', () => {
+    const error = new Error('Test');
+    const formatted = formatError(error);
+    expect(formatted.length).toBeGreaterThan('Test'.length);
+  });
+});
+
+describe('withRetry', () => {
+  it('should succeed on first attempt', async () => {
+    const operation = jest.fn().mockResolvedValue('success');
+    const result = await withRetry(operation);
+    expect(result).toBe('success');
+    expect(operation).toHaveBeenCalledTimes(1);
+  });
+
+  it('should retry on failure and eventually succeed', async () => {
+    jest.useRealTimers();
+
+    const operation = jest.fn()
+      .mockRejectedValueOnce(new Error('Fail 1'))
+      .mockRejectedValueOnce(new Error('Fail 2'))
+      .mockResolvedValue('success');
+
+    const result = await withRetry(operation, {
+      maxRetries: 3,
+      initialDelayMs: 1,
+    });
+    expect(result).toBe('success');
+    expect(operation).toHaveBeenCalledTimes(3);
+
+    jest.useFakeTimers();
+  });
+
+  it('should throw after max retries', async () => {
+    jest.useRealTimers();
+
+    const operation = jest.fn().mockRejectedValue(new Error('Always fails'));
+
+    await expect(withRetry(operation, {
+      maxRetries: 2,
+      initialDelayMs: 1,
+    })).rejects.toThrow('Always fails');
+    expect(operation).toHaveBeenCalledTimes(2);
+
+    jest.useFakeTimers();
+  });
+
+  it('should respect shouldRetry callback', async () => {
+    jest.useRealTimers();
+
+    const operation = jest.fn().mockRejectedValue(new Error('Special error'));
+    const shouldRetry = jest.fn().mockReturnValue(false);
+
+    await expect(withRetry(operation, { shouldRetry })).rejects.toThrow('Special error');
+    expect(operation).toHaveBeenCalledTimes(1);
+    expect(shouldRetry).toHaveBeenCalled();
+
+    jest.useFakeTimers();
+  });
+});
+
+describe('tryCatch', () => {
+  it('should return result on success', async () => {
+    const operation = jest.fn().mockResolvedValue('success');
+    const result = await tryCatch(operation);
+    expect(result).toBe('success');
+  });
+
+  it('should return undefined on error', async () => {
+    const operation = jest.fn().mockRejectedValue(new Error('Failed'));
+    const result = await tryCatch(operation);
+    expect(result).toBeUndefined();
+  });
+
+  it('should call error handler on error', async () => {
+    const operation = jest.fn().mockRejectedValue(new Error('Failed'));
+    const errorHandler = jest.fn();
+
+    await tryCatch(operation, errorHandler);
+    expect(errorHandler).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it('should handle async error handler', async () => {
+    const operation = jest.fn().mockRejectedValue(new Error('Failed'));
+    const errorHandler = jest.fn().mockResolvedValue(undefined);
+
+    const result = await tryCatch(operation, errorHandler);
+    expect(result).toBeUndefined();
+    expect(errorHandler).toHaveBeenCalled();
   });
 });

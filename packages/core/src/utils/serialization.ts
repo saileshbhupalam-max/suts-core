@@ -228,12 +228,20 @@ export function datesToISOStrings<T>(obj: T): T {
  * @returns Object with strings converted to Dates
  */
 export function isoStringsToDates<T>(obj: T): T {
-  if (obj === null || typeof obj !== 'object') {
+  if (obj === null) {
     return obj;
   }
 
-  if (typeof obj === 'string' && isISODateString(obj)) {
-    return new Date(obj) as unknown as T;
+  // Check for string first (before checking if it's an object)
+  if (typeof obj === 'string') {
+    if (isISODateString(obj)) {
+      return new Date(obj) as unknown as T;
+    }
+    return obj;
+  }
+
+  if (typeof obj !== 'object') {
+    return obj;
   }
 
   if (Array.isArray(obj)) {
