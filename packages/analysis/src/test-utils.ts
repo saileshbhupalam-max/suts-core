@@ -2,6 +2,7 @@
  * Test helpers for generating synthetic telemetry data
  */
 
+import { randomUUID } from 'crypto';
 import { TelemetryEvent } from '@suts/telemetry';
 
 /**
@@ -11,6 +12,7 @@ export function createEvent(
   overrides: Partial<TelemetryEvent> = {}
 ): TelemetryEvent {
   return {
+    id: randomUUID(),
     personaId: 'user-1',
     eventType: 'action_completed',
     action: 'use_feature',

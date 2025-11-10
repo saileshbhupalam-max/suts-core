@@ -5,7 +5,6 @@
 import { NetworkSimulator } from '../src/NetworkSimulator';
 import { PersonaProfile } from '@suts/persona';
 import { TelemetryEvent } from '@suts/telemetry';
-import { randomUUID } from 'crypto';
 
 describe('NetworkSimulator', () => {
   let simulator: NetworkSimulator;
@@ -45,6 +44,7 @@ describe('NetworkSimulator', () => {
 
   const createMockEvents = (personaId: string, delight: number = 0.9): TelemetryEvent[] => [
     {
+      id: `event_${personaId}_${Date.now()}`,
       personaId,
       eventType: 'action',
       action: 'use_feature',

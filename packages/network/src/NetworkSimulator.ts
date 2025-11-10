@@ -2,6 +2,7 @@
  * Network simulator for viral spread simulation
  */
 
+import { randomUUID } from 'crypto';
 import { PersonaProfile } from '@suts/persona';
 import { TelemetryEvent } from '@suts/telemetry';
 import {
@@ -273,6 +274,7 @@ export class NetworkSimulator {
       // Only generate events for referred users (not organic)
       if (node.referredBy !== null && node.referredBy !== undefined) {
         syntheticEvents.push({
+          id: randomUUID(),
           personaId: userId,
           eventType: 'action',
           action: 'use_feature',

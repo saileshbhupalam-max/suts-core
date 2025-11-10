@@ -2,6 +2,7 @@
  * Additional tests for NetworkSimulator to improve coverage
  */
 
+import { randomUUID } from 'crypto';
 import { NetworkSimulator } from '../src/NetworkSimulator';
 import { PersonaProfile } from '@suts/persona';
 import { TelemetryEvent } from '@suts/telemetry';
@@ -44,6 +45,7 @@ describe('NetworkSimulator - Additional Coverage', () => {
 
   const createMockEvents = (personaId: string, delight: number = 0.9): TelemetryEvent[] => [
     {
+      id: randomUUID(),
       personaId,
       eventType: 'action',
       action: 'use_feature',

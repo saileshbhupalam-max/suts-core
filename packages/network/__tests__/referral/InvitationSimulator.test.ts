@@ -4,7 +4,6 @@
 
 import { InvitationSimulator } from '../../src/referral/InvitationSimulator';
 import { createDefaultConfig } from '../../src/models/NetworkConfig';
-import { randomUUID } from 'crypto';
 
 describe('InvitationSimulator', () => {
   let simulator: InvitationSimulator;
