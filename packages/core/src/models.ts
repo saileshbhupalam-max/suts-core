@@ -1,11 +1,13 @@
 /**
  * Core data models for SUTS
+ * @deprecated This file is kept for backwards compatibility. Use ./models/index.ts instead.
  */
 
 import { z } from 'zod';
 
 /**
  * Emotional state schema
+ * @deprecated Use EmotionalStateSchema from ./models/TelemetryEvent.ts
  */
 export const EmotionalStateSchema = z.object({
   frustration: z.number().min(0).max(1),
@@ -16,6 +18,7 @@ export const EmotionalStateSchema = z.object({
 
 /**
  * Simulation event schema
+ * @deprecated Use TelemetryEventSchema from ./models/TelemetryEvent.ts
  */
 export const SimulationEventSchema = z.object({
   id: z.string(),
@@ -29,4 +32,7 @@ export const SimulationEventSchema = z.object({
   metadata: z.record(z.unknown()),
 });
 
+/**
+ * @deprecated Use TelemetryEvent from ./models/TelemetryEvent.ts
+ */
 export type SimulationEvent = z.infer<typeof SimulationEventSchema>;
