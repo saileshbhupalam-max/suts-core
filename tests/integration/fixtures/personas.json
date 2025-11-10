@@ -1,0 +1,182 @@
+[
+  {
+    "id": "test-persona-1",
+    "archetype": "Skeptical Senior Developer",
+    "role": "Senior Software Engineer",
+    "experienceLevel": "Expert",
+    "companySize": "Startup",
+    "techStack": ["TypeScript", "React", "Node.js"],
+    "painPoints": [
+      "AI suggestions are often wrong",
+      "Context overhead slows me down",
+      "Too many false positives in code analysis"
+    ],
+    "goals": [
+      "Ship faster without sacrificing quality",
+      "Reduce cognitive load during development",
+      "Maintain code quality standards"
+    ],
+    "fears": [
+      "Becoming dependent on tools that don't work",
+      "Losing my edge as a developer",
+      "Breaking production"
+    ],
+    "values": [
+      "Code quality",
+      "Developer autonomy",
+      "Pragmatism"
+    ],
+    "riskTolerance": 0.3,
+    "patienceLevel": 0.4,
+    "techAdoption": "Early majority",
+    "learningStyle": "Trial-error",
+    "evaluationCriteria": [
+      "Does it actually save time?",
+      "Is it accurate enough?",
+      "Can I trust it?"
+    ],
+    "dealBreakers": [
+      "Too many errors",
+      "Slows down my workflow",
+      "Requires too much setup"
+    ],
+    "delightTriggers": [
+      "Catches a bug I would have missed",
+      "Saves significant time",
+      "Works seamlessly"
+    ],
+    "referralTriggers": [
+      "Measurable productivity gain",
+      "Team asks what tool I'm using",
+      "Solves a common pain point"
+    ],
+    "typicalWorkflow": "Write code, review, test, ship",
+    "timeAvailability": "15-30 minutes for new tool evaluation",
+    "collaborationStyle": "Team",
+    "state": {},
+    "history": [],
+    "confidenceScore": 0.8,
+    "lastUpdated": "2025-01-10T00:00:00.000Z",
+    "source": "test-fixture"
+  },
+  {
+    "id": "test-persona-2",
+    "archetype": "Eager Junior Developer",
+    "role": "Junior Software Engineer",
+    "experienceLevel": "Novice",
+    "companySize": "Enterprise",
+    "techStack": ["JavaScript", "Python", "Git"],
+    "painPoints": [
+      "Overwhelmed by complexity",
+      "Don't know best practices",
+      "Afraid to ask questions"
+    ],
+    "goals": [
+      "Learn quickly",
+      "Avoid making mistakes",
+      "Impress my team"
+    ],
+    "fears": [
+      "Looking incompetent",
+      "Breaking something important",
+      "Not progressing fast enough"
+    ],
+    "values": [
+      "Learning",
+      "Growth",
+      "Team support"
+    ],
+    "riskTolerance": 0.7,
+    "patienceLevel": 0.8,
+    "techAdoption": "Early adopter",
+    "learningStyle": "Video",
+    "evaluationCriteria": [
+      "Is it easy to learn?",
+      "Does it help me improve?",
+      "Do others recommend it?"
+    ],
+    "dealBreakers": [
+      "Too complicated",
+      "No clear instructions",
+      "Expensive"
+    ],
+    "delightTriggers": [
+      "Helps me learn faster",
+      "Makes me feel confident",
+      "Gets me unstuck"
+    ],
+    "referralTriggers": [
+      "Helped me succeed",
+      "Other juniors would benefit",
+      "Made me look good"
+    ],
+    "typicalWorkflow": "Learn, experiment, ask for help, iterate",
+    "timeAvailability": "1-2 hours for learning new tools",
+    "collaborationStyle": "Peer learning",
+    "state": {},
+    "history": [],
+    "confidenceScore": 0.7,
+    "lastUpdated": "2025-01-10T00:00:00.000Z",
+    "source": "test-fixture"
+  },
+  {
+    "id": "test-persona-3",
+    "archetype": "Pragmatic Tech Lead",
+    "role": "Tech Lead",
+    "experienceLevel": "Expert",
+    "companySize": "SMB",
+    "techStack": ["Java", "Kotlin", "AWS", "Docker"],
+    "painPoints": [
+      "Team velocity is inconsistent",
+      "Code quality varies across team",
+      "Too much time in meetings"
+    ],
+    "goals": [
+      "Improve team productivity",
+      "Maintain code quality",
+      "Scale the team"
+    ],
+    "fears": [
+      "Losing good developers",
+      "Falling behind on tech",
+      "Project delays"
+    ],
+    "values": [
+      "Team success",
+      "Practical solutions",
+      "Long-term thinking"
+    ],
+    "riskTolerance": 0.5,
+    "patienceLevel": 0.6,
+    "techAdoption": "Early majority",
+    "learningStyle": "Peer learning",
+    "evaluationCriteria": [
+      "Does it help the whole team?",
+      "Is it worth the time investment?",
+      "Can we adopt it incrementally?"
+    ],
+    "dealBreakers": [
+      "Requires major workflow changes",
+      "Doesn't scale",
+      "Poor documentation"
+    ],
+    "delightTriggers": [
+      "Team velocity improves",
+      "Fewer production bugs",
+      "Developers are happier"
+    ],
+    "referralTriggers": [
+      "Measurable team improvement",
+      "Other leads ask for advice",
+      "Budget-friendly"
+    ],
+    "typicalWorkflow": "Plan, delegate, review, unblock team",
+    "timeAvailability": "30 minutes for tool evaluation",
+    "collaborationStyle": "Team",
+    "state": {},
+    "history": [],
+    "confidenceScore": 0.85,
+    "lastUpdated": "2025-01-10T00:00:00.000Z",
+    "source": "test-fixture"
+  }
+]
