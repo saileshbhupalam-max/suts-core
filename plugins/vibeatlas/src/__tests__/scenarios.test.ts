@@ -80,7 +80,7 @@ describe('OnboardingScenario', () => {
     const state: ProductState = {
       features: {},
       uiElements: {},
-      data: {},
+      userData: {}, config: {}, environment: "development" as const, metadata: {},
       version: '1.0.0',
     };
 
@@ -137,7 +137,7 @@ describe('DailyUsageScenario', () => {
     const state: ProductState = {
       features: {},
       uiElements: {},
-      data: {},
+      userData: {}, config: {}, environment: "development" as const, metadata: {},
       version: '1.0.0',
     };
 
@@ -159,7 +159,7 @@ describe('FrictionScenario', () => {
       dashboard: true,
     },
     uiElements: {},
-    data: {},
+    userData: {}, config: {}, environment: "development" as const, metadata: {},
     version: '1.0.0',
   };
 
@@ -217,7 +217,7 @@ describe('DelightScenario', () => {
       dashboard: true,
     },
     uiElements: {},
-    data: {},
+    userData: {}, config: {}, environment: "development" as const, metadata: {},
     version: '1.0.0',
   };
 

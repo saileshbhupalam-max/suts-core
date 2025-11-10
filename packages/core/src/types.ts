@@ -1,18 +1,9 @@
 /**
  * Core types for SUTS
+ * Only types that are not in models/ or interfaces/
  */
 
-import type { PersonaProfile } from './models';
-
-/**
- * Emotional state of a simulated user
- */
-export interface EmotionalState {
-  frustration: number;
-  confidence: number;
-  delight: number;
-  confusion: number;
-}
+import type { PersonaProfile, ProductState } from './models';
 
 /**
  * Action types that users can perform
@@ -29,38 +20,6 @@ export enum ActionType {
 }
 
 /**
- * Base configuration for simulations
- */
-export interface SimulationConfig {
-  id: string;
-  name: string;
-  description: string;
-  personaIds: string[];
-  numPersonas: number;
-  productVersion: string;
-  featuresEnabled: Record<string, boolean>;
-  numSessions: number;
-  timeCompression: number;
-  maxParallel: number;
-  calibrationData?: Record<string, unknown>;
-  createdAt: Date;
-  createdBy: string;
-}
-
-/**
- * Interface for persona generation
- */
-export interface IPersonaGenerator {
-  /**
-   * Generate personas from stakeholder analysis documents
-   * @param docs - Array of analysis documents (text/markdown)
-   * @param count - Number of personas to generate
-   * @returns Promise resolving to array of generated personas
-   */
-  generateFromAnalysis(docs: string[], count: number): Promise<PersonaProfile[]>;
-}
-
-/**
  * User action in the simulation
  */
 export interface UserAction {
@@ -72,19 +31,11 @@ export interface UserAction {
 }
 
 /**
- * Product state for simulation
+ * Simple product adapter interface for basic simulations
+ * For full-featured adapters, use IProductAdapter from ./interfaces
+ * @deprecated Use IProductAdapter for new implementations
  */
-export interface ProductState {
-  features: Record<string, boolean>;
-  uiElements: Record<string, Record<string, unknown>>;
-  data: Record<string, unknown>;
-  version: string;
-}
-
-/**
- * Product adapter interface for simulation
- */
-export interface IProductAdapter {
+export interface ISimpleProductAdapter {
   /**
    * Get the initial state of the product
    */

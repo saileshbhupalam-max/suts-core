@@ -4,6 +4,7 @@
 
 import { SocialProofEngine } from '../../src/effects/SocialProofEngine';
 import { createDefaultConfig } from '../../src/models/NetworkConfig';
+import { randomUUID } from 'crypto';
 
 describe('SocialProofEngine', () => {
   let engine: SocialProofEngine;

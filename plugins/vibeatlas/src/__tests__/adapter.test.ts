@@ -2,7 +2,7 @@
  * Tests for VibeAtlasAdapter
  */
 
-import { VibeAtlasAdapter } from '../adapter';
+import { VibeAtlasAdapter } from '../VibeAtlasAdapter';
 
 describe('VibeAtlasAdapter', () => {
   it('should create instance', () => {

@@ -72,6 +72,7 @@ describe('Simulation Integration', () => {
     ];
 
     product = {
+      version: '1.0.0',
       features: {
         quickstart: true,
         documentation: true,
@@ -79,8 +80,10 @@ describe('Simulation Integration', () => {
         api: false,
       },
       uiElements: {},
-      data: {},
-      version: '1.0.0',
+      config: {},
+      userData: {},
+      environment: 'development' as const,
+      metadata: {},
     };
   });
 

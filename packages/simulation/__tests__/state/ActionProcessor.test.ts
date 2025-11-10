@@ -46,13 +46,16 @@ describe('ActionProcessor', () => {
     };
 
     mockProduct = {
+      version: '1.0.0',
       features: {
         feature1: true,
         feature2: false,
       },
       uiElements: {},
-      data: {},
-      version: '1.0.0',
+      config: {},
+      userData: {},
+      environment: 'development' as const,
+      metadata: {},
     };
   });
 

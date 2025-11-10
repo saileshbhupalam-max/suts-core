@@ -276,7 +276,7 @@ describe('MetricCalculator', () => {
     const state: ProductState = {
       features: {},
       uiElements: {},
-      data: {},
+      userData: {}, config: {}, environment: "development" as const, metadata: {},
       version: '1.0.0',
     };
 

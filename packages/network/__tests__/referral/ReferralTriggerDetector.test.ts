@@ -48,6 +48,7 @@ describe('ReferralTriggerDetector', () => {
     it('should not trigger referral when delight is below threshold', () => {
       const events: TelemetryEvent[] = [
         {
+          id: crypto.randomUUID(),
           personaId: 'persona_1',
           eventType: 'action',
           action: 'use_feature',
@@ -66,6 +67,7 @@ describe('ReferralTriggerDetector', () => {
     it('should consider triggering referral when delight is above threshold', () => {
       const events: TelemetryEvent[] = [
         {
+          id: crypto.randomUUID(),
           personaId: 'persona_1',
           eventType: 'action',
           action: 'use_feature',
@@ -83,6 +85,7 @@ describe('ReferralTriggerDetector', () => {
     it('should increase probability for early adopters', () => {
       const highDelightEvents: TelemetryEvent[] = [
         {
+          id: crypto.randomUUID(),
           personaId: 'persona_1',
           eventType: 'action',
           action: 'use_feature',
@@ -105,6 +108,7 @@ describe('ReferralTriggerDetector', () => {
     it('should increase probability for community-driven personas', () => {
       const highDelightEvents: TelemetryEvent[] = [
         {
+          id: crypto.randomUUID(),
           personaId: 'persona_1',
           eventType: 'action',
           action: 'use_feature',
@@ -126,6 +130,7 @@ describe('ReferralTriggerDetector', () => {
     it('should boost probability when referral triggers are matched', () => {
       const eventsWithTrigger: TelemetryEvent[] = [
         {
+          id: crypto.randomUUID(),
           personaId: 'persona_1',
           eventType: 'action',
           action: 'shared_project_with_team',
@@ -150,6 +155,7 @@ describe('ReferralTriggerDetector', () => {
     it('should handle events without emotional state', () => {
       const events: TelemetryEvent[] = [
         {
+          id: crypto.randomUUID(),
           personaId: 'persona_1',
           eventType: 'action',
           action: 'use_feature',
@@ -171,6 +177,7 @@ describe('ReferralTriggerDetector', () => {
 
       const highDelightEvents: TelemetryEvent[] = [
         {
+          id: crypto.randomUUID(),
           personaId: 'persona_1',
           eventType: 'action',
           action: 'use_feature',

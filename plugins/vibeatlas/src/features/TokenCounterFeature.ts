@@ -23,7 +23,7 @@ export interface TokenCounterState {
 export function initializeTokenCounter(state: ProductState): ProductState {
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       tokenCounter: {
         visible: true,
@@ -41,7 +41,7 @@ export function initializeTokenCounter(state: ProductState): ProductState {
  * Update token count
  */
 export function updateTokenCount(state: ProductState, tokens: number): ProductState {
-  const counter = state.data.tokenCounter as TokenCounterState | undefined;
+  const counter = state.userData.tokenCounter as TokenCounterState | undefined;
   if (counter === undefined) {
     return initializeTokenCounter(state);
   }
@@ -52,7 +52,7 @@ export function updateTokenCount(state: ProductState, tokens: number): ProductSt
 
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       tokenCounter: {
         ...counter,
@@ -68,14 +68,14 @@ export function updateTokenCount(state: ProductState, tokens: number): ProductSt
  * Toggle token counter visibility
  */
 export function toggleTokenCounter(state: ProductState): ProductState {
-  const counter = state.data.tokenCounter as TokenCounterState | undefined;
+  const counter = state.userData.tokenCounter as TokenCounterState | undefined;
   if (counter === undefined) {
     return state;
   }
 
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       tokenCounter: {
         ...counter,
@@ -89,7 +89,7 @@ export function toggleTokenCounter(state: ProductState): ProductState {
  * Check if token counter shows warning
  */
 export function isTokenCounterWarning(state: ProductState): boolean {
-  const counter = state.data.tokenCounter as TokenCounterState | undefined;
+  const counter = state.userData.tokenCounter as TokenCounterState | undefined;
   return counter !== undefined && counter.showWarning === true;
 }
 
@@ -97,7 +97,7 @@ export function isTokenCounterWarning(state: ProductState): boolean {
  * Check if token counter shows alert
  */
 export function isTokenCounterAlert(state: ProductState): boolean {
-  const counter = state.data.tokenCounter as TokenCounterState | undefined;
+  const counter = state.userData.tokenCounter as TokenCounterState | undefined;
   return counter !== undefined && counter.showAlert === true;
 }
 
@@ -106,7 +106,7 @@ export function isTokenCounterAlert(state: ProductState): boolean {
  */
 export function getTokenCounterActions(state: ProductState, persona: PersonaProfile): UserAction[] {
   const actions: UserAction[] = [];
-  const counter = state.data.tokenCounter as TokenCounterState | undefined;
+  const counter = state.userData.tokenCounter as TokenCounterState | undefined;
 
   if (counter === undefined) {
     actions.push({

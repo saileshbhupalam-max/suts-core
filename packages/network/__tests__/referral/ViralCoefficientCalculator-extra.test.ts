@@ -4,6 +4,7 @@
 
 import { ViralCoefficientCalculator } from '../../src/referral/ViralCoefficientCalculator';
 import { createEmptyGraph, addNode, addEdge } from '../../src/models/ReferralGraph';
+import { randomUUID } from 'crypto';
 
 describe('ViralCoefficientCalculator - Additional Coverage', () => {
   let calculator: ViralCoefficientCalculator;

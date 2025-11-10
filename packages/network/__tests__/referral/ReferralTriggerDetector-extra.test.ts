@@ -48,6 +48,7 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
     mockPersona.referralTriggers = [];
     const events: TelemetryEvent[] = [
       {
+        id: crypto.randomUUID(),
         personaId: 'persona_1',
         eventType: 'action',
         action: 'use_feature',
@@ -66,6 +67,7 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
     mockPersona.referralTriggers = ['share'];
     const events: TelemetryEvent[] = [
       {
+        id: crypto.randomUUID(),
         personaId: 'persona_1',
         eventType: 'observation',
         action: '',
@@ -83,6 +85,7 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
   it('should handle events with no delight in emotional state', () => {
     const events: TelemetryEvent[] = [
       {
+        id: crypto.randomUUID(),
         personaId: 'persona_1',
         eventType: 'action',
         action: 'use_feature',
@@ -100,6 +103,7 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
   it('should handle mixed tech adoption styles', () => {
     const highDelightEvents: TelemetryEvent[] = [
       {
+        id: crypto.randomUUID(),
         personaId: 'persona_1',
         eventType: 'action',
         action: 'use_feature',
@@ -118,6 +122,7 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
   it('should handle team collaboration style', () => {
     const highDelightEvents: TelemetryEvent[] = [
       {
+        id: crypto.randomUUID(),
         personaId: 'persona_1',
         eventType: 'action',
         action: 'use_feature',
@@ -136,6 +141,7 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
   it('should handle events with non-numeric delight', () => {
     const events: TelemetryEvent[] = [
       {
+        id: crypto.randomUUID(),
         personaId: 'persona_1',
         eventType: 'action',
         action: 'use_feature',
@@ -153,6 +159,7 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
   it('should handle unknown tech adoption style', () => {
     const highDelightEvents: TelemetryEvent[] = [
       {
+        id: crypto.randomUUID(),
         personaId: 'persona_1',
         eventType: 'action',
         action: 'use_feature',
@@ -171,6 +178,7 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
   it('should handle unknown collaboration style', () => {
     const highDelightEvents: TelemetryEvent[] = [
       {
+        id: crypto.randomUUID(),
         personaId: 'persona_1',
         eventType: 'action',
         action: 'use_feature',

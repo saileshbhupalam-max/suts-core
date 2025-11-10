@@ -58,6 +58,7 @@ describe('NetworkSimulator - Additional Coverage', () => {
       const personas = [createMockPersona('persona_1')];
       const events: TelemetryEvent[] = [
         {
+          id: crypto.randomUUID(),
           personaId: '',
           eventType: 'action',
           action: 'use_feature',

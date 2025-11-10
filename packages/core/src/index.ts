@@ -13,9 +13,9 @@ export { SimulationEventSchema, type SimulationEvent } from './models';
 // Interfaces
 export * from './interfaces';
 
-// Export specific types that are not in interfaces
-export type { UserAction } from './types';
+// Export types (ActionType enum, UserAction, ISimpleProductAdapter)
 export { ActionType } from './types';
+export type { UserAction, ISimpleProductAdapter } from './types';
 
 // Constants
 export * from './constants';

@@ -52,10 +52,13 @@ describe('SimulationEngine', () => {
   it('should run simulation for personas', async () => {
     const engine = new SimulationEngine({ seed: 42 });
     const productState = {
+      version: '1.0.0',
       features: {},
       uiElements: {},
-      data: {},
-      version: '1.0.0',
+      config: {},
+      userData: {},
+      environment: 'development' as const,
+      metadata: {},
     };
     const result = await engine.run([testPersona], productState, 1);
     expect(result).toBeDefined();

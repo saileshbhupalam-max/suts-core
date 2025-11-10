@@ -28,7 +28,7 @@ export interface DashboardState {
 export function initializeDashboard(state: ProductState): ProductState {
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       dashboard: {
         opened: false,
@@ -51,14 +51,14 @@ export function initializeDashboard(state: ProductState): ProductState {
  * Open dashboard
  */
 export function openDashboard(state: ProductState): ProductState {
-  const dashboard = state.data.dashboard as DashboardState | undefined;
+  const dashboard = state.userData.dashboard as DashboardState | undefined;
   if (dashboard === undefined) {
     return initializeDashboard(state);
   }
 
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       dashboard: {
         ...dashboard,
@@ -72,14 +72,14 @@ export function openDashboard(state: ProductState): ProductState {
  * Close dashboard
  */
 export function closeDashboard(state: ProductState): ProductState {
-  const dashboard = state.data.dashboard as DashboardState | undefined;
+  const dashboard = state.userData.dashboard as DashboardState | undefined;
   if (dashboard === undefined) {
     return state;
   }
 
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       dashboard: {
         ...dashboard,
@@ -93,14 +93,14 @@ export function closeDashboard(state: ProductState): ProductState {
  * Share dashboard
  */
 export function shareDashboard(state: ProductState): ProductState {
-  const dashboard = state.data.dashboard as DashboardState | undefined;
+  const dashboard = state.userData.dashboard as DashboardState | undefined;
   if (dashboard === undefined) {
     return state;
   }
 
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       dashboard: {
         ...dashboard,
@@ -115,14 +115,14 @@ export function shareDashboard(state: ProductState): ProductState {
  * Export dashboard
  */
 export function exportDashboard(state: ProductState): ProductState {
-  const dashboard = state.data.dashboard as DashboardState | undefined;
+  const dashboard = state.userData.dashboard as DashboardState | undefined;
   if (dashboard === undefined) {
     return state;
   }
 
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       dashboard: {
         ...dashboard,
@@ -140,14 +140,14 @@ export function updateDashboardMetrics(
   state: ProductState,
   metrics: Partial<DashboardState['metrics']>
 ): ProductState {
-  const dashboard = state.data.dashboard as DashboardState | undefined;
+  const dashboard = state.userData.dashboard as DashboardState | undefined;
   if (dashboard === undefined) {
     return state;
   }
 
   return {
     ...state,
-    data: {
+    userData: {
       ...state.data,
       dashboard: {
         ...dashboard,
@@ -164,7 +164,7 @@ export function updateDashboardMetrics(
  * Check if dashboard is open
  */
 export function isDashboardOpen(state: ProductState): boolean {
-  const dashboard = state.data.dashboard as DashboardState | undefined;
+  const dashboard = state.userData.dashboard as DashboardState | undefined;
   return dashboard !== undefined && dashboard.opened === true;
 }
 
@@ -173,7 +173,7 @@ export function isDashboardOpen(state: ProductState): boolean {
  */
 export function getDashboardActions(state: ProductState, persona: PersonaProfile): UserAction[] {
   const actions: UserAction[] = [];
-  const dashboard = state.data.dashboard as DashboardState | undefined;
+  const dashboard = state.userData.dashboard as DashboardState | undefined;
 
   if (dashboard === undefined) {
     actions.push({

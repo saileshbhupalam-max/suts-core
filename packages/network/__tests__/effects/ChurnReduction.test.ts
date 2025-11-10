@@ -5,6 +5,7 @@
 import { ChurnReduction } from '../../src/effects/ChurnReduction';
 import { createDefaultConfig } from '../../src/models/NetworkConfig';
 import { createEmptyGraph, addNode, addEdge } from '../../src/models/ReferralGraph';
+import { randomUUID } from 'crypto';
 
 describe('ChurnReduction', () => {
   let churnReduction: ChurnReduction;

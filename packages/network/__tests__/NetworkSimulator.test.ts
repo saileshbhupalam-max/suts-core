@@ -5,6 +5,7 @@
 import { NetworkSimulator } from '../src/NetworkSimulator';
 import { PersonaProfile } from '@suts/persona';
 import { TelemetryEvent } from '@suts/telemetry';
+import { randomUUID } from 'crypto';
 
 describe('NetworkSimulator', () => {
   let simulator: NetworkSimulator;

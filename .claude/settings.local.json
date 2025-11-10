@@ -28,7 +28,12 @@
       "Bash(npm run lint:*)",
       "Bash(npm test:*)",
       "Bash(node scripts/merge-batch2-and-3.js:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(for:*)",
+      "Bash(do sed -i 's/state\\.data\\./state.userData./g' \"$file\")",
+      "Bash(done)",
+      "Bash(node scripts/fix-telemetry-ids.js:*)",
+      "Bash(do sed -i 's/^\\(\\s*\\)data: {/\\1userData: {/g' \"$file\")"
     ],
     "deny": [],
     "ask": []

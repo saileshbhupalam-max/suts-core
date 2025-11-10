@@ -5,6 +5,7 @@
 import { NetworkGraphBuilder } from '../../src/referral/NetworkGraphBuilder';
 import { PersonaProfile } from '@suts/persona';
 import { createReferralEvent, acceptReferral } from '../../src/models/ReferralEvent';
+import { randomUUID } from 'crypto';
 
 describe('NetworkGraphBuilder - Additional Coverage', () => {
   let builder: NetworkGraphBuilder;

@@ -3,6 +3,7 @@
  */
 
 import { NetworkValueCalculator } from '../../src/effects/NetworkValueCalculator';
+import { randomUUID } from 'crypto';
 
 describe('NetworkValueCalculator', () => {
   let calculator: NetworkValueCalculator;

@@ -2,7 +2,7 @@
  * VibeAtlas product adapter implementation
  */
 
-import type { IProductAdapter, ProductState, UserAction, PersonaProfile } from '@suts/core';
+import type { ISimpleProductAdapter, ProductState, UserAction, PersonaProfile } from '@suts/core';
 import { ActionType } from '@suts/core';
 import { getConfig } from './config/VibeAtlasConfig';
 import { defaultFeatureFlags } from './config/FeatureFlags';
@@ -36,9 +36,9 @@ import {
 
 /**
  * VibeAtlas product adapter
- * Implements IProductAdapter for VibeAtlas VS Code extension
+ * Implements ISimpleProductAdapter for VibeAtlas VS Code extension
  */
-export class VibeAtlasAdapter implements IProductAdapter {
+export class VibeAtlasAdapter implements ISimpleProductAdapter {
   private config = getConfig();
   private featureFlags = defaultFeatureFlags;
 
@@ -55,24 +55,27 @@ export class VibeAtlasAdapter implements IProductAdapter {
       exportFeature: this.featureFlags.exportFeature,
     };
 
-    const uiElements: Record<string, Record<string, unknown>> = {
-      tryModeBanner: { visible: false, position: 'top' },
-      tokenCounter: { visible: true, position: 'statusBar' },
-      contextPreview: { visible: false, position: 'sidebar' },
-      dashboard: { visible: false, position: 'panel' },
+    const uiElements = {
+      tryModeBanner: { type: 'banner', visible: false, properties: { position: 'top' } },
+      tokenCounter: { type: 'statusBar', visible: true, properties: { position: 'statusBar' } },
+      contextPreview: { type: 'sidebar', visible: false, properties: { position: 'sidebar' } },
+      dashboard: { type: 'panel', visible: false, properties: { position: 'panel' } },
     };
 
-    const data: Record<string, unknown> = {
+    const userData: Record<string, unknown> = {
       installed: true,
       version: this.config.version,
       onboardingCompleted: false,
     };
 
     return {
+      version: this.config.version,
       features,
       uiElements,
-      data,
-      version: this.config.version,
+      config: {},
+      userData,
+      environment: 'development',
+      metadata: {},
     };
   }
 
@@ -161,8 +164,8 @@ export class VibeAtlasAdapter implements IProductAdapter {
   private handleInstall(state: ProductState, _action: UserAction): ProductState {
     return {
       ...state,
-      data: {
-        ...state.data,
+      userData: {
+        ...state.userData,
         installed: true,
         installedAt: new Date(),
       },
@@ -256,8 +259,8 @@ export class VibeAtlasAdapter implements IProductAdapter {
   private handleReadDocs(state: ProductState, _action: UserAction): ProductState {
     return {
       ...state,
-      data: {
-        ...state.data,
+      userData: {
+        ...state.userData,
         docsRead: true,
         lastDocsReadAt: new Date(),
       },
@@ -270,8 +273,8 @@ export class VibeAtlasAdapter implements IProductAdapter {
   private handleSeekHelp(state: ProductState, _action: UserAction): ProductState {
     return {
       ...state,
-      data: {
-        ...state.data,
+      userData: {
+        ...state.userData,
         helpSought: true,
         lastHelpAt: new Date(),
       },
@@ -284,8 +287,8 @@ export class VibeAtlasAdapter implements IProductAdapter {
   private handleUninstall(state: ProductState, _action: UserAction): ProductState {
     return {
       ...state,
-      data: {
-        ...state.data,
+      userData: {
+        ...state.userData,
         installed: false,
         uninstalledAt: new Date(),
       },
