@@ -8,37 +8,18 @@ module.exports = {
   ],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   collectCoverageFrom: [
-    'packages/*/src/**/*.ts',
-    'plugins/*/src/**/*.ts',
+    'packages/simulation/src/**/*.ts',
     '!**/*.d.ts',
     '!**/node_modules/**',
     '!**/dist/**',
     '!**/index.ts'
   ],
   coverageThreshold: {
-    'packages/simulation/src/**/!(DecisionMaker|SimulationLoop|EventGenerator).ts': {
-      statements: 85,
-      branches: 75,
-      functions: 85,
-      lines: 85
-    },
-    'packages/simulation/src/SimulationLoop.ts': {
-      statements: 85,
-      branches: 60,
-      functions: 69,
-      lines: 85
-    },
-    'packages/simulation/src/state/EventGenerator.ts': {
-      statements: 100,
-      branches: 66,
-      functions: 100,
-      lines: 100
-    },
-    'packages/simulation/src/behavior/DecisionMaker.ts': {
-      statements: 50,
-      branches: 60,
-      functions: 70,
-      lines: 50
+    global: {
+      statements: 90,
+      branches: 80,
+      functions: 90,
+      lines: 90
     }
   },
   coverageDirectory: 'coverage',

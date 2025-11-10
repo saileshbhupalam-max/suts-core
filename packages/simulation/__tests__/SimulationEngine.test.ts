@@ -219,4 +219,41 @@ describe('SimulationEngine', () => {
     expect(result).toBeDefined();
     expect(result.personas).toBeDefined();
   });
+
+  it('should create engine with apiKey', async () => {
+    const engine = new SimulationEngine({
+      seed: 12345,
+      batchSize: 10,
+      maxActionsPerDay: 3,
+      apiKey: 'test-api-key',
+    });
+
+    const result = await engine.run(mockPersonas, mockProduct, 1);
+    expect(result).toBeDefined();
+  });
+
+  it('should create engine with model', async () => {
+    const engine = new SimulationEngine({
+      seed: 12345,
+      batchSize: 10,
+      maxActionsPerDay: 3,
+      model: 'claude-3-opus-20240229',
+    });
+
+    const result = await engine.run(mockPersonas, mockProduct, 1);
+    expect(result).toBeDefined();
+  });
+
+  it('should create engine with both apiKey and model', async () => {
+    const engine = new SimulationEngine({
+      seed: 12345,
+      batchSize: 10,
+      maxActionsPerDay: 3,
+      apiKey: 'test-api-key',
+      model: 'claude-3-opus-20240229',
+    });
+
+    const result = await engine.run(mockPersonas, mockProduct, 1);
+    expect(result).toBeDefined();
+  });
 });

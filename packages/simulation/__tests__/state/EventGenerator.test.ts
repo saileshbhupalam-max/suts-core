@@ -195,6 +195,28 @@ describe('EventGenerator', () => {
     expect(emotionEvents.length).toBe(0);
   });
 
+  it('should not generate emotion event when all emotional impact values are undefined', () => {
+    const action: PersonaAction = {
+      type: ActionType.READ_DOCS,
+      timestamp: new Date(),
+      personaId: mockContext.personaId,
+      success: true,
+      duration: 5,
+    };
+
+    const result: ActionResult = {
+      action,
+      emotionalImpact: {},
+      stateChanges: {},
+      observations: [],
+    };
+
+    const events = generator.generateEventsFromResult(result, mockContext);
+
+    const emotionEvents = events.filter((e) => e.eventType === 'emotion');
+    expect(emotionEvents.length).toBe(0);
+  });
+
   it('should include emotional state in all events', () => {
     const action: PersonaAction = {
       type: ActionType.INSTALL,

@@ -116,7 +116,7 @@ describe('ActionProcessor', () => {
   });
 
   it('should increase delight on unexpected success', () => {
-    // Novice persona succeeding at complex task
+    // Novice persona succeeding at complex task with unavailable feature
     const novicePersona = {
       ...mockPersona,
       experienceLevel: 'Novice' as const,
@@ -126,6 +126,7 @@ describe('ActionProcessor', () => {
       type: ActionType.CUSTOMIZE,
       timestamp: new Date(),
       personaId: novicePersona.id,
+      target: 'unavailable-feature', // Feature not in product
       success: true,
       duration: 20,
     };
@@ -144,9 +145,9 @@ describe('ActionProcessor', () => {
       currentEmotion
     );
 
+    // Unexpected success (low probability) should increase delight more
     expect(result.emotionalImpact.delight).toBeGreaterThan(0);
-    // Observation generation depends on ActionProcessor implementation
-    expect(result.observations).toBeDefined();
+    expect(result.observations).toContain('Succeeded at a challenging task');
   });
 
   it('should update state changes correctly', () => {
@@ -331,5 +332,95 @@ describe('ActionProcessor', () => {
 
     expect(result.emotionalImpact.frustration || 0).toBeGreaterThanOrEqual(0);
     expect(result.emotionalImpact.confusion || 0).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should handle simple actions without complexity penalty', () => {
+    const action: PersonaAction = {
+      type: ActionType.INSTALL,  // Simple action, not in complexActions list
+      timestamp: new Date(),
+      personaId: mockPersona.id,
+      success: true,
+      duration: 5,
+    };
+
+    const currentEmotion = {
+      frustration: 0.1,
+      confidence: 0.7,
+      delight: 0.5,
+      confusion: 0.1,
+    };
+
+    const result = processor.processAction(
+      action,
+      mockPersona,
+      mockProduct,
+      currentEmotion
+    );
+
+    expect(result).toBeDefined();
+    expect(result.emotionalImpact).toBeDefined();
+  });
+
+  it('should handle impatient persona', () => {
+    const impatientPersona = {
+      ...mockPersona,
+      patienceLevel: 0.2,  // Low patience
+    };
+
+    const action: PersonaAction = {
+      type: ActionType.USE_FEATURE,
+      timestamp: new Date(),
+      personaId: impatientPersona.id,
+      success: true,
+      duration: 10,
+    };
+
+    const currentEmotion = {
+      frustration: 0.2,
+      confidence: 0.6,
+      delight: 0.4,
+      confusion: 0.2,
+    };
+
+    const result = processor.processAction(
+      action,
+      impatientPersona,
+      mockProduct,
+      currentEmotion
+    );
+
+    expect(result).toBeDefined();
+  });
+
+  it('should handle expert persona', () => {
+    const expertPersona = {
+      ...mockPersona,
+      experienceLevel: 'Expert' as const,
+    };
+
+    const action: PersonaAction = {
+      type: ActionType.CUSTOMIZE,
+      timestamp: new Date(),
+      personaId: expertPersona.id,
+      success: true,
+      duration: 20,
+    };
+
+    const currentEmotion = {
+      frustration: 0.1,
+      confidence: 0.9,
+      delight: 0.7,
+      confusion: 0.1,
+    };
+
+    const result = processor.processAction(
+      action,
+      expertPersona,
+      mockProduct,
+      currentEmotion
+    );
+
+    expect(result).toBeDefined();
+    expect(result.emotionalImpact.confidence).toBeGreaterThan(0);
   });
 });
