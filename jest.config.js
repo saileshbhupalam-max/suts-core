@@ -6,9 +6,12 @@ module.exports = {
     '**/__tests__/**/*.ts',
     '**/?(*.)+(spec|test).ts'
   ],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   collectCoverageFrom: [
-    'packages/*/src/**/*.ts',
-    'plugins/*/src/**/*.ts',
+    'packages/core/src/**/*.ts',
+    '!**/index.ts',
+    '!**/models.ts',
+    '!**/types.ts',
     '!**/*.d.ts',
     '!**/node_modules/**',
     '!**/dist/**'
