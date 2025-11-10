@@ -249,6 +249,46 @@ describe('PersonaGenerator', () => {
       );
     });
 
+    it('should accept personas with diversity between 0.65 and 0.70', async () => {
+      // Create personas with diversity around 0.68 (between threshold and target)
+      const personas = Array.from({ length: 5 }, (_, i) => ({
+        ...validPersona,
+        id: `persona-${i + 1}`,
+        archetype: `Archetype ${i + 1}`,
+        role: `Role ${i + 1}`,
+        experienceLevel: ['Novice', 'Intermediate', 'Expert'][i % 3] as PersonaProfile['experienceLevel'],
+        companySize: ['Startup', 'SMB', 'Enterprise'][i % 3] as PersonaProfile['companySize'],
+        techAdoption: ['Early adopter', 'Early majority', 'Late majority'][i % 3] as PersonaProfile['techAdoption'],
+        learningStyle: ['Trial-error', 'Documentation', 'Video'][i % 3] as PersonaProfile['learningStyle'],
+        collaborationStyle: ['Solo', 'Team', 'Community-driven'][i % 3] as PersonaProfile['collaborationStyle'],
+        techStack: [`Tech${i}A`, `Tech${i}B`, `Tech${i}C`, `Tech${i}D`],
+        painPoints: [`Pain${i}A`, `Pain${i}B`, `Pain${i}C`],
+        goals: [`Goal${i}A`, `Goal${i}B`, `Goal${i}C`],
+        fears: [`Fear${i}A`, `Fear${i}B`],
+        values: [`Value${i}A`, `Value${i}B`],
+        evaluationCriteria: [`Criteria${i}A`, `Criteria${i}B`, `Criteria${i}C`],
+        dealBreakers: [`Breaker${i}A`, `Breaker${i}B`],
+        delightTriggers: [`Delight${i}A`, `Delight${i}B`],
+        referralTriggers: [`Referral${i}A`, `Referral${i}B`],
+        riskTolerance: (i * 0.2) % 1,
+        patienceLevel: ((i * 0.25) % 1),
+      }));
+
+      mockCreate.mockResolvedValue({
+        content: [
+          {
+            type: 'tool_use',
+            name: 'generate_personas',
+            input: { personas },
+          },
+        ],
+      });
+
+      const generator = new PersonaGenerator('test-api-key');
+      const result = await generator.generateFromAnalysis(['Analysis'], 5);
+      expect(result).toHaveLength(5);
+    });
+
     it('should generate 10 diverse personas', async () => {
       const personas = Array.from({ length: 10 }, (_, i) => ({
         ...validPersona,
@@ -436,6 +476,78 @@ describe('PersonaGenerator', () => {
 
       mockCreate
         .mockRejectedValueOnce(error500)
+        .mockResolvedValueOnce({
+          content: [
+            {
+              type: 'tool_use',
+              name: 'generate_personas',
+              input: { personas: [validPersona] },
+            },
+          ],
+        });
+
+      const generator = new PersonaGenerator('test-api-key', 'claude-sonnet-4-20250514', {
+        retryDelay: 100,
+      });
+
+      const promise = generator.generateFromAnalysis(['Analysis'], 1);
+      await jest.advanceTimersByTimeAsync(100);
+
+      const result = await promise;
+      expect(result).toHaveLength(1);
+    });
+
+    it('should retry on 502 errors', async () => {
+      mockCreate
+        .mockRejectedValueOnce(new Error('Bad Gateway 502'))
+        .mockResolvedValueOnce({
+          content: [
+            {
+              type: 'tool_use',
+              name: 'generate_personas',
+              input: { personas: [validPersona] },
+            },
+          ],
+        });
+
+      const generator = new PersonaGenerator('test-api-key', 'claude-sonnet-4-20250514', {
+        retryDelay: 100,
+      });
+
+      const promise = generator.generateFromAnalysis(['Analysis'], 1);
+      await jest.advanceTimersByTimeAsync(100);
+
+      const result = await promise;
+      expect(result).toHaveLength(1);
+    });
+
+    it('should retry on 503 errors', async () => {
+      mockCreate
+        .mockRejectedValueOnce(new Error('Service Unavailable 503'))
+        .mockResolvedValueOnce({
+          content: [
+            {
+              type: 'tool_use',
+              name: 'generate_personas',
+              input: { personas: [validPersona] },
+            },
+          ],
+        });
+
+      const generator = new PersonaGenerator('test-api-key', 'claude-sonnet-4-20250514', {
+        retryDelay: 100,
+      });
+
+      const promise = generator.generateFromAnalysis(['Analysis'], 1);
+      await jest.advanceTimersByTimeAsync(100);
+
+      const result = await promise;
+      expect(result).toHaveLength(1);
+    });
+
+    it('should retry on 504 errors', async () => {
+      mockCreate
+        .mockRejectedValueOnce(new Error('Gateway Timeout 504'))
         .mockResolvedValueOnce({
           content: [
             {

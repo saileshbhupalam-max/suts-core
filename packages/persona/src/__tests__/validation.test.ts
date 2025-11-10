@@ -101,6 +101,13 @@ describe('validation', () => {
       const result = validatePersona(null);
       expect(result.valid).toBe(false);
     });
+
+    it('should handle unknown validation errors', () => {
+      // Create an object that will pass initial type check but fail in unexpected way
+      const result = validatePersona('not an object');
+      expect(result.valid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+    });
   });
 
   describe('validatePersonas', () => {
@@ -183,6 +190,13 @@ describe('validation', () => {
       const { similarity } = calculateSimilarity(persona1, persona2);
       expect(similarity).toBeGreaterThan(0);
     });
+
+    it('should handle one persona with empty array and one with values', () => {
+      const persona1 = { ...validPersona, techStack: [] };
+      const persona2 = { ...validPersona, id: 'persona-2', techStack: ['Tech1', 'Tech2'] };
+      const { similarity } = calculateSimilarity(persona1, persona2);
+      expect(similarity).toBeGreaterThan(0);
+    });
   });
 
   describe('analyzeDiversity', () => {
@@ -226,6 +240,16 @@ describe('validation', () => {
       const result = analyzeDiversity([]);
       expect(result.diversityScore).toBe(1);
       expect(result.meetsTarget).toBe(true);
+    });
+
+    it('should handle sparse arrays with undefined values', () => {
+      const personas = new Array(5);
+      personas[0] = validPersona;
+      personas[2] = { ...validPersona, id: 'persona-2' };
+      // personas[1], personas[3], personas[4] are undefined
+      const result = analyzeDiversity(personas as PersonaProfile[]);
+      expect(result.diversityScore).toBeDefined();
+      expect(result.averageSimilarity).toBeDefined();
     });
   });
 
