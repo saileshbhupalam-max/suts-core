@@ -1,14 +1,11 @@
 /**
- * Tests for core types
+ * Tests for core types exported from types.ts
  */
 
-import type {
-  EmotionalState,
-  SimulationConfig,
-  IPersonaGenerator,
-} from '../types';
 import { ActionType } from '../types';
-import type { PersonaProfile } from '../models';
+import type { UserAction, ISimpleProductAdapter } from '../types';
+import type { PersonaProfile } from '../models/PersonaProfile';
+import type { ProductState } from '../models/ProductState';
 
 describe('types', () => {
   describe('ActionType', () => {
@@ -24,74 +21,65 @@ describe('types', () => {
     });
   });
 
-  describe('EmotionalState', () => {
-    it('should accept valid emotional state', () => {
-      const state: EmotionalState = {
-        frustration: 0.5,
-        confidence: 0.8,
-        delight: 0.3,
-        confusion: 0.2,
+  describe('UserAction', () => {
+    it('should accept valid user action', () => {
+      const action: UserAction = {
+        type: ActionType.USE_FEATURE,
+        feature: 'test-feature',
+        description: 'Testing a feature',
+        expectedOutcome: 'Feature works correctly',
       };
-      expect(state.frustration).toBe(0.5);
-      expect(state.confidence).toBe(0.8);
-      expect(state.delight).toBe(0.3);
-      expect(state.confusion).toBe(0.2);
+      expect(action.type).toBe(ActionType.USE_FEATURE);
+      expect(action.feature).toBe('test-feature');
+    });
+
+    it('should accept user action with metadata', () => {
+      const action: UserAction = {
+        type: ActionType.CONFIGURE,
+        feature: 'settings',
+        description: 'Configure settings',
+        expectedOutcome: 'Settings saved',
+        metadata: { key: 'value' },
+      };
+      expect(action.metadata).toEqual({ key: 'value' });
     });
   });
 
-  describe('SimulationConfig', () => {
-    it('should accept valid simulation config', () => {
-      const config: SimulationConfig = {
-        id: 'sim-1',
-        name: 'Test Simulation',
-        description: 'Test description',
-        personaIds: ['persona-1', 'persona-2'],
-        numPersonas: 2,
-        productVersion: '1.0.0',
-        featuresEnabled: { feature1: true },
-        numSessions: 10,
-        timeCompression: 1.0,
-        maxParallel: 5,
-        createdAt: new Date(),
-        createdBy: 'test-user',
+  describe('ISimpleProductAdapter', () => {
+    it('should define adapter interface', () => {
+      const mockProductState: ProductState = {
+        version: '1.0.0',
+        features: { feature1: true },
+        uiElements: {},
+        config: {},
+        userData: {},
+        environment: 'development',
+        metadata: {},
       };
-      expect(config.id).toBe('sim-1');
-      expect(config.numPersonas).toBe(2);
+
+      const mockAdapter: ISimpleProductAdapter = {
+        getInitialState: () => mockProductState,
+        applyAction: (state: ProductState, _action: UserAction) => state,
+        getAvailableActions: (_state: ProductState, _persona: PersonaProfile) => [],
+      };
+
+      expect(typeof mockAdapter.getInitialState).toBe('function');
+      expect(typeof mockAdapter.applyAction).toBe('function');
+      expect(typeof mockAdapter.getAvailableActions).toBe('function');
     });
 
-    it('should accept config with optional calibration data', () => {
-      const config: SimulationConfig = {
-        id: 'sim-1',
-        name: 'Test Simulation',
-        description: 'Test description',
-        personaIds: ['persona-1'],
-        numPersonas: 1,
-        productVersion: '1.0.0',
-        featuresEnabled: {},
-        numSessions: 10,
-        timeCompression: 1.0,
-        maxParallel: 5,
-        calibrationData: { key: 'value' },
-        createdAt: new Date(),
-        createdBy: 'test-user',
+    it('should accept valid implementation', () => {
+      const mockProductState: ProductState = {
+        version: '1.0.0',
+        features: { feature1: true },
+        uiElements: {},
+        config: {},
+        userData: {},
+        environment: 'development',
+        metadata: {},
       };
-      expect(config.calibrationData).toEqual({ key: 'value' });
-    });
-  });
 
-  describe('IPersonaGenerator', () => {
-    it('should define generator interface', () => {
-      const mockGenerator: IPersonaGenerator = {
-        generateFromAnalysis: (_docs: string[], _count: number): Promise<PersonaProfile[]> => {
-          return Promise.resolve([]);
-        },
-      };
-      const generateMethod = mockGenerator.generateFromAnalysis.bind(mockGenerator);
-      expect(generateMethod).toBeDefined();
-    });
-
-    it('should accept valid implementation', async () => {
-      const testPersona: PersonaProfile = {
+      const mockPersona: PersonaProfile = {
         id: 'test-1',
         archetype: 'Test',
         role: 'Test Role',
@@ -120,15 +108,37 @@ describe('types', () => {
         source: 'test',
       };
 
-      const mockGenerator: IPersonaGenerator = {
-        generateFromAnalysis: (_docs: string[], _count: number): Promise<PersonaProfile[]> => {
-          return Promise.resolve([testPersona]);
-        },
+      const mockAdapter: ISimpleProductAdapter = {
+        getInitialState: () => mockProductState,
+        applyAction: (state: ProductState, _action: UserAction) => ({
+          ...state,
+          userData: { ...state.userData, modified: true },
+        }),
+        getAvailableActions: (_state: ProductState, _persona: PersonaProfile) => [
+          {
+            type: ActionType.USE_FEATURE,
+            feature: 'test-feature',
+            description: 'Test action',
+            expectedOutcome: 'Success',
+          },
+        ],
       };
 
-      const result = await mockGenerator.generateFromAnalysis(['doc'], 1);
-      expect(result).toHaveLength(1);
-      expect(result[0]?.id).toBe('test-1');
+      const initialState = mockAdapter.getInitialState();
+      expect(initialState.version).toBe('1.0.0');
+
+      const action: UserAction = {
+        type: ActionType.USE_FEATURE,
+        feature: 'test',
+        description: 'Test',
+        expectedOutcome: 'Success',
+      };
+      const newState = mockAdapter.applyAction(initialState, action);
+      expect(newState.userData).toHaveProperty('modified', true);
+
+      const actions = mockAdapter.getAvailableActions(initialState, mockPersona);
+      expect(actions).toHaveLength(1);
+      expect(actions[0]?.type).toBe(ActionType.USE_FEATURE);
     });
   });
 });
