@@ -4,7 +4,7 @@
 
 import { ChurnPredictor } from '../ChurnPredictor';
 import { DEFAULT_ANALYSIS_CONFIG } from '../../models/config';
-import { createEvent, createChurnEvents } from '../../__tests__/helpers';
+import { createEvent, createChurnEvents } from '../../test-utils';
 
 describe('ChurnPredictor', () => {
   describe('predict', () => {
@@ -27,17 +27,33 @@ describe('ChurnPredictor', () => {
 
     it('should identify churned users', () => {
       const predictor = new ChurnPredictor(DEFAULT_ANALYSIS_CONFIG);
+      const baseTime = Date.now();
+
+      // Create multiple churned users (need at least 3 for pattern detection)
       const events = [
-        createEvent({
-          personaId: 'churned-user',
-          action: 'install',
-          timestamp: new Date(Date.now() - 10000),
-        }),
-        createEvent({
-          personaId: 'churned-user',
-          action: 'uninstall',
-          timestamp: new Date(),
-        }),
+        ...Array.from({ length: 5 }, (_, i) => [
+          createEvent({
+            personaId: `churned-user-${i}`,
+            action: 'install',
+            timestamp: new Date(baseTime - 10000 + i * 100),
+          }),
+          createEvent({
+            personaId: `churned-user-${i}`,
+            action: 'configure',
+            emotionalState: {
+              frustration: 0.9,
+              confidence: 0.1,
+              delight: 0.1,
+              confusion: 0.9,
+            },
+            timestamp: new Date(baseTime - 5000 + i * 100),
+          }),
+          createEvent({
+            personaId: `churned-user-${i}`,
+            action: 'uninstall',
+            timestamp: new Date(baseTime + i * 100),
+          }),
+        ]).flat(),
       ];
 
       const results = predictor.predict(events);

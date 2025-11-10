@@ -3,7 +3,7 @@
  */
 
 import { AnalysisEngine } from '../AnalysisEngine';
-import { createLargeEventBatch } from './helpers';
+import { createLargeEventBatch } from '../test-utils';
 
 describe('Performance Benchmarks', () => {
   describe('analyzeFriction performance', () => {

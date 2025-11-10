@@ -4,7 +4,7 @@
 
 import { CorrelationAnalyzer } from '../CorrelationAnalyzer';
 import { DEFAULT_ANALYSIS_CONFIG } from '../../models/config';
-import { createEvent, createRetentionEvents } from '../../__tests__/helpers';
+import { createEvent, createRetentionEvents } from '../../test-utils';
 
 describe('CorrelationAnalyzer', () => {
   describe('analyzeRetentionCorrelations', () => {

@@ -9,7 +9,7 @@ import {
   createValueEvents,
   createChurnEvents,
   createFunnelEvents,
-} from './helpers';
+} from '../test-utils';
 
 describe('AnalysisEngine', () => {
   describe('constructor', () => {
@@ -63,11 +63,36 @@ describe('AnalysisEngine', () => {
     it('should prioritize friction points correctly', () => {
       const engine = new AnalysisEngine();
 
-      const events = [
-        ...createFrictionEvents(20, 'major_friction'),
-        ...createFrictionEvents(5, 'minor_friction'),
-      ];
+      // Create clear priority difference: more events AND more users for major friction
+      const majorFrictionEvents = Array.from({ length: 40 }, (_, i) =>
+        createEvent({
+          personaId: `major-user-${i % 20}`, // 20 unique users
+          action: 'major_friction',
+          emotionalState: {
+            frustration: 0.9,
+            confidence: 0.1,
+            delight: 0.1,
+            confusion: 0.8,
+          },
+          timestamp: new Date(Date.now() + i * 1000),
+        })
+      );
 
+      const minorFrictionEvents = Array.from({ length: 10 }, (_, i) =>
+        createEvent({
+          personaId: `minor-user-${i % 5}`, // 5 unique users
+          action: 'minor_friction',
+          emotionalState: {
+            frustration: 0.7,
+            confidence: 0.3,
+            delight: 0.2,
+            confusion: 0.6,
+          },
+          timestamp: new Date(Date.now() + i * 1000),
+        })
+      );
+
+      const events = [...majorFrictionEvents, ...minorFrictionEvents];
       const results = engine.analyzeFriction(events);
 
       expect(results.length).toBeGreaterThan(0);

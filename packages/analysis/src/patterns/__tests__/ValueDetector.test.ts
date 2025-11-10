@@ -4,7 +4,7 @@
 
 import { ValueDetector } from '../ValueDetector';
 import { DEFAULT_ANALYSIS_CONFIG } from '../../models/config';
-import { createEvent, createValueEvents } from '../../__tests__/helpers';
+import { createEvent, createValueEvents } from '../../test-utils';
 
 describe('ValueDetector', () => {
   describe('detect', () => {

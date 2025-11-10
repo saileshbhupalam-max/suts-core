@@ -4,7 +4,7 @@
 
 import { FrictionDetector } from '../FrictionDetector';
 import { DEFAULT_ANALYSIS_CONFIG } from '../../models/config';
-import { createEvent, createFrictionEvents } from '../../__tests__/helpers';
+import { createEvent, createFrictionEvents } from '../../test-utils';
 
 describe('FrictionDetector', () => {
   describe('detect', () => {
@@ -61,7 +61,20 @@ describe('FrictionDetector', () => {
         minFrustrationLevel: 0.9,
       });
 
-      const events = createFrictionEvents(10, 'low_friction');
+      // Create events with frustration below threshold (0.7 < 0.9)
+      const events = Array.from({ length: 10 }, (_, i) =>
+        createEvent({
+          personaId: `user-${i % 5}`,
+          action: 'low_friction',
+          emotionalState: {
+            frustration: 0.7, // Below 0.9 threshold
+            confidence: 0.5,
+            delight: 0.3,
+            confusion: 0.4,
+          },
+          timestamp: new Date(Date.now() + i * 1000),
+        })
+      );
 
       const results = detector.detect(events);
 
@@ -94,11 +107,36 @@ describe('FrictionDetector', () => {
     it('should sort by priority', () => {
       const detector = new FrictionDetector(DEFAULT_ANALYSIS_CONFIG);
 
-      const events = [
-        ...createFrictionEvents(30, 'high_priority'),
-        ...createFrictionEvents(5, 'low_priority'),
-      ];
+      // Create clear priority difference: more events AND more users for high priority
+      const highPriorityEvents = Array.from({ length: 50 }, (_, i) =>
+        createEvent({
+          personaId: `high-user-${i % 25}`, // 25 unique users
+          action: 'high_priority',
+          emotionalState: {
+            frustration: 0.9,
+            confidence: 0.1,
+            delight: 0.1,
+            confusion: 0.8,
+          },
+          timestamp: new Date(Date.now() + i * 1000),
+        })
+      );
 
+      const lowPriorityEvents = Array.from({ length: 10 }, (_, i) =>
+        createEvent({
+          personaId: `low-user-${i % 5}`, // 5 unique users
+          action: 'low_priority',
+          emotionalState: {
+            frustration: 0.7,
+            confidence: 0.3,
+            delight: 0.2,
+            confusion: 0.6,
+          },
+          timestamp: new Date(Date.now() + i * 1000),
+        })
+      );
+
+      const events = [...highPriorityEvents, ...lowPriorityEvents];
       const results = detector.detect(events);
 
       expect(results.length).toBeGreaterThan(0);

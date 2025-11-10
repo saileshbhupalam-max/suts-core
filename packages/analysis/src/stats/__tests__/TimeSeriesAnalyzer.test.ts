@@ -3,7 +3,7 @@
  */
 
 import { TimeSeriesAnalyzer } from '../TimeSeriesAnalyzer';
-import { createEvent } from '../../__tests__/helpers';
+import { createEvent } from '../../test-utils';
 
 describe('TimeSeriesAnalyzer', () => {
   describe('analyzeMetric', () => {
