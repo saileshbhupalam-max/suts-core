@@ -3,7 +3,6 @@
  */
 
 import { FrustrationTracker } from '../../src/behavior/FrustrationTracker';
-import { ActionType } from '@suts/core';
 import type { PersonaProfile } from '@suts/persona';
 
 describe('FrustrationTracker', () => {
@@ -68,7 +67,7 @@ describe('FrustrationTracker', () => {
     const state = tracker.getState(mockPersona.id);
     expect(state.level).toBeGreaterThan(0);
     expect(state.events.length).toBe(1);
-    expect(state.events[0].reason).toBe('Test failed');
+    expect(state.events[0]!.reason).toBe('Test failed');
     expect(state.consecutiveFailures).toBe(1);
   });
 
@@ -143,7 +142,7 @@ describe('FrustrationTracker', () => {
 
     const recent = tracker.getRecentEvents(mockPersona.id, 3);
     expect(recent.length).toBe(3);
-    expect(recent[2].reason).toBe('Event 4');
+    expect(recent[2]!.reason).toBe('Event 4');
   });
 
   it('should update emotional state with frustration', () => {

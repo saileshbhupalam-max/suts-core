@@ -3,7 +3,6 @@
  */
 
 import { SimulationEngine } from '../../src/engine';
-import { ActionType } from '@suts/core';
 import { PersonaState } from '../../src/state/StateTransitions';
 import type { PersonaProfile } from '@suts/persona';
 import type { ProductState } from '../../src/types';
@@ -160,8 +159,8 @@ describe('Simulation Integration', () => {
     expect(result1.events.length).toBe(result2.events.length);
 
     for (let i = 0; i < result1.personas.length; i++) {
-      expect(result1.personas[i].finalState).toBe(result2.personas[i].finalState);
-      expect(result1.personas[i].totalActions).toBe(result2.personas[i].totalActions);
+      expect(result1.personas[i]!.finalState).toBe(result2.personas[i]!.finalState);
+      expect(result1.personas[i]!.totalActions).toBe(result2.personas[i]!.totalActions);
     }
   });
 
@@ -169,7 +168,7 @@ describe('Simulation Integration', () => {
     const manyPersonas: PersonaProfile[] = [];
     for (let i = 0; i < 100; i++) {
       manyPersonas.push({
-        ...personas[0],
+        ...personas[0]!,
         id: `persona-${i}`,
       });
     }

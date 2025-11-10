@@ -26,8 +26,8 @@ export class SimulationEngine {
    */
   constructor(config: SimulationEngineConfig) {
     this.config = config;
-    this.config.batchSize = config.batchSize || 10;
-    this.config.maxActionsPerDay = config.maxActionsPerDay || 5;
+    this.config.batchSize = config.batchSize ?? 10;
+    this.config.maxActionsPerDay = config.maxActionsPerDay ?? 5;
 
     if (this.config.seed === undefined) {
       throw new Error('Seed is required for deterministic simulation');
@@ -59,7 +59,7 @@ export class SimulationEngine {
     const startedAt = new Date();
 
     // Create and run simulation loop
-    const loopConfig: any = {
+    const loopConfig: { seed: number; batchSize: number; maxActionsPerDay: number; apiKey?: string; model?: string } = {
       seed: this.config.seed,
       batchSize: this.config.batchSize!,
       maxActionsPerDay: this.config.maxActionsPerDay!,

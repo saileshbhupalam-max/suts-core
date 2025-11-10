@@ -116,11 +116,11 @@ export class StateTransitionMachine {
       (t) => t.from === from && t.to === to && t.event === event
     );
 
-    if (!transition) {
+    if (transition === undefined) {
       return false;
     }
 
-    if (transition.condition) {
+    if (transition.condition !== undefined) {
       return transition.condition(context);
     }
 
@@ -152,7 +152,7 @@ export class StateTransitionMachine {
     const validTransitions = this.getValidTransitions(context.currentState);
 
     for (const transition of validTransitions) {
-      if (!transition.condition || transition.condition(context)) {
+      if (transition.condition === undefined || transition.condition(context)) {
         return transition.to;
       }
     }

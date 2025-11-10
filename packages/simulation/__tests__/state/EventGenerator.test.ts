@@ -43,7 +43,7 @@ describe('EventGenerator', () => {
     expect(event.id).toBeDefined();
     expect(event.personaId).toBe(mockContext.personaId);
     expect(event.eventType).toBe('action');
-    expect(event.action).toBe('USE_FEATURE');
+    expect(event.action).toBe(ActionType.USE_FEATURE);
     expect(event.timestamp).toBe(action.timestamp);
     expect(event.context['sessionId']).toBe(mockContext.sessionId);
     expect(event.context['day']).toBe(mockContext.day);

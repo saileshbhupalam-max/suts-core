@@ -95,7 +95,7 @@ describe('DecisionMaker', () => {
         availableActions: [ActionType.USE_FEATURE, ActionType.SEEK_HELP, ActionType.READ_DOCS],
       });
 
-      expect(decision.action).toBe('SEEK_HELP');
+      expect(decision.action).toBe(ActionType.SEEK_HELP);
       expect(decision.reasoning).toContain('frustration');
     });
 
@@ -114,7 +114,7 @@ describe('DecisionMaker', () => {
         availableActions: [ActionType.USE_FEATURE, ActionType.READ_DOCS, ActionType.CONFIGURE],
       });
 
-      expect(decision.action).toBe('READ_DOCS');
+      expect(decision.action).toBe(ActionType.READ_DOCS);
       expect(decision.reasoning).toContain('Confused');
     });
 
@@ -135,7 +135,7 @@ describe('DecisionMaker', () => {
         availableActions: [ActionType.USE_FEATURE, ActionType.READ_DOCS, ActionType.INSTALL],
       });
 
-      expect(decision.action).toBe('READ_DOCS');
+      expect(decision.action).toBe(ActionType.READ_DOCS);
     });
 
     it('should use features when conditions are good', async () => {
@@ -153,7 +153,7 @@ describe('DecisionMaker', () => {
         availableActions: [ActionType.USE_FEATURE, ActionType.CUSTOMIZE, ActionType.SHARE],
       });
 
-      expect(decision.action).toBe('USE_FEATURE');
+      expect(decision.action).toBe(ActionType.USE_FEATURE);
     });
 
     it('should return default action if USE_FEATURE not available', async () => {
@@ -171,7 +171,7 @@ describe('DecisionMaker', () => {
         availableActions: [ActionType.INSTALL],
       });
 
-      expect(decision.action).toBe('INSTALL');
+      expect(decision.action).toBe(ActionType.INSTALL);
     });
   });
 

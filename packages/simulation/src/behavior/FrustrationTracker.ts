@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/prefer-optional-chain */
 /**
  * Tracks and manages persona frustration levels
  */

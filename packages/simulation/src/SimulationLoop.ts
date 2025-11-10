@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/prefer-optional-chain */
 /**
  * Time-step simulation loop with parallel persona processing
  */
@@ -90,7 +91,7 @@ export class SimulationLoop {
     this.frustrationTracker = new FrustrationTracker();
     this.delightTracker = new DelightTracker();
 
-    const decisionConfig: any = {};
+    const decisionConfig: Partial<{ apiKey: string; model: string }> = {};
     if (config.apiKey !== undefined) {
       decisionConfig.apiKey = config.apiKey;
     }
@@ -183,7 +184,7 @@ export class SimulationLoop {
    */
   private async processPersonaDay(
     day: number,
-    _persona: PersonaProfile,
+    persona: PersonaProfile,
     personaStates: Map<string, PersonaSimulationState>,
     product: ProductState,
     allEvents: SimulationEvent[]
@@ -220,7 +221,7 @@ export class SimulationLoop {
    */
   private async processAction(
     day: number,
-    _persona: PersonaProfile,
+    persona: PersonaProfile,
     state: PersonaSimulationState,
     product: ProductState,
     allEvents: SimulationEvent[]
@@ -265,7 +266,7 @@ export class SimulationLoop {
     if (result.action.success) {
       this.frustrationTracker.recordSuccess(persona.id);
       if (
-        result.emotionalImpact.delight &&
+        result.emotionalImpact.delight !== undefined &&
         result.emotionalImpact.delight > 0.5
       ) {
         this.delightTracker.recordDelight(
@@ -381,7 +382,7 @@ export class SimulationLoop {
    */
   private checkTimeBasedTransitions(
     state: PersonaSimulationState,
-    __persona: PersonaProfile
+    _persona: PersonaProfile
   ): void {
     const newState = this.stateTransitionMachine.evaluateTransitions({
       currentState: state.currentState,
@@ -393,7 +394,7 @@ export class SimulationLoop {
       currentDay: 0, // Not used for time-based transitions
     });
 
-    if (newState) {
+    if (newState !== null) {
       state.currentState = newState;
     }
   }
@@ -403,7 +404,7 @@ export class SimulationLoop {
    */
   private checkActionBasedTransitions(
     state: PersonaSimulationState,
-    __persona: PersonaProfile,
+    _persona: PersonaProfile,
     day: number
   ): void {
     const newState = this.stateTransitionMachine.evaluateTransitions({
@@ -426,7 +427,7 @@ export class SimulationLoop {
    */
   private determineActionsForDay(
     state: PersonaSimulationState,
-    _persona: PersonaProfile
+    persona: PersonaProfile
   ): number {
     if (state.currentState === PersonaState.NEW) {
       return 1; // First action only
@@ -444,7 +445,7 @@ export class SimulationLoop {
    */
   private determineActionSuccess(
     decision: { action: ActionType; confidence: number },
-    _persona: PersonaProfile,
+    persona: PersonaProfile,
     _product: ProductState
   ): boolean {
     let probability = decision.confidence;

@@ -3,9 +3,8 @@
  */
 
 import { SimulationEngine } from '../src/engine';
-import { ActionType } from '@suts/core';
 import type { PersonaProfile } from '@suts/persona';
-import type { ProductState } from '../src/types';
+import type { ProductState, SimulationEngineConfig } from '../src/types';
 
 describe('SimulationEngine', () => {
   let mockPersonas: PersonaProfile[];
@@ -57,7 +56,7 @@ describe('SimulationEngine', () => {
   });
 
   it('should throw error without seed', () => {
-    expect(() => new SimulationEngine({} as any)).toThrow(
+    expect(() => new SimulationEngine({} as SimulationEngineConfig)).toThrow(
       'Seed is required for deterministic simulation'
     );
   });
@@ -107,8 +106,8 @@ describe('SimulationEngine', () => {
     const result2 = await engine2.run(mockPersonas, mockProduct, 3);
 
     expect(result1.events.length).toBe(result2.events.length);
-    expect(result1.personas[0]!.finalState).toBe(result2.personas[0].finalState);
-    expect(result1.personas[0]!.totalActions).toBe(result2.personas[0].totalActions);
+    expect(result1.personas[0]!.finalState).toBe(result2.personas[0]!.finalState);
+    expect(result1.personas[0]!.totalActions).toBe(result2.personas[0]!.totalActions);
   });
 
   it('should produce different results with different seeds', async () => {
@@ -121,7 +120,7 @@ describe('SimulationEngine', () => {
     // Results should differ
     const isDifferent: boolean =
       result1.events.length !== result2.events.length ||
-      result1.personas[0].totalActions !== result2.personas[0].totalActions;
+      result1.personas[0]!.totalActions !== result2.personas[0]!.totalActions;
 
     expect(isDifferent).toBe(true);
   });

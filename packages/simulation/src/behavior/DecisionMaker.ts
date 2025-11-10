@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions, @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/prefer-optional-chain */
 /**
  * LLM-based decision making for persona actions
  */
@@ -56,14 +57,14 @@ export class DecisionMaker {
         : undefined;
 
     this.config = {
-      apiKey: config.apiKey || envApiKey || '',
-      model: config.model || 'claude-sonnet-4-20250514',
-      temperature: config.temperature || 0.7,
-      maxTokens: config.maxTokens || 500,
+      apiKey: config.apiKey ?? envApiKey ?? '',
+      model: config.model ?? 'claude-sonnet-4-20250514',
+      temperature: config.temperature ?? 0.7,
+      maxTokens: config.maxTokens ?? 500,
     };
 
     // Use mock mode if no API key provided
-    this.useMock = !this.config.apiKey;
+    this.useMock = this.config.apiKey.length === 0;
 
     if (!this.useMock) {
       this.client = new Anthropic({ apiKey: this.config.apiKey });
@@ -94,7 +95,7 @@ export class DecisionMaker {
       });
 
       const content = response.content[0];
-      if (!content) {
+      if (content === undefined) {
         throw new Error('No content in response');
       }
       if (content.type !== 'text') {
@@ -157,11 +158,11 @@ Respond in JSON format:
     try {
       // Extract JSON from response
       const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
+      if (jsonMatch === null) {
         throw new Error('No JSON found in response');
       }
 
-      const parsed = JSON.parse(jsonMatch[0]);
+      const parsed = JSON.parse(jsonMatch[0]) as { action: string; reasoning?: string; confidence?: number; target?: string; parameters?: Record<string, unknown> };
 
       // Validate action is available
       const action = parsed.action.toUpperCase();

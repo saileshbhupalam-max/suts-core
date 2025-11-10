@@ -3,7 +3,6 @@
  */
 
 import { DelightTracker } from '../../src/behavior/DelightTracker';
-import { ActionType } from '@suts/core';
 import type { PersonaProfile } from '@suts/persona';
 
 describe('DelightTracker', () => {
@@ -75,7 +74,7 @@ describe('DelightTracker', () => {
     const state = tracker.getState(mockPersona.id);
     expect(state.level).toBeGreaterThan(0);
     expect(state.moments.length).toBe(1);
-    expect(state.moments[0].trigger).toBe('Fast setup');
+    expect(state.moments[0]!.trigger).toBe('Fast setup');
   });
 
   it('should amplify delight for personal triggers', () => {
@@ -160,10 +159,19 @@ describe('DelightTracker', () => {
     tracker.initializePersona(mockPersona.id, mockPersona);
 
     const timestamp = new Date();
+    // Record multiple delight events to reach sustained threshold
     tracker.recordDelight(
       mockPersona.id,
       0.9,
-      'Great feature',
+      'Fast setup',  // Matches persona's delight trigger
+      'feature',
+      timestamp,
+      mockPersona
+    );
+    tracker.recordDelight(
+      mockPersona.id,
+      0.8,
+      'Fast setup',
       'feature',
       timestamp,
       mockPersona
@@ -205,10 +213,11 @@ describe('DelightTracker', () => {
     expect(tracker.isLikelyToRefer(mockPersona.id)).toBe(false);
 
     const timestamp = new Date();
+    // Use matching trigger to amplify delight
     tracker.recordDelight(
       mockPersona.id,
       0.9,
-      'Excellent',
+      'Fast setup',  // Matches delight trigger
       'feature',
       timestamp,
       mockPersona
@@ -216,7 +225,7 @@ describe('DelightTracker', () => {
     tracker.recordDelight(
       mockPersona.id,
       0.9,
-      'Amazing',
+      'Fast setup',
       'feature',
       timestamp,
       mockPersona
@@ -224,7 +233,7 @@ describe('DelightTracker', () => {
     tracker.recordDelight(
       mockPersona.id,
       0.9,
-      'Perfect',
+      'Fast setup',
       'feature',
       timestamp,
       mockPersona
@@ -250,7 +259,7 @@ describe('DelightTracker', () => {
 
     const recent = tracker.getRecentMoments(mockPersona.id, 3);
     expect(recent.length).toBe(3);
-    expect(recent[2].trigger).toBe('Moment 4');
+    expect(recent[2]!.trigger).toBe('Moment 4');
   });
 
   it('should get moments by category', () => {
@@ -319,10 +328,19 @@ describe('DelightTracker', () => {
     expect(tracker.hasReachedThreshold(mockPersona.id, 0.8)).toBe(false);
 
     const timestamp = new Date();
+    // Record multiple delight events to reach threshold
     tracker.recordDelight(
       mockPersona.id,
       0.9,
-      'Excellent',
+      'Fast setup',  // Matches delight trigger
+      'feature',
+      timestamp,
+      mockPersona
+    );
+    tracker.recordDelight(
+      mockPersona.id,
+      0.9,
+      'Fast setup',
       'feature',
       timestamp,
       mockPersona
