@@ -3,7 +3,8 @@
  * Only types that are not in models/ or interfaces/
  */
 
-import type { PersonaProfile, ProductState } from './models';
+import type { PersonaProfile } from './models/PersonaProfile';
+import type { ProductState } from './models/ProductState';
 
 /**
  * Action types that users can perform
