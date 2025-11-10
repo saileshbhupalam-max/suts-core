@@ -2,10 +2,5 @@ import { config } from 'dotenv';
 
 config({ path: '.env.test' });
 
-beforeAll(() => {
-  jest.useFakeTimers();
-});
-
-afterAll(() => {
-  jest.useRealTimers();
-});
+// Timer setup is handled per test file as needed
+// Global setup removed to avoid BeforeAll errors
