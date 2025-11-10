@@ -1,0 +1,20 @@
+{
+  "simulation": {
+    "personas": 50,
+    "days": 3,
+    "product": "test-product"
+  },
+  "personas": {
+    "diversity": 0.7
+  },
+  "output": {
+    "directory": "./test-output",
+    "format": "json",
+    "generateReport": false
+  },
+  "thresholds": {
+    "positioning": 0.5,
+    "retention": 0.7,
+    "viral": 0.2
+  }
+}

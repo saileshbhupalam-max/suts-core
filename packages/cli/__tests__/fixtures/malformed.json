@@ -1,0 +1,6 @@
+{
+  "simulation": {
+    "product": "test"
+  }
+  // Invalid JSON comment
+}
