@@ -4,4 +4,7 @@
  */
 
 export * from './types';
-export * from './generator';
+export * from './PersonaGenerator';
+export * from './validation';
+export * from './templates/persona-generation';
+export * from './templates/diversity-analysis';
