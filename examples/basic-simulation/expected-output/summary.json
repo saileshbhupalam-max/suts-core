@@ -1,0 +1,154 @@
+{
+  "simulationId": "basic-sim-001",
+  "completedAt": "2024-11-10T12:30:00Z",
+  "summary": {
+    "totalSessions": 70,
+    "totalPersonas": 10,
+    "simulationDays": 7,
+    "completionRate": 0.85,
+    "averageSatisfaction": 0.72
+  },
+  "frictionPoints": [
+    {
+      "id": "fp-001",
+      "feature": "onboarding",
+      "description": "Tutorial takes 8 minutes - too long for experienced users who want to start immediately",
+      "severity": "high",
+      "affectedPersonas": 6,
+      "affectedPercentage": 0.6,
+      "timestamp": "2024-11-10T10:15:00Z",
+      "suggestedFix": "Add 'Skip Tutorial' option for experienced users, or make tutorial interactive with actual tasks"
+    },
+    {
+      "id": "fp-002",
+      "feature": "keyboardShortcuts",
+      "description": "Power users frustrated by lack of keyboard shortcuts - forced to use mouse for everything",
+      "severity": "medium",
+      "affectedPersonas": 3,
+      "affectedPercentage": 0.3,
+      "timestamp": "2024-11-10T10:45:00Z",
+      "suggestedFix": "Implement keyboard shortcuts for common actions (add task, complete, search)"
+    },
+    {
+      "id": "fp-003",
+      "feature": "mobileApp",
+      "description": "Mobile app missing key features from web version - users can't organize tasks",
+      "severity": "high",
+      "affectedPersonas": 7,
+      "affectedPercentage": 0.7,
+      "timestamp": "2024-11-10T11:00:00Z",
+      "suggestedFix": "Achieve feature parity between web and mobile for core workflows"
+    },
+    {
+      "id": "fp-004",
+      "feature": "collaboration",
+      "description": "Sharing tasks requires too many clicks - 5 steps to invite a teammate",
+      "severity": "medium",
+      "affectedPersonas": 4,
+      "affectedPercentage": 0.4,
+      "timestamp": "2024-11-10T11:30:00Z",
+      "suggestedFix": "Simplify sharing flow - one-click invite with email autocomplete"
+    }
+  ],
+  "valueMoments": [
+    {
+      "id": "vm-001",
+      "feature": "quickAdd",
+      "description": "Natural language task creation delighted users - 'Buy milk tomorrow' automatically parsed",
+      "impact": "high",
+      "affectedPersonas": 9,
+      "affectedPercentage": 0.9,
+      "timestamp": "2024-11-10T10:35:00Z"
+    },
+    {
+      "id": "vm-002",
+      "feature": "interface",
+      "description": "Clean, uncluttered interface helped users focus - 'Finally a tool that doesn't overwhelm'",
+      "impact": "high",
+      "affectedPersonas": 8,
+      "affectedPercentage": 0.8,
+      "timestamp": "2024-11-10T10:40:00Z"
+    },
+    {
+      "id": "vm-003",
+      "feature": "sync",
+      "description": "Reliable sync across devices gave users confidence - tasks always available",
+      "impact": "medium",
+      "affectedPersonas": 10,
+      "affectedPercentage": 1.0,
+      "timestamp": "2024-11-10T10:50:00Z"
+    },
+    {
+      "id": "vm-004",
+      "feature": "performance",
+      "description": "Fast response times (< 100ms) made app feel snappy and responsive",
+      "impact": "medium",
+      "affectedPersonas": 9,
+      "affectedPercentage": 0.9,
+      "timestamp": "2024-11-10T11:15:00Z"
+    }
+  ],
+  "metrics": {
+    "churnProbability": 0.18,
+    "viralCoefficient": 0.9,
+    "retentionDay7": 0.85,
+    "averageSessionDuration": 1200,
+    "tasksCreatedPerUser": 23,
+    "collaborationRate": 0.4
+  },
+  "personaBreakdown": {
+    "byExperience": {
+      "novice": 0.2,
+      "intermediate": 0.5,
+      "expert": 0.3
+    },
+    "byArchetype": {
+      "Solo Indie Developer": 0.3,
+      "Startup Product Manager": 0.3,
+      "Small Business Owner": 0.2,
+      "Enterprise Team Lead": 0.2
+    },
+    "satisfaction": {
+      "novice": 0.75,
+      "intermediate": 0.72,
+      "expert": 0.68
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "critical",
+      "action": "Add 'Skip Tutorial' option for experienced users",
+      "expectedImpact": "Reduce onboarding friction for 60% of users",
+      "effort": "low",
+      "confidence": 0.9
+    },
+    {
+      "priority": "high",
+      "action": "Achieve mobile app feature parity with web",
+      "expectedImpact": "Improve satisfaction for 70% of mobile users",
+      "effort": "high",
+      "confidence": 0.85
+    },
+    {
+      "priority": "high",
+      "action": "Implement keyboard shortcuts for power users",
+      "expectedImpact": "Increase expert user satisfaction by 15%",
+      "effort": "medium",
+      "confidence": 0.8
+    },
+    {
+      "priority": "medium",
+      "action": "Simplify collaboration/sharing workflow",
+      "expectedImpact": "Increase collaboration rate from 40% to 60%",
+      "effort": "medium",
+      "confidence": 0.75
+    },
+    {
+      "priority": "medium",
+      "action": "Add referral incentives to improve viral coefficient",
+      "expectedImpact": "Increase viral coefficient from 0.9 to 1.2+",
+      "effort": "low",
+      "confidence": 0.7
+    }
+  ]
+}

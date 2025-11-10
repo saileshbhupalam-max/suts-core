@@ -1,0 +1,31 @@
+{
+  "name": "@suts/plugin-taskflow",
+  "version": "1.0.0",
+  "description": "SUTS plugin for TaskFlow project management tool",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "suts",
+    "plugin",
+    "taskflow"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "peerDependencies": {
+    "@suts/core": "^0.3.0",
+    "@suts/simulation": "^0.3.0",
+    "@suts/telemetry": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "id": "vibeatlas-sim-001",
+  "name": "VibeAtlas Pre-Launch Validation",
+  "description": "Comprehensive simulation with 100 personas over 14 days to validate VibeAtlas before launch",
+  "version": "1.0.0",
+
+  "personas": {
+    "source": "./analysis/developer-personas.md",
+    "count": 100,
+    "diversityWeight": 0.9
+  },
+
+  "product": {
+    "name": "VibeAtlas",
+    "version": "1.0.0-beta",
+    "features": {
+      "moodTracking": {
+        "enabled": true,
+        "numMoodOptions": 45,
+        "visualTimeline": true,
+        "complexity": "medium",
+        "maturity": "stable"
+      },
+      "socialSharing": {
+        "enabled": true,
+        "privacyControls": ["public", "friends", "private"],
+        "defaultPrivacy": "friends",
+        "complexity": "medium",
+        "maturity": "beta"
+      },
+      "aiInsights": {
+        "enabled": true,
+        "insightTypes": ["patterns", "recommendations", "predictions"],
+        "complexity": "high",
+        "maturity": "beta"
+      },
+      "moodFeed": {
+        "enabled": true,
+        "algorithm": "balanced",
+        "complexity": "medium",
+        "maturity": "stable"
+      },
+      "musicRecommendations": {
+        "enabled": true,
+        "providers": ["spotify", "apple-music"],
+        "complexity": "medium",
+        "maturity": "alpha"
+      },
+      "offlineMode": {
+        "enabled": false,
+        "complexity": "high",
+        "maturity": "planned"
+      }
+    }
+  },
+
+  "execution": {
+    "numSessions": 14,
+    "timeCompression": 2.0,
+    "maxParallel": 20,
+    "randomSeed": 123
+  },
+
+  "analysis": {
+    "autoAnalyze": true,
+    "detectPatterns": true,
+    "inferCausality": false,
+    "generateRecommendations": true
+  },
+
+  "output": {
+    "directory": "./output",
+    "formats": ["json", "html"],
+    "includeRawData": false,
+    "compress": true
+  }
+}
