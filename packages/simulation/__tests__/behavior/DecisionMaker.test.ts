@@ -3,8 +3,8 @@
  */
 
 import { DecisionMaker } from '../../src/behavior/DecisionMaker';
-import { ActionType } from '@suts/core';
-import type { PersonaProfile } from '@suts/persona';
+import { ACTION_TYPES } from '@suts/core';
+import type { PersonaProfile } from '@suts/core';
 import type { ProductState } from '../../src/types';
 
 describe('DecisionMaker', () => {
@@ -71,7 +71,7 @@ describe('DecisionMaker', () => {
         },
         currentDay: 1,
         previousActions: [],
-        availableActions: [ActionType.INSTALL, ActionType.READ_DOCS, ActionType.USE_FEATURE],
+        availableActions: [ACTION_TYPES.INSTALL, ACTION_TYPES.READ_DOCS, ACTION_TYPES.USE_FEATURE],
       });
 
       expect(decision).toBeDefined();
@@ -92,10 +92,10 @@ describe('DecisionMaker', () => {
         },
         currentDay: 2,
         previousActions: ['INSTALL'],
-        availableActions: [ActionType.USE_FEATURE, ActionType.SEEK_HELP, ActionType.READ_DOCS],
+        availableActions: [ACTION_TYPES.USE_FEATURE, ACTION_TYPES.SEEK_HELP, ACTION_TYPES.READ_DOCS],
       });
 
-      expect(decision.action).toBe(ActionType.SEEK_HELP);
+      expect(decision.action).toBe(ACTION_TYPES.SEEK_HELP);
       expect(decision.reasoning).toContain('frustration');
     });
 
@@ -111,10 +111,10 @@ describe('DecisionMaker', () => {
         },
         currentDay: 1,
         previousActions: [],
-        availableActions: [ActionType.USE_FEATURE, ActionType.READ_DOCS, ActionType.CONFIGURE],
+        availableActions: [ACTION_TYPES.USE_FEATURE, ACTION_TYPES.READ_DOCS, ACTION_TYPES.CONFIGURE],
       });
 
-      expect(decision.action).toBe(ActionType.READ_DOCS);
+      expect(decision.action).toBe(ACTION_TYPES.READ_DOCS);
       expect(decision.reasoning).toContain('Confused');
     });
 
@@ -132,10 +132,10 @@ describe('DecisionMaker', () => {
         },
         currentDay: 1,
         previousActions: [],
-        availableActions: [ActionType.USE_FEATURE, ActionType.READ_DOCS, ActionType.INSTALL],
+        availableActions: [ACTION_TYPES.USE_FEATURE, ACTION_TYPES.READ_DOCS, ACTION_TYPES.INSTALL],
       });
 
-      expect(decision.action).toBe(ActionType.READ_DOCS);
+      expect(decision.action).toBe(ACTION_TYPES.READ_DOCS);
     });
 
     it('should use features when conditions are good', async () => {
@@ -150,10 +150,10 @@ describe('DecisionMaker', () => {
         },
         currentDay: 3,
         previousActions: ['INSTALL', 'CONFIGURE'],
-        availableActions: [ActionType.USE_FEATURE, ActionType.CUSTOMIZE, ActionType.SHARE],
+        availableActions: [ACTION_TYPES.USE_FEATURE, ACTION_TYPES.CUSTOMIZE, ACTION_TYPES.SHARE],
       });
 
-      expect(decision.action).toBe(ActionType.USE_FEATURE);
+      expect(decision.action).toBe(ACTION_TYPES.USE_FEATURE);
     });
 
     it('should return default action if USE_FEATURE not available', async () => {
@@ -168,10 +168,10 @@ describe('DecisionMaker', () => {
         },
         currentDay: 3,
         previousActions: [],
-        availableActions: [ActionType.INSTALL],
+        availableActions: [ACTION_TYPES.INSTALL],
       });
 
-      expect(decision.action).toBe(ActionType.INSTALL);
+      expect(decision.action).toBe(ACTION_TYPES.INSTALL);
     });
   });
 
@@ -193,7 +193,7 @@ describe('DecisionMaker', () => {
           },
           currentDay: 1,
           previousActions: [],
-          availableActions: [ActionType.USE_FEATURE],
+          availableActions: [ACTION_TYPES.USE_FEATURE],
         });
       }).not.toThrow();
     });
@@ -224,7 +224,7 @@ describe('DecisionMaker', () => {
           },
           currentDay: 1,
           previousActions: [],
-          availableActions: [ActionType.USE_FEATURE],
+          availableActions: [ACTION_TYPES.USE_FEATURE],
         });
       }).not.toThrow();
     });

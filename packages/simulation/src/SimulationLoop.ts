@@ -3,9 +3,8 @@
  * Time-step simulation loop with parallel persona processing
  */
 
-import type { PersonaProfile } from '@suts/persona';
-import type { SimulationEvent, EmotionalState } from '@suts/core';
-import { ActionType } from '@suts/core';
+import type { PersonaProfile, TelemetryEvent, EmotionalState, ActionType } from '@suts/core';
+import { ACTION_TYPES } from '@suts/core';
 import type { ProductState } from './types';
 import { PersonaState, StateTransitionMachine } from './state/StateTransitions';
 import { ActionProcessor, type PersonaAction } from './state/ActionProcessor';
@@ -39,7 +38,7 @@ export interface PersonaSimulationState {
   personaId: string;
   currentState: PersonaState;
   emotionalState: EmotionalState;
-  events: SimulationEvent[];
+  events: TelemetryEvent[];
   daysSinceLastAction: number;
   totalActions: number;
   consecutiveActions: number;
@@ -62,7 +61,7 @@ export interface SimulationLoopConfig {
  */
 export interface SimulationLoopResult {
   personaStates: Map<string, PersonaSimulationState>;
-  allEvents: SimulationEvent[];
+  allEvents: TelemetryEvent[];
   finalDay: number;
 }
 
@@ -112,7 +111,7 @@ export class SimulationLoop {
   ): Promise<SimulationLoopResult> {
     // Initialize persona states
     const personaStates = this.initializePersonaStates(personas);
-    const allEvents: SimulationEvent[] = [];
+    const allEvents: TelemetryEvent[] = [];
 
     // Time-step iteration
     for (let day = 1; day <= days; day++) {
@@ -163,7 +162,7 @@ export class SimulationLoop {
     personas: PersonaProfile[],
     personaStates: Map<string, PersonaSimulationState>,
     product: ProductState,
-    allEvents: SimulationEvent[]
+    allEvents: TelemetryEvent[]
   ): Promise<void> {
     const batchSize = this.config.batchSize;
 
@@ -187,7 +186,7 @@ export class SimulationLoop {
     persona: PersonaProfile,
     personaStates: Map<string, PersonaSimulationState>,
     product: ProductState,
-    allEvents: SimulationEvent[]
+    allEvents: TelemetryEvent[]
   ): Promise<void> {
     const state = personaStates.get(persona.id)!;
 
@@ -224,7 +223,7 @@ export class SimulationLoop {
     persona: PersonaProfile,
     state: PersonaSimulationState,
     product: ProductState,
-    allEvents: SimulationEvent[]
+    allEvents: TelemetryEvent[]
   ): Promise<void> {
     const sessionId = randomUUID();
 
@@ -475,18 +474,18 @@ export class SimulationLoop {
    */
   private getAvailableActions(state: PersonaState): ActionType[] {
     const allActions: ActionType[] = [
-      ActionType.INSTALL,
-      ActionType.CONFIGURE,
-      ActionType.USE_FEATURE,
-      ActionType.READ_DOCS,
-      ActionType.SEEK_HELP,
-      ActionType.CUSTOMIZE,
-      ActionType.SHARE,
-      ActionType.UNINSTALL,
+      ACTION_TYPES.INSTALL,
+      ACTION_TYPES.CONFIGURE,
+      ACTION_TYPES.USE_FEATURE,
+      ACTION_TYPES.READ_DOCS,
+      ACTION_TYPES.SEEK_HELP,
+      ACTION_TYPES.CUSTOMIZE,
+      ACTION_TYPES.SHARE,
+      ACTION_TYPES.UNINSTALL,
     ];
 
     if (state === PersonaState.NEW) {
-      return [ActionType.INSTALL, ActionType.READ_DOCS];
+      return [ACTION_TYPES.INSTALL, ACTION_TYPES.READ_DOCS];
     }
 
     return allActions;

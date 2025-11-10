@@ -2,7 +2,7 @@
  * Simulation-related types
  */
 
-import type { SimulationEvent } from '@suts/core';
+import type { TelemetryEvent } from '@suts/core';
 import type { PersonaState } from './state/StateTransitions';
 
 /**
@@ -14,7 +14,7 @@ export interface SimulationSession {
   sessionNumber: number;
   startTime: Date;
   endTime?: Date;
-  events: SimulationEvent[];
+  events: TelemetryEvent[];
   outcome?: 'continued' | 'churned' | 'referred' | 'frustrated' | 'delighted';
   summary?: string;
 }
@@ -45,7 +45,7 @@ export interface SimulationEngineConfig {
  */
 export interface SimulationState {
   personas: PersonaStateSnapshot[];
-  events: SimulationEvent[];
+  events: TelemetryEvent[];
   metadata: {
     totalDays: number;
     totalPersonas: number;
@@ -67,5 +67,5 @@ export interface PersonaStateSnapshot {
   delightLevel: number;
   confidenceLevel: number;
   confusionLevel: number;
-  events: SimulationEvent[];
+  events: TelemetryEvent[];
 }

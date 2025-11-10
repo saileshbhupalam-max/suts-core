@@ -3,7 +3,7 @@
  * Generates telemetry events from persona actions
  */
 
-import type { SimulationEvent, EmotionalState } from '@suts/core';
+import type { TelemetryEvent, EmotionalState } from '@suts/core';
 import type { PersonaAction, ActionResult } from './ActionProcessor';
 import { randomUUID } from 'node:crypto';
 
@@ -27,11 +27,13 @@ export class EventGenerator {
   generateActionEvent(
     action: PersonaAction,
     context: EventContext
-  ): SimulationEvent {
+  ): TelemetryEvent {
     return {
       id: randomUUID(),
       personaId: context.personaId,
-      timestamp: action.timestamp,
+      simulationId: context.sessionId,
+      sessionNumber: context.day,
+      timestamp: action.timestamp.toISOString(),
       eventType: 'action',
       action: action.type,
       context: {
@@ -44,6 +46,7 @@ export class EventGenerator {
       },
       reasoning: action.reasoning,
       emotionalState: context.emotionalState,
+      tags: [],
       metadata: {
         actionId: randomUUID(),
       },
@@ -57,11 +60,13 @@ export class EventGenerator {
     observation: string,
     context: EventContext,
     timestamp: Date
-  ): SimulationEvent {
+  ): TelemetryEvent {
     return {
       id: randomUUID(),
       personaId: context.personaId,
-      timestamp,
+      timestamp: timestamp.toISOString(),
+      simulationId: context.sessionId,
+      sessionNumber: context.day,
       eventType: 'observation',
       context: {
         sessionId: context.sessionId,
@@ -69,6 +74,7 @@ export class EventGenerator {
         observation,
       },
       emotionalState: context.emotionalState,
+      tags: [],
       metadata: {},
     };
   }
@@ -81,11 +87,13 @@ export class EventGenerator {
     reasoning: string,
     context: EventContext,
     timestamp: Date
-  ): SimulationEvent {
+  ): TelemetryEvent {
     return {
       id: randomUUID(),
       personaId: context.personaId,
-      timestamp,
+      timestamp: timestamp.toISOString(),
+      simulationId: context.sessionId,
+      sessionNumber: context.day,
       eventType: 'decision',
       action: decision,
       reasoning,
@@ -94,6 +102,7 @@ export class EventGenerator {
         day: context.day,
       },
       emotionalState: context.emotionalState,
+      tags: [],
       metadata: {},
     };
   }
@@ -106,11 +115,13 @@ export class EventGenerator {
     trigger: string,
     context: EventContext,
     timestamp: Date
-  ): SimulationEvent {
+  ): TelemetryEvent {
     return {
       id: randomUUID(),
       personaId: context.personaId,
-      timestamp,
+      timestamp: timestamp.toISOString(),
+      simulationId: context.sessionId,
+      sessionNumber: context.day,
       eventType: 'emotion',
       emotionalState,
       context: {
@@ -118,6 +129,7 @@ export class EventGenerator {
         day: context.day,
         trigger,
       },
+      tags: [],
       metadata: {},
     };
   }
@@ -128,8 +140,8 @@ export class EventGenerator {
   generateEventsFromResult(
     result: ActionResult,
     context: EventContext
-  ): SimulationEvent[] {
-    const events: SimulationEvent[] = [];
+  ): TelemetryEvent[] {
+    const events: TelemetryEvent[] = [];
 
     // Always generate action event
     events.push(this.generateActionEvent(result.action, context));

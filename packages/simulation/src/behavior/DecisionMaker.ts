@@ -4,9 +4,8 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
-import type { PersonaProfile } from '@suts/persona';
-import { ActionType } from '@suts/core';
-import type { EmotionalState } from '@suts/core';
+import type { PersonaProfile, ActionType, EmotionalState } from '@suts/core';
+import { ACTION_TYPES } from '@suts/core';
 import type { ProductState } from '../types';
 
 /**
@@ -200,19 +199,19 @@ Respond in JSON format:
     let reasoning: string;
 
     if (emotionalState.frustration > 0.7) {
-      selectedAction = ActionType.SEEK_HELP;
+      selectedAction = ACTION_TYPES.SEEK_HELP;
       reasoning = 'High frustration level, seeking help';
     } else if (emotionalState.confusion > 0.6) {
-      selectedAction = ActionType.READ_DOCS;
+      selectedAction = ACTION_TYPES.READ_DOCS;
       reasoning = 'Confused, reading documentation';
     } else if (persona.experienceLevel === 'Novice' && emotionalState.confidence < 0.3) {
-      selectedAction = ActionType.READ_DOCS;
+      selectedAction = ACTION_TYPES.READ_DOCS;
       reasoning = 'Low confidence, reading documentation';
-    } else if (availableActions.includes(ActionType.USE_FEATURE)) {
-      selectedAction = ActionType.USE_FEATURE;
+    } else if (availableActions.includes(ACTION_TYPES.USE_FEATURE)) {
+      selectedAction = ACTION_TYPES.USE_FEATURE;
       reasoning = 'Attempting to use a feature';
     } else {
-      selectedAction = availableActions[0] || ActionType.INSTALL;
+      selectedAction = availableActions[0] || ACTION_TYPES.INSTALL;
       reasoning = 'Default action';
     }
 

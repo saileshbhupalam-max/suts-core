@@ -4,8 +4,8 @@
  */
 
 import { ActionProcessor, type PersonaAction } from '../../src/state/ActionProcessor';
-import { ActionType } from '@suts/core';
-import type { PersonaProfile } from '@suts/persona';
+import { ACTION_TYPES } from '@suts/core';
+import type { PersonaProfile } from '@suts/core';
 import type { ProductState } from '../../src/types';
 
 describe('ActionProcessor', () => {
@@ -58,7 +58,7 @@ describe('ActionProcessor', () => {
 
   it('should process successful action', () => {
     const action: PersonaAction = {
-      type: ActionType.USE_FEATURE,
+      type: ACTION_TYPES.USE_FEATURE,
       timestamp: new Date(),
       personaId: mockPersona.id,
       target: 'feature1',
@@ -83,12 +83,12 @@ describe('ActionProcessor', () => {
     expect(result.action).toBe(action);
     expect(result.emotionalImpact.confidence).toBeGreaterThan(0);
     expect(result.emotionalImpact.frustration).toBeDefined();
-    expect(result.stateChanges['lastActionType']).toBe(ActionType.USE_FEATURE);
+    expect(result.stateChanges['lastActionType']).toBe(ACTION_TYPES.USE_FEATURE);
   });
 
   it('should process failed action', () => {
     const action: PersonaAction = {
-      type: ActionType.CONFIGURE,
+      type: ACTION_TYPES.CONFIGURE,
       timestamp: new Date(),
       personaId: mockPersona.id,
       success: false,
@@ -112,7 +112,7 @@ describe('ActionProcessor', () => {
     expect(result.emotionalImpact.frustration).toBeGreaterThan(0);
     expect(result.emotionalImpact.confusion).toBeGreaterThan(0);
     expect(result.emotionalImpact.confidence).toBeDefined();
-    expect(result.observations).toContain(`Failed to ${ActionType.CONFIGURE}`);
+    expect(result.observations).toContain(`Failed to ${ACTION_TYPES.CONFIGURE}`);
   });
 
   it('should increase delight on unexpected success', () => {
@@ -123,7 +123,7 @@ describe('ActionProcessor', () => {
     };
 
     const action: PersonaAction = {
-      type: ActionType.CUSTOMIZE,
+      type: ACTION_TYPES.CUSTOMIZE,
       timestamp: new Date(),
       personaId: novicePersona.id,
       target: 'unavailable-feature', // Feature not in product
@@ -152,7 +152,7 @@ describe('ActionProcessor', () => {
 
   it('should update state changes correctly', () => {
     const action: PersonaAction = {
-      type: ActionType.READ_DOCS,
+      type: ACTION_TYPES.READ_DOCS,
       timestamp: new Date(),
       personaId: mockPersona.id,
       success: true,
@@ -173,14 +173,14 @@ describe('ActionProcessor', () => {
       currentEmotion
     );
 
-    expect(result.stateChanges['lastActionType']).toBe(ActionType.READ_DOCS);
+    expect(result.stateChanges['lastActionType']).toBe(ACTION_TYPES.READ_DOCS);
     expect(result.stateChanges['lastActionTimestamp']).toBe(action.timestamp);
     expect(result.stateChanges['totalActions']).toBe(6); // 5 + 1
   });
 
   it('should check for special triggers', () => {
     const action: PersonaAction = {
-      type: ActionType.USE_FEATURE,
+      type: ACTION_TYPES.USE_FEATURE,
       timestamp: new Date(),
       personaId: mockPersona.id,
       target: 'Fast setup',
@@ -216,7 +216,7 @@ describe('ActionProcessor', () => {
     };
 
     const action: PersonaAction = {
-      type: ActionType.READ_DOCS,
+      type: ACTION_TYPES.READ_DOCS,
       timestamp: new Date(),
       personaId: personaWithDealBreaker.id,
       success: false, // Failed to find documentation
@@ -256,7 +256,7 @@ describe('ActionProcessor', () => {
     });
 
     const action: PersonaAction = {
-      type: ActionType.USE_FEATURE,
+      type: ACTION_TYPES.USE_FEATURE,
       timestamp: new Date(),
       personaId: mockPersona.id,
       success: false,
@@ -282,7 +282,7 @@ describe('ActionProcessor', () => {
 
   it('should cap emotional values at 1', () => {
     const action: PersonaAction = {
-      type: ActionType.USE_FEATURE,
+      type: ACTION_TYPES.USE_FEATURE,
       timestamp: new Date(),
       personaId: mockPersona.id,
       success: true,
@@ -309,7 +309,7 @@ describe('ActionProcessor', () => {
 
   it('should floor emotional values at 0', () => {
     const action: PersonaAction = {
-      type: ActionType.USE_FEATURE,
+      type: ACTION_TYPES.USE_FEATURE,
       timestamp: new Date(),
       personaId: mockPersona.id,
       success: true,
@@ -336,7 +336,7 @@ describe('ActionProcessor', () => {
 
   it('should handle simple actions without complexity penalty', () => {
     const action: PersonaAction = {
-      type: ActionType.INSTALL,  // Simple action, not in complexActions list
+      type: ACTION_TYPES.INSTALL,  // Simple action, not in complexActions list
       timestamp: new Date(),
       personaId: mockPersona.id,
       success: true,
@@ -368,7 +368,7 @@ describe('ActionProcessor', () => {
     };
 
     const action: PersonaAction = {
-      type: ActionType.USE_FEATURE,
+      type: ACTION_TYPES.USE_FEATURE,
       timestamp: new Date(),
       personaId: impatientPersona.id,
       success: true,
@@ -399,7 +399,7 @@ describe('ActionProcessor', () => {
     };
 
     const action: PersonaAction = {
-      type: ActionType.CUSTOMIZE,
+      type: ACTION_TYPES.CUSTOMIZE,
       timestamp: new Date(),
       personaId: expertPersona.id,
       success: true,

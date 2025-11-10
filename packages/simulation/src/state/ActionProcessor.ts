@@ -3,8 +3,7 @@
  * Processes persona actions and updates state
  */
 
-import type { ActionType, EmotionalState } from '@suts/core';
-import type { PersonaProfile } from '@suts/persona';
+import type { ActionType, EmotionalState, PersonaProfile } from '@suts/core';
 import type { ProductState } from '../types';
 
 /**
@@ -193,7 +192,7 @@ export class ActionProcessor {
 
     // Check for delight triggers
     if (result.emotionalImpact.delight && result.emotionalImpact.delight > 0.7) {
-      if (persona.delightTriggers.some((trigger) =>
+      if (persona.delightTriggers.some((trigger: string) =>
         action.type.toLowerCase().includes(trigger.toLowerCase())
       )) {
         triggers.push('delight_trigger');
@@ -202,7 +201,7 @@ export class ActionProcessor {
 
     // Check for deal breakers
     if (!action.success) {
-      if (persona.dealBreakers.some((breaker) =>
+      if (persona.dealBreakers.some((breaker: string) =>
         action.type.toLowerCase().includes(breaker.toLowerCase())
       )) {
         triggers.push('deal_breaker');

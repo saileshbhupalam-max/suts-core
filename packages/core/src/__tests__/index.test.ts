@@ -6,7 +6,7 @@ import * as coreExports from '../index';
 
 describe('index', () => {
   it('should export all types', () => {
-    expect(coreExports).toHaveProperty('ActionType');
+    expect(coreExports).toHaveProperty('ACTION_TYPES');
   });
 
   it('should export all schemas', () => {
@@ -15,15 +15,15 @@ describe('index', () => {
     expect(coreExports).toHaveProperty('PersonaProfileSchema');
   });
 
-  it('should have ActionType enum with correct values', () => {
-    expect(coreExports.ActionType.INSTALL).toBe('install');
-    expect(coreExports.ActionType.CONFIGURE).toBe('configure');
-    expect(coreExports.ActionType.USE_FEATURE).toBe('use_feature');
-    expect(coreExports.ActionType.READ_DOCS).toBe('read_docs');
-    expect(coreExports.ActionType.SEEK_HELP).toBe('seek_help');
-    expect(coreExports.ActionType.CUSTOMIZE).toBe('customize');
-    expect(coreExports.ActionType.SHARE).toBe('share');
-    expect(coreExports.ActionType.UNINSTALL).toBe('uninstall');
+  it('should have ACTION_TYPES enum with correct values', () => {
+    expect(coreExports.ACTION_TYPES.INSTALL).toBe('install');
+    expect(coreExports.ACTION_TYPES.CONFIGURE).toBe('configure');
+    expect(coreExports.ACTION_TYPES.USE_FEATURE).toBe('use_feature');
+    expect(coreExports.ACTION_TYPES.READ_DOCS).toBe('read_docs');
+    expect(coreExports.ACTION_TYPES.SEEK_HELP).toBe('seek_help');
+    expect(coreExports.ACTION_TYPES.CUSTOMIZE).toBe('customize');
+    expect(coreExports.ACTION_TYPES.SHARE).toBe('share');
+    expect(coreExports.ACTION_TYPES.UNINSTALL).toBe('uninstall');
   });
 
   it('should export schemas that can parse valid data', () => {
