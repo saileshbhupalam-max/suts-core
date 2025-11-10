@@ -30,7 +30,8 @@
       "@core/*": ["packages/core/src/*"],
       "@persona/*": ["packages/persona/src/*"],
       "@simulation/*": ["packages/simulation/src/*"],
-      "@telemetry/*": ["packages/telemetry/src/*"]
+      "@telemetry/*": ["packages/telemetry/src/*"],
+      "@decision/*": ["packages/decision/src/*"]
     }
   },
   "references": [
@@ -38,6 +39,7 @@
     { "path": "./packages/persona" },
     { "path": "./packages/simulation" },
     { "path": "./packages/telemetry" },
+    { "path": "./packages/decision" },
     { "path": "./plugins/vibeatlas" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]

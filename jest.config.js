@@ -50,7 +50,8 @@ module.exports = {
     '^@core/(.*)$': '<rootDir>/packages/core/src/$1',
     '^@persona/(.*)$': '<rootDir>/packages/persona/src/$1',
     '^@simulation/(.*)$': '<rootDir>/packages/simulation/src/$1',
-    '^@telemetry/(.*)$': '<rootDir>/packages/telemetry/src/$1'
+    '^@telemetry/(.*)$': '<rootDir>/packages/telemetry/src/$1',
+    '^@decision/(.*)$': '<rootDir>/packages/decision/src/$1'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testTimeout: 10000,
