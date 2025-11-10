@@ -40,7 +40,7 @@ module.exports = {
       }
     }
   },
-  setupFiles: ['<rootDir>/tests/setup.ts'],
+  // setupFiles: ['<rootDir>/tests/setup.ts'],
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
