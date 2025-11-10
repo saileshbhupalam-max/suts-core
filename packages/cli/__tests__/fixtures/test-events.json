@@ -1,0 +1,22 @@
+[
+  {
+    "id": "event-1",
+    "personaId": "persona-1",
+    "timestamp": "2024-01-01T00:00:00.000Z",
+    "eventType": "action",
+    "action": "install",
+    "context": {
+      "platform": "test"
+    }
+  },
+  {
+    "id": "event-2",
+    "personaId": "persona-2",
+    "timestamp": "2024-01-01T00:01:00.000Z",
+    "eventType": "action",
+    "action": "use_feature",
+    "context": {
+      "feature": "main"
+    }
+  }
+]

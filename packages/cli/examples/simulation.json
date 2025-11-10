@@ -1,0 +1,21 @@
+{
+  "simulation": {
+    "personas": 100,
+    "days": 7,
+    "product": "vibeatlas"
+  },
+  "personas": {
+    "analysisFiles": ["./analysis/*.md"],
+    "diversity": 0.8
+  },
+  "output": {
+    "directory": "./suts-output",
+    "format": "json",
+    "generateReport": true
+  },
+  "thresholds": {
+    "positioning": 0.60,
+    "retention": 0.80,
+    "viral": 0.25
+  }
+}
