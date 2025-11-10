@@ -280,6 +280,7 @@ describe('InMemoryStore', () => {
   describe('edge cases', () => {
     it('should handle events with missing emotional state fields', () => {
       const event = createEvent({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
         emotionalState: { frustration: 0.5 } as any,
       });
       store.store(event);

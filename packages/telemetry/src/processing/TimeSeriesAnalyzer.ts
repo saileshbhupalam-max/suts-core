@@ -35,7 +35,7 @@ export class TimeSeriesAnalyzer {
       const value = event.emotionalState[metric] ?? 0;
 
       const existing = buckets.get(bucketKey);
-      if (existing) {
+      if (existing !== undefined) {
         existing.total += value;
         existing.count++;
         existing.events.push(event);

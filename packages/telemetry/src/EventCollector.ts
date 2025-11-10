@@ -33,7 +33,7 @@ export class EventCollector implements ITelemetryCollector {
   private config: Required<TelemetryConfig>;
   private store: IEventStore;
   private batchQueue: TelemetryEvent[] = [];
-  private flushTimer: unknown | null = null;
+  private flushTimer: unknown = null;
 
   /**
    * Creates a new event collector
@@ -146,7 +146,7 @@ export class EventCollector implements ITelemetryCollector {
    * Stop the automatic flush timer
    */
   private stopFlushTimer(): void {
-    if (this.flushTimer) {
+    if (this.flushTimer !== null) {
       clearInterval(this.flushTimer);
       this.flushTimer = null;
     }

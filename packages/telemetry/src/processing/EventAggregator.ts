@@ -20,7 +20,7 @@ export class EventAggregator {
 
     events.forEach((event) => {
       const existing = aggregated.get(event.personaId);
-      if (existing) {
+      if (existing !== undefined) {
         this.updateAggregatedData(existing, event);
       } else {
         aggregated.set(event.personaId, this.createAggregatedData(event));
@@ -42,7 +42,7 @@ export class EventAggregator {
 
     events.forEach((event) => {
       const existing = aggregated.get(event.action);
-      if (existing) {
+      if (existing !== undefined) {
         this.updateAggregatedData(existing, event);
       } else {
         const data = this.createAggregatedData(event);
@@ -66,7 +66,7 @@ export class EventAggregator {
 
     events.forEach((event) => {
       const existing = aggregated.get(event.eventType);
-      if (existing) {
+      if (existing !== undefined) {
         this.updateAggregatedData(existing, event);
       } else {
         const data = this.createAggregatedData(event);
@@ -93,7 +93,7 @@ export class EventAggregator {
     events.forEach((event) => {
       const bucket = Math.floor(event.timestamp.getTime() / bucketSizeMs);
       const existing = aggregated.get(bucket);
-      if (existing) {
+      if (existing !== undefined) {
         this.updateAggregatedData(existing, event);
       } else {
         aggregated.set(bucket, this.createAggregatedData(event));
@@ -116,7 +116,7 @@ export class EventAggregator {
     events.forEach((event) => {
       const key = `${event.personaId}:${event.action}`;
       const existing = aggregated.get(key);
-      if (existing) {
+      if (existing !== undefined) {
         this.updateAggregatedData(existing, event);
       } else {
         const data = this.createAggregatedData(event);

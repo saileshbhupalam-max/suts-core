@@ -266,6 +266,7 @@ describe('EventAggregator', () => {
     it('should handle missing emotional state values', () => {
       const events: TelemetryEvent[] = [
         createEvent({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
           emotionalState: { frustration: 0.5 } as any,
         }),
       ];

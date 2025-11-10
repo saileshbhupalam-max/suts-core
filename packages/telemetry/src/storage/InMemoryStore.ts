@@ -34,7 +34,7 @@ export class InMemoryStore implements IEventStore {
     if (this.events.length >= this.maxSize) {
       // Remove oldest event if at capacity
       const removed = this.events.shift();
-      if (removed) {
+      if (removed !== undefined) {
         this.eventIds.delete(removed.id);
       }
     }
@@ -55,22 +55,31 @@ export class InMemoryStore implements IEventStore {
    */
   query(filter: EventFilter): TelemetryEvent[] {
     return this.events.filter((event) => {
-      if (filter.personaId && event.personaId !== filter.personaId) {
+      if (
+        filter.personaId !== undefined &&
+        event.personaId !== filter.personaId
+      ) {
         return false;
       }
-      if (filter.eventType && event.eventType !== filter.eventType) {
+      if (
+        filter.eventType !== undefined &&
+        event.eventType !== filter.eventType
+      ) {
         return false;
       }
-      if (filter.action && event.action !== filter.action) {
+      if (filter.action !== undefined && event.action !== filter.action) {
         return false;
       }
-      if (filter.cohort && event.cohort !== filter.cohort) {
+      if (filter.cohort !== undefined && event.cohort !== filter.cohort) {
         return false;
       }
-      if (filter.startTime && event.timestamp < filter.startTime) {
+      if (
+        filter.startTime !== undefined &&
+        event.timestamp < filter.startTime
+      ) {
         return false;
       }
-      if (filter.endTime && event.timestamp > filter.endTime) {
+      if (filter.endTime !== undefined && event.timestamp > filter.endTime) {
         return false;
       }
       if (

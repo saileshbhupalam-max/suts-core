@@ -442,6 +442,7 @@ describe('TimeSeriesAnalyzer', () => {
   describe('edge cases', () => {
     it('should handle events with missing emotional state values', () => {
       const events: TelemetryEvent[] = [
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
         createEvent({ emotionalState: {} as any }),
       ];
 

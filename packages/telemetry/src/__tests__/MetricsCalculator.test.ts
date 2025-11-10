@@ -234,6 +234,7 @@ describe('MetricsCalculator', () => {
       const events: TelemetryEvent[] = [
         createEvent({
           personaId: 'persona-1',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
           emotionalState: {} as any,
         }),
       ];
@@ -467,6 +468,7 @@ describe('MetricsCalculator', () => {
     it('should handle missing emotional state fields', () => {
       const events: TelemetryEvent[] = [
         createEvent({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
           emotionalState: { frustration: 0.5 } as any,
         }),
       ];

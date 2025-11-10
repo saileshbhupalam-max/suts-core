@@ -44,7 +44,7 @@ export class PatternDetector {
       const key = `${event.personaId}:${event.action}`;
       const existing = patterns.get(key);
 
-      if (existing) {
+      if (existing !== undefined) {
         existing.occurrences++;
         existing.totalFrustration += frustration;
         existing.totalDelight += event.emotionalState['delight'] ?? 0;
@@ -125,7 +125,7 @@ export class PatternDetector {
       const key = `${event.personaId}:${event.action}`;
       const existing = patterns.get(key);
 
-      if (existing) {
+      if (existing !== undefined) {
         existing.occurrences++;
         existing.totalFrustration += event.emotionalState['frustration'] ?? 0;
         existing.totalDelight += delight;
@@ -226,7 +226,7 @@ export class PatternDetector {
         const frustration = lastEvent?.emotionalState['frustration'] ?? 0;
 
         const existing = sequences.get(key);
-        if (existing) {
+        if (existing !== undefined) {
           existing.totalFrustration += frustration;
           existing.count++;
         } else {

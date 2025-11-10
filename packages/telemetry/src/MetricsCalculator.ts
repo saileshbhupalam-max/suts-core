@@ -37,7 +37,7 @@ export class MetricsCalculator {
     const personaStartTimes = new Map<string, Date>();
     cohortEvents.forEach((event) => {
       const currentStart = personaStartTimes.get(event.personaId);
-      if (!currentStart || event.timestamp < currentStart) {
+      if (currentStart === undefined || event.timestamp < currentStart) {
         personaStartTimes.set(event.personaId, event.timestamp);
       }
     });
@@ -48,7 +48,7 @@ export class MetricsCalculator {
 
     personas.forEach((personaId) => {
       const startTime = personaStartTimes.get(personaId);
-      if (!startTime) {
+      if (startTime === undefined) {
         return;
       }
 

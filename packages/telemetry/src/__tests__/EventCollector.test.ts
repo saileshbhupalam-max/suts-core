@@ -6,6 +6,7 @@ import { EventCollector } from '../EventCollector';
 import type { TelemetryEvent } from '../types';
 
 describe('EventCollector', () => {
+  // eslint-disable-next-line @typescript-eslint/init-declarations
   let collector: EventCollector;
 
   beforeEach(() => {
@@ -13,7 +14,8 @@ describe('EventCollector', () => {
   });
 
   afterEach(() => {
-    if (collector) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (collector !== undefined) {
       collector.destroy();
     }
     jest.useRealTimers();
