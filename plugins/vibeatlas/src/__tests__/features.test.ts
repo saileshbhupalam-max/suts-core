@@ -116,7 +116,7 @@ describe('TokenCounterFeature', () => {
     initialState = {
       features: { tokenCounter: true },
       uiElements: {},
-      data: {},
+      userData: {},
       version: '1.0.0',
     };
   });
@@ -179,7 +179,7 @@ describe('ContextPreviewFeature', () => {
     initialState = {
       features: { contextPreview: true },
       uiElements: {},
-      data: {},
+      userData: {},
       version: '1.0.0',
     };
   });
@@ -254,7 +254,7 @@ describe('DashboardFeature', () => {
     initialState = {
       features: { dashboard: true },
       uiElements: {},
-      data: {},
+      userData: {},
       version: '1.0.0',
     };
   });

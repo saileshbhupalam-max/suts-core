@@ -26,7 +26,7 @@ export function enableTryMode(state: ProductState, tokenLimit: number, durationD
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       tryMode: {
         enabled: true,
         tokensUsed: 0,
@@ -53,7 +53,7 @@ export function useTryModeTokens(state: ProductState, tokensToUse: number): Prod
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       tryMode: {
         ...tryMode,
         tokensUsed,
@@ -76,7 +76,7 @@ export function expireTryMode(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       tryMode: {
         ...tryMode,
         enabled: false,

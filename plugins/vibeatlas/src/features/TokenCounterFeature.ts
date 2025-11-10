@@ -24,7 +24,7 @@ export function initializeTokenCounter(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       tokenCounter: {
         visible: true,
         currentTokens: 0,
@@ -53,7 +53,7 @@ export function updateTokenCount(state: ProductState, tokens: number): ProductSt
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       tokenCounter: {
         ...counter,
         currentTokens,
@@ -76,7 +76,7 @@ export function toggleTokenCounter(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       tokenCounter: {
         ...counter,
         visible: counter.visible === false,

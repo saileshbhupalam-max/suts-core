@@ -2,6 +2,7 @@
  * Map actions to telemetry events
  */
 
+import { randomUUID } from 'crypto';
 import type { UserAction, PersonaProfile } from '@suts/core';
 import type { TelemetryEvent } from '@suts/telemetry';
 
@@ -24,6 +25,7 @@ export function mapActionToTelemetryEvent(
   emotionalState: Record<string, number>
 ): TelemetryEvent {
   return {
+    id: randomUUID(),
     personaId: persona.id,
     eventType: 'action',
     action: `${action.type}:${action.feature}`,

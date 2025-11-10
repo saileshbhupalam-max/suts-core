@@ -26,7 +26,7 @@ describe('VibeAtlasAdapter', () => {
       expect(state.features.tokenCounter).toBe(true);
       expect(state.features.contextPreview).toBe(true);
       expect(state.features.dashboard).toBe(true);
-      expect(state.data.installed).toBe(true);
+      expect(state.userData.installed).toBe(true);
     });
 
     it('should initialize all UI elements', () => {
@@ -56,8 +56,8 @@ describe('VibeAtlasAdapter', () => {
 
       const newState = adapter.applyAction(initialState, action);
 
-      expect(newState.data.installed).toBe(true);
-      expect(newState.data.installedAt).toBeDefined();
+      expect(newState.userData.installed).toBe(true);
+      expect(newState.userData.installedAt).toBeDefined();
     });
 
     it('should handle CONFIGURE action for tryMode', () => {
@@ -69,7 +69,7 @@ describe('VibeAtlasAdapter', () => {
       };
 
       const newState = adapter.applyAction(initialState, action);
-      const tryMode = newState.data.tryMode as { enabled: boolean; tokensRemaining: number } | undefined;
+      const tryMode = newState.userData.tryMode as { enabled: boolean; tokensRemaining: number } | undefined;
 
       expect(tryMode).toBeDefined();
       expect(tryMode?.enabled).toBe(true);
@@ -96,7 +96,7 @@ describe('VibeAtlasAdapter', () => {
       };
 
       const newState = adapter.applyAction(state, useAction);
-      const preview = newState.data.contextPreview as { showing: boolean } | undefined;
+      const preview = newState.userData.contextPreview as { showing: boolean } | undefined;
 
       expect(preview).toBeDefined();
       expect(preview?.showing).toBe(true);
@@ -121,7 +121,7 @@ describe('VibeAtlasAdapter', () => {
       };
 
       const newState = adapter.applyAction(state, shareAction);
-      const dashboard = newState.data.dashboard as { sharedCount: number } | undefined;
+      const dashboard = newState.userData.dashboard as { sharedCount: number } | undefined;
 
       expect(dashboard).toBeDefined();
       expect(dashboard?.sharedCount).toBe(1);
@@ -137,8 +137,8 @@ describe('VibeAtlasAdapter', () => {
 
       const newState = adapter.applyAction(initialState, action);
 
-      expect(newState.data.installed).toBe(false);
-      expect(newState.data.uninstalledAt).toBeDefined();
+      expect(newState.userData.installed).toBe(false);
+      expect(newState.userData.uninstalledAt).toBeDefined();
     });
   });
 

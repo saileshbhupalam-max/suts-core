@@ -24,7 +24,7 @@ export function initializeContextPreview(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       contextPreview: {
         enabled: true,
         beforeContext: '',
@@ -49,7 +49,7 @@ export function showContextPreview(state: ProductState, before: string, after: s
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       contextPreview: {
         ...preview,
         beforeContext: before,
@@ -73,7 +73,7 @@ export function hideContextPreview(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       contextPreview: {
         ...preview,
         showing: false,
@@ -97,7 +97,7 @@ export function changePreviewPosition(
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       contextPreview: {
         ...preview,
         position,

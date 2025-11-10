@@ -294,4 +294,11 @@ export class VibeAtlasAdapter implements ISimpleProductAdapter {
       },
     };
   }
+
+  /**
+   * Convert session data - stub method for testing
+   */
+  convertSession(_session: Record<string, unknown>): Record<string, unknown> {
+    return {};
+  }
 }

@@ -29,7 +29,7 @@ export function initializeDashboard(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       dashboard: {
         opened: false,
         metrics: {
@@ -59,7 +59,7 @@ export function openDashboard(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       dashboard: {
         ...dashboard,
         opened: true,
@@ -80,7 +80,7 @@ export function closeDashboard(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       dashboard: {
         ...dashboard,
         opened: false,
@@ -101,7 +101,7 @@ export function shareDashboard(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       dashboard: {
         ...dashboard,
         sharedCount: dashboard.sharedCount + 1,
@@ -123,7 +123,7 @@ export function exportDashboard(state: ProductState): ProductState {
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       dashboard: {
         ...dashboard,
         exportedCount: dashboard.exportedCount + 1,
@@ -148,7 +148,7 @@ export function updateDashboardMetrics(
   return {
     ...state,
     userData: {
-      ...state.data,
+      ...state.userData,
       dashboard: {
         ...dashboard,
         metrics: {
