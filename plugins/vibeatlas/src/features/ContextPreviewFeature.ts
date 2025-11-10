@@ -41,7 +41,7 @@ export function initializeContextPreview(state: ProductState): ProductState {
  * Show context preview
  */
 export function showContextPreview(state: ProductState, before: string, after: string): ProductState {
-  const preview = state.userData.contextPreview as ContextPreviewState | undefined;
+  const preview = state.userData['contextPreview'] as ContextPreviewState | undefined;
   if (preview === undefined || preview.enabled === false) {
     return state;
   }
@@ -65,7 +65,7 @@ export function showContextPreview(state: ProductState, before: string, after: s
  * Hide context preview
  */
 export function hideContextPreview(state: ProductState): ProductState {
-  const preview = state.userData.contextPreview as ContextPreviewState | undefined;
+  const preview = state.userData['contextPreview'] as ContextPreviewState | undefined;
   if (preview === undefined) {
     return state;
   }
@@ -89,7 +89,7 @@ export function changePreviewPosition(
   state: ProductState,
   position: 'sidebar' | 'modal' | 'inline'
 ): ProductState {
-  const preview = state.userData.contextPreview as ContextPreviewState | undefined;
+  const preview = state.userData['contextPreview'] as ContextPreviewState | undefined;
   if (preview === undefined) {
     return state;
   }
@@ -110,7 +110,7 @@ export function changePreviewPosition(
  * Check if context preview is showing
  */
 export function isContextPreviewShowing(state: ProductState): boolean {
-  const preview = state.userData.contextPreview as ContextPreviewState | undefined;
+  const preview = state.userData['contextPreview'] as ContextPreviewState | undefined;
   return preview !== undefined && preview.showing === true;
 }
 
@@ -119,7 +119,7 @@ export function isContextPreviewShowing(state: ProductState): boolean {
  */
 export function getContextPreviewActions(state: ProductState, persona: PersonaProfile): UserAction[] {
   const actions: UserAction[] = [];
-  const preview = state.userData.contextPreview as ContextPreviewState | undefined;
+  const preview = state.userData['contextPreview'] as ContextPreviewState | undefined;
 
   if (preview === undefined) {
     actions.push({

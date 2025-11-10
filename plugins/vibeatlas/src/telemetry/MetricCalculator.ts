@@ -20,8 +20,8 @@ export interface MetricResult {
  */
 export function calculateOnboardingCompletionRate(events: PostHogEvent[]): MetricResult {
   const onboardingEvents = events.filter((e) => e.event === 'vibeatlas_onboarding_step');
-  const totalSteps = new Set(onboardingEvents.map((e) => e.properties.step as number)).size;
-  const completedSteps = onboardingEvents.filter((e) => e.properties.completed === true).length;
+  const totalSteps = new Set(onboardingEvents.map((e) => e.properties['step'] as number)).size;
+  const completedSteps = onboardingEvents.filter((e) => e.properties['completed'] === true).length;
 
   const rate = totalSteps > 0 ? completedSteps / totalSteps : 0;
 
@@ -71,7 +71,7 @@ export function calculateTimeToFirstValue(events: PostHogEvent[]): MetricResult 
  */
 export function calculateFeatureAdoptionRate(events: PostHogEvent[], feature: string): MetricResult {
   const totalUsers = new Set(events.map((e) => e.distinctId)).size;
-  const featureUsers = new Set(events.filter((e) => e.properties.feature === feature).map((e) => e.distinctId)).size;
+  const featureUsers = new Set(events.filter((e) => e.properties['feature'] === feature).map((e) => e.distinctId)).size;
 
   const rate = totalUsers > 0 ? featureUsers / totalUsers : 0;
 
@@ -96,7 +96,7 @@ export function calculateAverageSessionDuration(events: PostHogEvent[]): MetricR
     };
   }
 
-  const totalDuration = engagementEvents.reduce((sum, e) => sum + (e.properties.duration as number), 0);
+  const totalDuration = engagementEvents.reduce((sum, e) => sum + (e.properties['duration'] as number), 0);
   const avgDuration = totalDuration / engagementEvents.length;
 
   return {

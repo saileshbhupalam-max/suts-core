@@ -42,7 +42,7 @@ export function enableTryMode(state: ProductState, tokenLimit: number, durationD
  * Use tokens in try mode
  */
 export function useTryModeTokens(state: ProductState, tokensToUse: number): ProductState {
-  const tryMode = state.userData.tryMode as TryModeState | undefined;
+  const tryMode = state.userData['tryMode'] as TryModeState | undefined;
   if (tryMode === undefined || tryMode.enabled === false) {
     return state;
   }
@@ -68,7 +68,7 @@ export function useTryModeTokens(state: ProductState, tokensToUse: number): Prod
  * Expire try mode
  */
 export function expireTryMode(state: ProductState): ProductState {
-  const tryMode = state.userData.tryMode as TryModeState | undefined;
+  const tryMode = state.userData['tryMode'] as TryModeState | undefined;
   if (tryMode === undefined) {
     return state;
   }
@@ -89,7 +89,7 @@ export function expireTryMode(state: ProductState): ProductState {
  * Check if try mode is active
  */
 export function isTryModeActive(state: ProductState): boolean {
-  const tryMode = state.userData.tryMode as TryModeState | undefined;
+  const tryMode = state.userData['tryMode'] as TryModeState | undefined;
   if (tryMode === undefined) {
     return false;
   }
@@ -106,7 +106,7 @@ export function isTryModeActive(state: ProductState): boolean {
  */
 export function getTryModeActions(state: ProductState, persona: PersonaProfile): UserAction[] {
   const actions: UserAction[] = [];
-  const tryMode = state.userData.tryMode as TryModeState | undefined;
+  const tryMode = state.userData['tryMode'] as TryModeState | undefined;
 
   if (tryMode === undefined || tryMode.activated === false) {
     actions.push({

@@ -1,0 +1,23 @@
+{
+  "simulation": {
+    "personas": 10,
+    "days": 7,
+    "product": "vibeatlas",
+    "seed": 12345
+  },
+  "output": {
+    "directory": "./test-output",
+    "formats": ["json", "csv"],
+    "includeEvents": true
+  },
+  "features": {
+    "networkEffects": true,
+    "emotionalTracking": true,
+    "frictionDetection": true
+  },
+  "thresholds": {
+    "retentionTarget": 0.4,
+    "frictionLimit": 5,
+    "valueThreshold": 0.6
+  }
+}

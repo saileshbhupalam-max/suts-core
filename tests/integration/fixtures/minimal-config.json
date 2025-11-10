@@ -1,0 +1,11 @@
+{
+  "simulation": {
+    "personas": 3,
+    "days": 1,
+    "product": "vibeatlas",
+    "seed": 12345
+  },
+  "output": {
+    "directory": "./test-output"
+  }
+}
