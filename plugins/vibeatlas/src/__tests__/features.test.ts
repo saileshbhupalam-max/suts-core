@@ -114,10 +114,13 @@ describe('TokenCounterFeature', () => {
 
   beforeEach(() => {
     initialState = {
+      version: '1.0.0',
       features: { tokenCounter: true },
       uiElements: {},
+      config: {},
       userData: {},
-      version: '1.0.0',
+      environment: 'development' as const,
+      metadata: {},
     };
   });
 
@@ -177,10 +180,13 @@ describe('ContextPreviewFeature', () => {
 
   beforeEach(() => {
     initialState = {
+      version: '1.0.0',
       features: { contextPreview: true },
       uiElements: {},
+      config: {},
       userData: {},
-      version: '1.0.0',
+      environment: 'development' as const,
+      metadata: {},
     };
   });
 
@@ -252,10 +258,13 @@ describe('DashboardFeature', () => {
 
   beforeEach(() => {
     initialState = {
+      version: '1.0.0',
       features: { dashboard: true },
       uiElements: {},
+      config: {},
       userData: {},
-      version: '1.0.0',
+      environment: 'development' as const,
+      metadata: {},
     };
   });
 
