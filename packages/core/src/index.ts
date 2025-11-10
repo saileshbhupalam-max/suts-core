@@ -13,8 +13,9 @@ export { SimulationEventSchema, type SimulationEvent } from './models';
 // Interfaces
 export * from './interfaces';
 
-// Types
-export * from './types';
+// Export specific types that are not in interfaces
+export type { UserAction } from './types';
+export { ActionType } from './types';
 
 // Constants
 export * from './constants';

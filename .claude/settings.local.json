@@ -23,7 +23,12 @@
       "Bash(mkdir:*)",
       "Bash(chmod:*)",
       "Bash(find:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(pkill:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm test:*)",
+      "Bash(node scripts/merge-batch2-and-3.js:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
