@@ -48,8 +48,8 @@ export class TaskFlowAdapter {
   }
 
   private async simulateCreateProject(
-    persona: PersonaProfile,
-    context: TaskFlowState
+    _persona: PersonaProfile,
+    _context: TaskFlowState
   ): Promise<ActionResult> {
     const success = Math.random() > 0.1;
     return {
@@ -63,14 +63,14 @@ export class TaskFlowAdapter {
       },
       telemetry: {
         event: 'project_created',
-        properties: { success, personaType: persona.archetype }
+        properties: { success, personaType: _persona.archetype }
       }
     };
   }
 
   private async simulateAddTask(
-    persona: PersonaProfile,
-    context: TaskFlowState
+    _persona: PersonaProfile,
+    _context: TaskFlowState
   ): Promise<ActionResult> {
     return {
       success: true,
@@ -89,7 +89,7 @@ export class TaskFlowAdapter {
   }
 
   private async simulateMoveToKanban(
-    persona: PersonaProfile,
+    _persona: PersonaProfile,
     context: TaskFlowState
   ): Promise<ActionResult> {
     if (!context.features.kanban) {
