@@ -44,5 +44,7 @@ module.exports = {
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true,
-  timers: 'modern'
+  fakeTimers: {
+    enableGlobally: true
+  }
 };

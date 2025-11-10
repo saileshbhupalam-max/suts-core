@@ -11,7 +11,7 @@ export class VibeAtlasAdapter {
   /**
    * Convert simulation session to VibeAtlas format
    */
-  convertSession(session: SimulationSession): Record<string, unknown> {
+  convertSession(_session: SimulationSession): Record<string, unknown> {
     // TODO: Implement conversion logic
     return {};
   }

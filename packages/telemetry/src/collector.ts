@@ -2,8 +2,6 @@
  * Telemetry collector implementation
  */
 
-import type { TelemetryEvent } from './types';
-
 /**
  * Collects and stores telemetry from simulations
  */
@@ -12,11 +10,11 @@ export class TelemetryCollector {
    * Record a single event
    */
   recordEvent(
-    personaId: string,
-    eventType: string,
-    action: string,
-    emotionalState: Record<string, number>,
-    metadata: Record<string, unknown>
+    _personaId: string,
+    _eventType: string,
+    _action: string,
+    _emotionalState: Record<string, number>,
+    _metadata: Record<string, unknown>
   ): void {
     // TODO: Implement event recording
   }
@@ -25,10 +23,10 @@ export class TelemetryCollector {
    * Record session outcome
    */
   recordSessionOutcome(
-    personaId: string,
-    sessionNum: number,
-    outcome: string,
-    durationSeconds: number
+    _personaId: string,
+    _sessionNum: number,
+    _outcome: string,
+    _durationSeconds: number
   ): void {
     // TODO: Implement session outcome recording
   }

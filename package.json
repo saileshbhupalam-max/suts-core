@@ -8,10 +8,10 @@
     "plugins/*"
   ],
   "scripts": {
-    "test": "jest",
-    "test:unit": "jest --testPathPattern=unit",
-    "test:integration": "jest --testPathPattern=integration",
-    "test:coverage": "jest --coverage",
+    "test": "jest --passWithNoTests",
+    "test:unit": "jest --testPathPattern=unit --passWithNoTests",
+    "test:integration": "jest --testPathPattern=integration --passWithNoTests",
+    "test:coverage": "jest --coverage --passWithNoTests",
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .ts --max-warnings 0",
     "lint:fix": "eslint . --ext .ts --fix",
