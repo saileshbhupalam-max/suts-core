@@ -6,7 +6,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "clean": "tsc --build --clean"
+    "clean": "tsc --build --clean",
+    "test": "jest --passWithNoTests",
+    "test:coverage": "jest --coverage --passWithNoTests",
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "suts",
@@ -18,9 +21,11 @@
   "dependencies": {
     "@suts/core": "1.0.0",
     "@suts/simulation": "1.0.0",
+    "@suts/telemetry": "1.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
     "typescript": "^5.3.3"
   }

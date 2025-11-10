@@ -13,6 +13,9 @@ export { SimulationEventSchema, type SimulationEvent } from './models';
 // Interfaces
 export * from './interfaces';
 
+// Types
+export * from './types';
+
 // Constants
 export * from './constants';
 

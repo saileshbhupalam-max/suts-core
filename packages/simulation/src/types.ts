@@ -2,8 +2,10 @@
  * Simulation-related types
  */
 
-import type { TelemetryEvent } from '@suts/core';
+import type { TelemetryEvent, ProductState } from '@suts/core';
 import type { PersonaState } from './state/StateTransitions';
+
+export type { ProductState };
 
 /**
  * A single simulation session
@@ -17,16 +19,6 @@ export interface SimulationSession {
   events: TelemetryEvent[];
   outcome?: 'continued' | 'churned' | 'referred' | 'frustrated' | 'delighted';
   summary?: string;
-}
-
-/**
- * Product state being tested
- */
-export interface ProductState {
-  features: Record<string, boolean>;
-  uiElements: Record<string, Record<string, unknown>>;
-  data: Record<string, unknown>;
-  version: string;
 }
 
 /**
