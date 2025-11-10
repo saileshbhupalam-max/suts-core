@@ -1,0 +1,73 @@
+{
+  "id": "basic-sim-001",
+  "name": "Basic Task Manager Test",
+  "description": "Minimal simulation testing a generic task management application with 10 personas over 7 days",
+  "version": "1.0.0",
+
+  "personas": {
+    "source": "./analysis/stakeholder-analysis.md",
+    "count": 10,
+    "diversityWeight": 0.8
+  },
+
+  "product": {
+    "name": "TaskMaster",
+    "version": "1.0.0",
+    "features": {
+      "quickAdd": {
+        "enabled": true,
+        "description": "Quick task creation with natural language",
+        "complexity": "low",
+        "maturity": "stable"
+      },
+      "lists": {
+        "enabled": true,
+        "description": "Organize tasks into lists",
+        "complexity": "low",
+        "maturity": "stable"
+      },
+      "tags": {
+        "enabled": true,
+        "description": "Tag tasks for categorization",
+        "complexity": "medium",
+        "maturity": "stable"
+      },
+      "collaboration": {
+        "enabled": true,
+        "description": "Share tasks with team members",
+        "complexity": "medium",
+        "maturity": "beta"
+      },
+      "mobileApp": {
+        "enabled": true,
+        "description": "Mobile applications for iOS and Android",
+        "complexity": "high",
+        "maturity": "beta"
+      },
+      "keyboardShortcuts": {
+        "enabled": false,
+        "description": "Keyboard shortcuts for power users",
+        "complexity": "medium",
+        "maturity": "alpha"
+      }
+    },
+    "onboarding": {
+      "steps": ["signup", "tutorial", "first-task", "explore-features"],
+      "estimatedTimeMinutes": 8,
+      "skippable": false
+    }
+  },
+
+  "execution": {
+    "numSessions": 7,
+    "timeCompression": 1.0,
+    "maxParallel": 5,
+    "randomSeed": 42
+  },
+
+  "output": {
+    "directory": "./output",
+    "formats": ["json"],
+    "includeRawData": false
+  }
+}

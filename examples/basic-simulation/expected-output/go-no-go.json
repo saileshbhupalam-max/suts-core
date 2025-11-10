@@ -1,0 +1,118 @@
+{
+  "simulationId": "basic-sim-001",
+  "decision": "GO",
+  "confidence": 0.75,
+  "timestamp": "2024-11-10T12:30:00Z",
+  "criteria": {
+    "minSatisfaction": 0.70,
+    "maxChurnRisk": 0.20,
+    "minViralCoefficient": 1.0,
+    "minRetentionDay7": 0.80
+  },
+  "actualMetrics": {
+    "satisfaction": 0.72,
+    "churnRisk": 0.18,
+    "viralCoefficient": 0.9,
+    "retentionDay7": 0.85
+  },
+  "criteriaResults": {
+    "satisfaction": {
+      "target": 0.70,
+      "actual": 0.72,
+      "passed": true,
+      "margin": 0.02
+    },
+    "churnRisk": {
+      "target": 0.20,
+      "actual": 0.18,
+      "passed": true,
+      "margin": 0.02
+    },
+    "viralCoefficient": {
+      "target": 1.0,
+      "actual": 0.9,
+      "passed": false,
+      "margin": -0.1
+    },
+    "retentionDay7": {
+      "target": 0.80,
+      "actual": 0.85,
+      "passed": true,
+      "margin": 0.05
+    }
+  },
+  "summary": {
+    "totalCriteria": 4,
+    "criteriaPassed": 3,
+    "criteriaFailed": 1,
+    "passRate": 0.75
+  },
+  "rationale": "The product meets 3 out of 4 launch criteria. User satisfaction (0.72) exceeds minimum threshold (0.70). Churn risk (0.18) is below maximum acceptable (0.20). Day 7 retention (0.85) exceeds target (0.80). However, viral coefficient (0.9) falls short of target (1.0), indicating the product won't achieve viral growth without additional referral mechanics. Despite missing viral target, the product shows strong core metrics and can launch successfully with post-launch focus on improving referral features.",
+  "risks": [
+    {
+      "severity": "medium",
+      "description": "Viral coefficient below 1.0 means organic growth will be slow",
+      "mitigation": "Implement referral incentives and sharing features post-launch"
+    },
+    {
+      "severity": "low",
+      "description": "Expert users show lower satisfaction (0.68) than novices (0.75)",
+      "mitigation": "Add keyboard shortcuts and power user features in next release"
+    },
+    {
+      "severity": "low",
+      "description": "Mobile app friction affects 70% of users",
+      "mitigation": "Prioritize mobile feature parity in first update"
+    }
+  ],
+  "opportunities": [
+    {
+      "priority": "high",
+      "description": "Natural language task creation is a major differentiator",
+      "action": "Highlight this feature in marketing and onboarding"
+    },
+    {
+      "priority": "high",
+      "description": "Clean interface resonates strongly with users",
+      "action": "Emphasize simplicity in positioning and branding"
+    },
+    {
+      "priority": "medium",
+      "description": "Collaboration features have low adoption but high satisfaction when used",
+      "action": "Improve discoverability and onboarding for team features"
+    }
+  ],
+  "recommendations": [
+    "Proceed with launch - core product metrics are strong",
+    "Skip tutorial for experienced users in launch version",
+    "Add referral program within 30 days post-launch",
+    "Mobile app feature parity in first major update (60 days)",
+    "Monitor expert user satisfaction closely post-launch"
+  ],
+  "nextSteps": [
+    {
+      "priority": "immediate",
+      "action": "Add 'Skip Tutorial' option before launch",
+      "owner": "Product",
+      "estimatedDays": 2
+    },
+    {
+      "priority": "week1",
+      "action": "Implement basic referral mechanics",
+      "owner": "Engineering",
+      "estimatedDays": 5
+    },
+    {
+      "priority": "month1",
+      "action": "Mobile app feature parity sprint",
+      "owner": "Mobile Team",
+      "estimatedDays": 10
+    },
+    {
+      "priority": "month2",
+      "action": "Keyboard shortcuts for power users",
+      "owner": "Engineering",
+      "estimatedDays": 3
+    }
+  ]
+}

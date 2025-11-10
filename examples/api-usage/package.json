@@ -1,0 +1,24 @@
+{
+  "name": "suts-api-usage-examples",
+  "version": "1.0.0",
+  "description": "API usage examples for SUTS",
+  "private": true,
+  "scripts": {
+    "basic": "ts-node basic.ts",
+    "batch": "ts-node batch.ts",
+    "parallel": "ts-node parallel.ts"
+  },
+  "dependencies": {
+    "@suts/core": "workspace:*",
+    "@suts/persona": "workspace:*",
+    "@suts/simulation": "workspace:*",
+    "@suts/telemetry": "workspace:*",
+    "dotenv": "^16.3.1",
+    "p-queue": "^7.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
