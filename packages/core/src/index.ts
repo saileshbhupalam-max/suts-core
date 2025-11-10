@@ -6,6 +6,10 @@
 // Models (new structure in models/)
 export * from './models/index';
 
+// Backwards compatibility exports (deprecated)
+// Only export schemas that don't conflict with models/index
+export { SimulationEventSchema, type SimulationEvent } from './models';
+
 // Interfaces
 export * from './interfaces';
 

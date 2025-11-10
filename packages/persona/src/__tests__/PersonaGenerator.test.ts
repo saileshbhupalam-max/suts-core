@@ -19,11 +19,7 @@ describe('PersonaGenerator', () => {
     experienceLevel: 'Expert',
     companySize: 'Enterprise',
     techStack: ['Java', 'Spring', 'AWS', 'Kubernetes'],
-    painPoints: [
-      'Legacy system integration',
-      'Compliance requirements',
-      'Vendor lock-in concerns',
-    ],
+    painPoints: ['Legacy system integration', 'Compliance requirements', 'Vendor lock-in concerns'],
     goals: ['Modernize infrastructure', 'Reduce operational costs', 'Improve scalability'],
     fears: ['Security breaches', 'Downtime', 'Budget overruns'],
     values: ['Reliability', 'Security', 'Best practices'],
@@ -133,19 +129,17 @@ describe('PersonaGenerator', () => {
 
     it('should throw error with empty docs array', async () => {
       const generator = new PersonaGenerator('test-api-key');
-      await expect(generator.generateFromAnalysis([], 10)).rejects.toThrow(
-        PersonaGenerationError
-      );
+      await expect(generator.generateFromAnalysis([], 10)).rejects.toThrow(PersonaGenerationError);
     });
 
     it('should throw error with invalid count', async () => {
       const generator = new PersonaGenerator('test-api-key');
-      await expect(
-        generator.generateFromAnalysis(['Analysis'], 0)
-      ).rejects.toThrow(PersonaGenerationError);
-      await expect(
-        generator.generateFromAnalysis(['Analysis'], 101)
-      ).rejects.toThrow(PersonaGenerationError);
+      await expect(generator.generateFromAnalysis(['Analysis'], 0)).rejects.toThrow(
+        PersonaGenerationError
+      );
+      await expect(generator.generateFromAnalysis(['Analysis'], 101)).rejects.toThrow(
+        PersonaGenerationError
+      );
     });
 
     it('should throw error when API returns no tool use', async () => {
@@ -244,9 +238,7 @@ describe('PersonaGenerator', () => {
       });
 
       const generator = new PersonaGenerator('test-api-key');
-      await expect(generator.generateFromAnalysis(['Analysis'], 2)).rejects.toThrow(
-        'too similar'
-      );
+      await expect(generator.generateFromAnalysis(['Analysis'], 2)).rejects.toThrow('too similar');
     });
 
     it('should accept personas with diversity between 0.65 and 0.70', async () => {
@@ -256,11 +248,19 @@ describe('PersonaGenerator', () => {
         id: `persona-${i + 1}`,
         archetype: `Archetype ${i + 1}`,
         role: `Role ${i + 1}`,
-        experienceLevel: ['Novice', 'Intermediate', 'Expert'][i % 3] as PersonaProfile['experienceLevel'],
+        experienceLevel: ['Novice', 'Intermediate', 'Expert'][
+          i % 3
+        ] as PersonaProfile['experienceLevel'],
         companySize: ['Startup', 'SMB', 'Enterprise'][i % 3] as PersonaProfile['companySize'],
-        techAdoption: ['Early adopter', 'Early majority', 'Late majority'][i % 3] as PersonaProfile['techAdoption'],
-        learningStyle: ['Trial-error', 'Documentation', 'Video'][i % 3] as PersonaProfile['learningStyle'],
-        collaborationStyle: ['Solo', 'Team', 'Community-driven'][i % 3] as PersonaProfile['collaborationStyle'],
+        techAdoption: ['Early adopter', 'Early majority', 'Late majority'][
+          i % 3
+        ] as PersonaProfile['techAdoption'],
+        learningStyle: ['Trial-error', 'Documentation', 'Video'][
+          i % 3
+        ] as PersonaProfile['learningStyle'],
+        collaborationStyle: ['Solo', 'Team', 'Community-driven'][
+          i % 3
+        ] as PersonaProfile['collaborationStyle'],
         techStack: [`Tech${i}A`, `Tech${i}B`, `Tech${i}C`, `Tech${i}D`],
         painPoints: [`Pain${i}A`, `Pain${i}B`, `Pain${i}C`],
         goals: [`Goal${i}A`, `Goal${i}B`, `Goal${i}C`],
@@ -271,7 +271,7 @@ describe('PersonaGenerator', () => {
         delightTriggers: [`Delight${i}A`, `Delight${i}B`],
         referralTriggers: [`Referral${i}A`, `Referral${i}B`],
         riskTolerance: (i * 0.2) % 1,
-        patienceLevel: ((i * 0.25) % 1),
+        patienceLevel: (i * 0.25) % 1,
       }));
 
       mockCreate.mockResolvedValue({
@@ -295,11 +295,19 @@ describe('PersonaGenerator', () => {
         id: `persona-${i + 1}`,
         archetype: `Archetype ${i + 1}`,
         role: `Role ${i + 1}`,
-        experienceLevel: ['Novice', 'Intermediate', 'Expert'][i % 3] as PersonaProfile['experienceLevel'],
+        experienceLevel: ['Novice', 'Intermediate', 'Expert'][
+          i % 3
+        ] as PersonaProfile['experienceLevel'],
         companySize: ['Startup', 'SMB', 'Enterprise'][i % 3] as PersonaProfile['companySize'],
-        techAdoption: ['Early adopter', 'Early majority', 'Late majority', 'Laggard'][i % 4] as PersonaProfile['techAdoption'],
-        learningStyle: ['Trial-error', 'Documentation', 'Video', 'Peer learning'][i % 4] as PersonaProfile['learningStyle'],
-        collaborationStyle: ['Solo', 'Team', 'Community-driven'][i % 3] as PersonaProfile['collaborationStyle'],
+        techAdoption: ['Early adopter', 'Early majority', 'Late majority', 'Laggard'][
+          i % 4
+        ] as PersonaProfile['techAdoption'],
+        learningStyle: ['Trial-error', 'Documentation', 'Video', 'Peer learning'][
+          i % 4
+        ] as PersonaProfile['learningStyle'],
+        collaborationStyle: ['Solo', 'Team', 'Community-driven'][
+          i % 3
+        ] as PersonaProfile['collaborationStyle'],
         techStack: [`Tech${i}A`, `Tech${i}B`, `Tech${i}C`, `Tech${i}D`],
         painPoints: [`Pain${i}A`, `Pain${i}B`, `Pain${i}C`],
         goals: [`Goal${i}A`, `Goal${i}B`, `Goal${i}C`],
@@ -310,7 +318,7 @@ describe('PersonaGenerator', () => {
         delightTriggers: [`Delight${i}A`, `Delight${i}B`],
         referralTriggers: [`Referral${i}A`, `Referral${i}B`],
         riskTolerance: (i * 0.11) % 1,
-        patienceLevel: ((i * 0.13) % 1),
+        patienceLevel: (i * 0.13) % 1,
       }));
 
       mockCreate.mockResolvedValue({
@@ -334,11 +342,19 @@ describe('PersonaGenerator', () => {
         id: `persona-${i + 1}`,
         archetype: `Archetype ${i + 1}`,
         role: `Role ${i + 1}`,
-        experienceLevel: ['Novice', 'Intermediate', 'Expert'][i % 3] as PersonaProfile['experienceLevel'],
+        experienceLevel: ['Novice', 'Intermediate', 'Expert'][
+          i % 3
+        ] as PersonaProfile['experienceLevel'],
         companySize: ['Startup', 'SMB', 'Enterprise'][i % 3] as PersonaProfile['companySize'],
-        techAdoption: ['Early adopter', 'Early majority', 'Late majority', 'Laggard'][i % 4] as PersonaProfile['techAdoption'],
-        learningStyle: ['Trial-error', 'Documentation', 'Video', 'Peer learning'][i % 4] as PersonaProfile['learningStyle'],
-        collaborationStyle: ['Solo', 'Team', 'Community-driven'][i % 3] as PersonaProfile['collaborationStyle'],
+        techAdoption: ['Early adopter', 'Early majority', 'Late majority', 'Laggard'][
+          i % 4
+        ] as PersonaProfile['techAdoption'],
+        learningStyle: ['Trial-error', 'Documentation', 'Video', 'Peer learning'][
+          i % 4
+        ] as PersonaProfile['learningStyle'],
+        collaborationStyle: ['Solo', 'Team', 'Community-driven'][
+          i % 3
+        ] as PersonaProfile['collaborationStyle'],
         techStack: [`Tech${i}A`, `Tech${i}B`, `Tech${i}C`, `Tech${i}D`],
         painPoints: [`Pain${i}A`, `Pain${i}B`, `Pain${i}C`],
         goals: [`Goal${i}A`, `Goal${i}B`, `Goal${i}C`],
@@ -349,7 +365,7 @@ describe('PersonaGenerator', () => {
         delightTriggers: [`Delight${i}A`, `Delight${i}B`],
         referralTriggers: [`Referral${i}A`, `Referral${i}B`],
         riskTolerance: (i * 0.033) % 1,
-        patienceLevel: ((i * 0.037) % 1),
+        patienceLevel: (i * 0.037) % 1,
       }));
 
       mockCreate.mockResolvedValue({
@@ -373,11 +389,19 @@ describe('PersonaGenerator', () => {
         id: `persona-${i + 1}`,
         archetype: `Archetype ${i + 1}`,
         role: `Role ${i + 1}`,
-        experienceLevel: ['Novice', 'Intermediate', 'Expert'][i % 3] as PersonaProfile['experienceLevel'],
+        experienceLevel: ['Novice', 'Intermediate', 'Expert'][
+          i % 3
+        ] as PersonaProfile['experienceLevel'],
         companySize: ['Startup', 'SMB', 'Enterprise'][i % 3] as PersonaProfile['companySize'],
-        techAdoption: ['Early adopter', 'Early majority', 'Late majority', 'Laggard'][i % 4] as PersonaProfile['techAdoption'],
-        learningStyle: ['Trial-error', 'Documentation', 'Video', 'Peer learning'][i % 4] as PersonaProfile['learningStyle'],
-        collaborationStyle: ['Solo', 'Team', 'Community-driven'][i % 3] as PersonaProfile['collaborationStyle'],
+        techAdoption: ['Early adopter', 'Early majority', 'Late majority', 'Laggard'][
+          i % 4
+        ] as PersonaProfile['techAdoption'],
+        learningStyle: ['Trial-error', 'Documentation', 'Video', 'Peer learning'][
+          i % 4
+        ] as PersonaProfile['learningStyle'],
+        collaborationStyle: ['Solo', 'Team', 'Community-driven'][
+          i % 3
+        ] as PersonaProfile['collaborationStyle'],
         techStack: [`Tech${i}A`, `Tech${i}B`, `Tech${i}C`, `Tech${i}D`],
         painPoints: [`Pain${i}A`, `Pain${i}B`, `Pain${i}C`],
         goals: [`Goal${i}A`, `Goal${i}B`, `Goal${i}C`],
@@ -388,7 +412,7 @@ describe('PersonaGenerator', () => {
         delightTriggers: [`Delight${i}A`, `Delight${i}B`],
         referralTriggers: [`Referral${i}A`, `Referral${i}B`],
         riskTolerance: (i * 0.01) % 1,
-        patienceLevel: ((i * 0.013) % 1),
+        patienceLevel: (i * 0.013) % 1,
       }));
 
       mockCreate.mockResolvedValue({
@@ -446,17 +470,15 @@ describe('PersonaGenerator', () => {
     });
 
     it('should retry on rate limit errors', async () => {
-      mockCreate
-        .mockRejectedValueOnce(new Error('Rate limit exceeded'))
-        .mockResolvedValueOnce({
-          content: [
-            {
-              type: 'tool_use',
-              name: 'generate_personas',
-              input: { personas: [validPersona] },
-            },
-          ],
-        });
+      mockCreate.mockRejectedValueOnce(new Error('Rate limit exceeded')).mockResolvedValueOnce({
+        content: [
+          {
+            type: 'tool_use',
+            name: 'generate_personas',
+            input: { personas: [validPersona] },
+          },
+        ],
+      });
 
       const generator = new PersonaGenerator('test-api-key', 'claude-sonnet-4-20250514', {
         retryDelay: 100,
@@ -474,17 +496,15 @@ describe('PersonaGenerator', () => {
       const error500 = new Error('Internal Server Error');
       (error500 as { status?: number }).status = 500;
 
-      mockCreate
-        .mockRejectedValueOnce(error500)
-        .mockResolvedValueOnce({
-          content: [
-            {
-              type: 'tool_use',
-              name: 'generate_personas',
-              input: { personas: [validPersona] },
-            },
-          ],
-        });
+      mockCreate.mockRejectedValueOnce(error500).mockResolvedValueOnce({
+        content: [
+          {
+            type: 'tool_use',
+            name: 'generate_personas',
+            input: { personas: [validPersona] },
+          },
+        ],
+      });
 
       const generator = new PersonaGenerator('test-api-key', 'claude-sonnet-4-20250514', {
         retryDelay: 100,
@@ -498,17 +518,15 @@ describe('PersonaGenerator', () => {
     });
 
     it('should retry on 502 errors', async () => {
-      mockCreate
-        .mockRejectedValueOnce(new Error('Bad Gateway 502'))
-        .mockResolvedValueOnce({
-          content: [
-            {
-              type: 'tool_use',
-              name: 'generate_personas',
-              input: { personas: [validPersona] },
-            },
-          ],
-        });
+      mockCreate.mockRejectedValueOnce(new Error('Bad Gateway 502')).mockResolvedValueOnce({
+        content: [
+          {
+            type: 'tool_use',
+            name: 'generate_personas',
+            input: { personas: [validPersona] },
+          },
+        ],
+      });
 
       const generator = new PersonaGenerator('test-api-key', 'claude-sonnet-4-20250514', {
         retryDelay: 100,
@@ -522,17 +540,15 @@ describe('PersonaGenerator', () => {
     });
 
     it('should retry on 503 errors', async () => {
-      mockCreate
-        .mockRejectedValueOnce(new Error('Service Unavailable 503'))
-        .mockResolvedValueOnce({
-          content: [
-            {
-              type: 'tool_use',
-              name: 'generate_personas',
-              input: { personas: [validPersona] },
-            },
-          ],
-        });
+      mockCreate.mockRejectedValueOnce(new Error('Service Unavailable 503')).mockResolvedValueOnce({
+        content: [
+          {
+            type: 'tool_use',
+            name: 'generate_personas',
+            input: { personas: [validPersona] },
+          },
+        ],
+      });
 
       const generator = new PersonaGenerator('test-api-key', 'claude-sonnet-4-20250514', {
         retryDelay: 100,
@@ -546,17 +562,15 @@ describe('PersonaGenerator', () => {
     });
 
     it('should retry on 504 errors', async () => {
-      mockCreate
-        .mockRejectedValueOnce(new Error('Gateway Timeout 504'))
-        .mockResolvedValueOnce({
-          content: [
-            {
-              type: 'tool_use',
-              name: 'generate_personas',
-              input: { personas: [validPersona] },
-            },
-          ],
-        });
+      mockCreate.mockRejectedValueOnce(new Error('Gateway Timeout 504')).mockResolvedValueOnce({
+        content: [
+          {
+            type: 'tool_use',
+            name: 'generate_personas',
+            input: { personas: [validPersona] },
+          },
+        ],
+      });
 
       const generator = new PersonaGenerator('test-api-key', 'claude-sonnet-4-20250514', {
         retryDelay: 100,
@@ -635,6 +649,141 @@ describe('PersonaGenerator', () => {
       expect(config.temperature).toBe(0.5);
       expect(config.topP).toBe(0.8);
       expect(config.maxRetries).toBeDefined();
+    });
+  });
+
+  describe('IPersonaGenerator interface methods', () => {
+    describe('generatePersonas', () => {
+      it('should generate personas with metadata', async () => {
+        const personas = Array.from({ length: 5 }, (_, i) => ({
+          ...validPersona,
+          id: `persona-${i + 1}`,
+          archetype: `Archetype ${i + 1}`,
+          role: `Role ${i + 1}`,
+          experienceLevel: ['Novice', 'Intermediate', 'Expert'][
+            i % 3
+          ] as PersonaProfile['experienceLevel'],
+          companySize: ['Startup', 'SMB', 'Enterprise'][i % 3] as PersonaProfile['companySize'],
+          techAdoption: ['Early adopter', 'Early majority', 'Late majority'][
+            i % 3
+          ] as PersonaProfile['techAdoption'],
+          learningStyle: ['Trial-error', 'Documentation', 'Video'][
+            i % 3
+          ] as PersonaProfile['learningStyle'],
+          collaborationStyle: ['Solo', 'Team', 'Community-driven'][
+            i % 3
+          ] as PersonaProfile['collaborationStyle'],
+          techStack: [`Tech${i}A`, `Tech${i}B`, `Tech${i}C`, `Tech${i}D`],
+          painPoints: [`Pain${i}A`, `Pain${i}B`, `Pain${i}C`],
+          goals: [`Goal${i}A`, `Goal${i}B`, `Goal${i}C`],
+          fears: [`Fear${i}A`, `Fear${i}B`],
+          values: [`Value${i}A`, `Value${i}B`],
+          evaluationCriteria: [`Criteria${i}A`, `Criteria${i}B`, `Criteria${i}C`],
+          dealBreakers: [`Breaker${i}A`, `Breaker${i}B`],
+          delightTriggers: [`Delight${i}A`, `Delight${i}B`],
+          referralTriggers: [`Referral${i}A`, `Referral${i}B`],
+          riskTolerance: (i * 0.2) % 1,
+          patienceLevel: (i * 0.25) % 1,
+        }));
+
+        mockCreate.mockResolvedValue({
+          content: [
+            {
+              type: 'tool_use',
+              name: 'generate_personas',
+              input: { personas },
+            },
+          ],
+        });
+
+        const generator = new PersonaGenerator('test-api-key');
+        const result = await generator.generatePersonas({
+          analysisDocs: ['Test analysis'],
+          numPersonas: 5,
+          diversityWeight: 0.7,
+        });
+
+        expect(result.personas).toHaveLength(5);
+        expect(result.metadata).toBeDefined();
+        expect(result.metadata.distribution).toBeDefined();
+        expect(result.metadata.diversity).toBeDefined();
+        expect(result.metadata.generationTimeMs).toBeGreaterThan(0);
+      });
+    });
+
+    describe('generateSinglePersona', () => {
+      it('should generate a single persona', async () => {
+        mockCreate.mockResolvedValue({
+          content: [
+            {
+              type: 'tool_use',
+              name: 'generate_personas',
+              input: { personas: [validPersona] },
+            },
+          ],
+        });
+
+        const generator = new PersonaGenerator('test-api-key');
+        const result = await generator.generateSinglePersona('Test Archetype', 'variation', {
+          key: 'value',
+        });
+
+        expect(result).toBeDefined();
+        expect(result.id).toBe('persona-1');
+      });
+    });
+
+    describe('validatePersona', () => {
+      it('should validate a valid persona', () => {
+        const generator = new PersonaGenerator('test-api-key');
+        const result = generator.validatePersona(validPersona);
+
+        expect(result.valid).toBe(true);
+        expect(result.issues).toHaveLength(0);
+      });
+
+      it('should detect invalid persona', () => {
+        const generator = new PersonaGenerator('test-api-key');
+        const invalidPersona = { ...validPersona, experienceLevel: 'Invalid' as never };
+        const result = generator.validatePersona(invalidPersona);
+
+        expect(result.valid).toBe(false);
+        expect(result.issues.length).toBeGreaterThan(0);
+      });
+    });
+
+    describe('savePersonas and loadPersonas', () => {
+      it('should save and load personas', async () => {
+        const generator = new PersonaGenerator('test-api-key');
+        const tempFile = `${process.cwd()}/temp-personas-test.json`;
+
+        // Save personas
+        await generator.savePersonas([validPersona], tempFile);
+
+        // Load personas
+        const loaded = await generator.loadPersonas(tempFile);
+
+        expect(loaded).toHaveLength(1);
+        expect(loaded[0]?.id).toBe(validPersona.id);
+
+        // Cleanup
+        const fs = await import('node:fs/promises');
+        await fs.unlink(tempFile);
+      });
+
+      it('should throw error when loading invalid personas', async () => {
+        const generator = new PersonaGenerator('test-api-key');
+        const tempFile = `${process.cwd()}/temp-invalid-personas-test.json`;
+
+        // Write invalid data
+        const fs = await import('node:fs/promises');
+        await fs.writeFile(tempFile, JSON.stringify([{ invalid: 'data' }]));
+
+        await expect(generator.loadPersonas(tempFile)).rejects.toThrow('failed validation');
+
+        // Cleanup
+        await fs.unlink(tempFile);
+      });
     });
   });
 });

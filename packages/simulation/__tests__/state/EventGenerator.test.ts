@@ -44,7 +44,7 @@ describe('EventGenerator', () => {
     expect(event.personaId).toBe(mockContext.personaId);
     expect(event.eventType).toBe('action');
     expect(event.action).toBe(ACTION_TYPES.USE_FEATURE);
-    expect(event.timestamp).toBe(action.timestamp);
+    expect(event.timestamp).toBe(action.timestamp.toISOString());
     expect(event.context['sessionId']).toBe(mockContext.sessionId);
     expect(event.context['day']).toBe(mockContext.day);
     expect(event.context['success']).toBe(true);
@@ -55,17 +55,13 @@ describe('EventGenerator', () => {
     const observation = 'User struggled with configuration';
     const timestamp = new Date();
 
-    const event = generator.generateObservationEvent(
-      observation,
-      mockContext,
-      timestamp
-    );
+    const event = generator.generateObservationEvent(observation, mockContext, timestamp);
 
     expect(event.id).toBeDefined();
     expect(event.personaId).toBe(mockContext.personaId);
     expect(event.eventType).toBe('observation');
     expect(event.context['observation']).toBe(observation);
-    expect(event.timestamp).toBe(timestamp);
+    expect(event.timestamp).toBe(timestamp.toISOString());
   });
 
   it('should generate decision event', () => {
@@ -73,19 +69,14 @@ describe('EventGenerator', () => {
     const reasoning = 'Need to set up the tool';
     const timestamp = new Date();
 
-    const event = generator.generateDecisionEvent(
-      decision,
-      reasoning,
-      mockContext,
-      timestamp
-    );
+    const event = generator.generateDecisionEvent(decision, reasoning, mockContext, timestamp);
 
     expect(event.id).toBeDefined();
     expect(event.personaId).toBe(mockContext.personaId);
     expect(event.eventType).toBe('decision');
     expect(event.action).toBe(decision);
     expect(event.reasoning).toBe(reasoning);
-    expect(event.timestamp).toBe(timestamp);
+    expect(event.timestamp).toBe(timestamp.toISOString());
   });
 
   it('should generate emotion event', () => {
@@ -98,19 +89,14 @@ describe('EventGenerator', () => {
     const trigger = 'Failed to install';
     const timestamp = new Date();
 
-    const event = generator.generateEmotionEvent(
-      emotionalState,
-      trigger,
-      mockContext,
-      timestamp
-    );
+    const event = generator.generateEmotionEvent(emotionalState, trigger, mockContext, timestamp);
 
     expect(event.id).toBeDefined();
     expect(event.personaId).toBe(mockContext.personaId);
     expect(event.eventType).toBe('emotion');
     expect(event.emotionalState).toEqual(emotionalState);
     expect(event.context['trigger']).toBe(trigger);
-    expect(event.timestamp).toBe(timestamp);
+    expect(event.timestamp).toBe(timestamp.toISOString());
   });
 
   it('should generate multiple events from action result', () => {

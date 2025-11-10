@@ -91,7 +91,9 @@ export function toQueryString(params: Record<string, unknown>): string {
     .filter(([, value]) => value !== null && value !== undefined)
     .map(([key, value]) => {
       if (Array.isArray(value)) {
-        return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`).join('&');
+        return value
+          .map((v) => `${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`)
+          .join('&');
       }
       return `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`;
     });
@@ -116,8 +118,8 @@ export function fromQueryString(queryString: string): Record<string, string | st
   for (const pair of pairs) {
     const [key, value] = pair.split('=').map(decodeURIComponent);
     if (!key) {
-continue;
-}
+      continue;
+    }
 
     if (key in params) {
       const existing = params[key];
@@ -156,14 +158,14 @@ export function deepClone<T>(obj: T): T {
  */
 export function deepEqual(obj1: unknown, obj2: unknown): boolean {
   if (obj1 === obj2) {
-return true;
-}
+    return true;
+  }
   if (obj1 === null || obj2 === null) {
-return false;
-}
+    return false;
+  }
   if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
-return false;
-}
+    return false;
+  }
 
   try {
     return JSON.stringify(sortObjectKeys(obj1)) === JSON.stringify(sortObjectKeys(obj2));
@@ -262,7 +264,7 @@ export function isoStringsToDates<T>(obj: T): T {
  * @returns True if string is ISO date format
  */
 function isISODateString(value: string): boolean {
-  const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+  const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
   return isoDateRegex.test(value);
 }
 
