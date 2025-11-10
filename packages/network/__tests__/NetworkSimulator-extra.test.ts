@@ -104,12 +104,40 @@ describe('NetworkSimulator - Additional Coverage', () => {
 
   describe('synthetic data generation', () => {
     it('should generate synthetic events for referred users', () => {
+      // Use high probability to ensure referrals happen
+      const highRefSimulator = new NetworkSimulator({
+        baseReferralProbability: 0.9,
+        delightThreshold: 0.5,
+        baseAcceptanceRate: 0.8,
+      });
+
       const personas = [createMockPersona('persona_1')];
       const events = createMockEvents('persona_1', 0.95);
 
-      const graph = simulator.runSimulation(personas, events, 2);
+      const graph = highRefSimulator.runSimulation(personas, events, 2);
 
       expect(graph.totalUsers).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should create synthetic personas for multi-iteration simulation', () => {
+      const highRefSimulator = new NetworkSimulator({
+        baseReferralProbability: 0.9,
+        delightThreshold: 0.5,
+        baseAcceptanceRate: 0.8,
+      });
+
+      const personas = [
+        createMockPersona('persona_1'),
+        createMockPersona('persona_2'),
+      ];
+      const events = [
+        ...createMockEvents('persona_1', 0.95),
+        ...createMockEvents('persona_2', 0.95),
+      ];
+
+      const graph = highRefSimulator.runSimulation(personas, events, 3);
+
+      expect(graph.totalUsers).toBeGreaterThanOrEqual(2);
     });
   });
 
@@ -146,6 +174,52 @@ describe('NetworkSimulator - Additional Coverage', () => {
 
       expect(projection.days).toBe(1);
       expect(projection.dataPoints.length).toBe(1);
+    });
+
+    it('should handle very high churn rate', () => {
+      // Create simulator with high churn rate
+      const highChurnSimulator = new NetworkSimulator({
+        dailyChurnRate: 0.15,
+        baseAcceptanceRate: 0.1,
+      });
+      const projection = highChurnSimulator.predictGrowth(100, 0.1, 10);
+
+      expect(projection.growthType).toBe('declining');
+    });
+
+    it('should handle k-factor exactly equal to 1', () => {
+      const projection = simulator.predictGrowth(100, 1.0, 10);
+
+      expect(['exponential', 'linear', 'plateau']).toContain(projection.growthType);
+    });
+  });
+
+  describe('edge case scenarios', () => {
+    it('should handle personas with empty referral triggers array', () => {
+      const persona = createMockPersona('persona_1');
+      persona.referralTriggers = [];
+      const events = createMockEvents('persona_1', 0.95);
+
+      const graph = simulator.simulateReferrals([persona], events);
+
+      expect(graph.totalUsers).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should handle multiple personas with varying delight levels', () => {
+      const personas = [
+        createMockPersona('persona_1'),
+        createMockPersona('persona_2'),
+        createMockPersona('persona_3'),
+      ];
+      const events = [
+        ...createMockEvents('persona_1', 0.95),
+        ...createMockEvents('persona_2', 0.5),
+        ...createMockEvents('persona_3', 0.2),
+      ];
+
+      const graph = simulator.simulateReferrals(personas, events);
+
+      expect(graph.totalUsers).toBeGreaterThanOrEqual(3);
     });
   });
 });

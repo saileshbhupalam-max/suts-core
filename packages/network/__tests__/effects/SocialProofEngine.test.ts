@@ -138,5 +138,29 @@ describe('SocialProofEngine', () => {
 
       expect(boost).toBe(1);
     });
+
+    it('should handle very large credibility boost', () => {
+      const boost = engine.calculateCredibilityBoost(1000000, 100);
+
+      expect(boost).toBeLessThanOrEqual(1.5);
+    });
+
+    it('should cap conversion rate at 95%', () => {
+      const result = engine.calculateConversionRate(10000000);
+
+      expect(result.adjustedRate).toBeLessThanOrEqual(0.95);
+    });
+
+    it('should handle calculateRequiredNetworkSize edge cases', () => {
+      const config = createDefaultConfig();
+
+      // Target exactly at base rate
+      const size1 = engine.calculateRequiredNetworkSize(config.baseAcceptanceRate);
+      expect(size1).toBe(0);
+
+      // Target slightly above base rate
+      const size2 = engine.calculateRequiredNetworkSize(config.baseAcceptanceRate + 0.01);
+      expect(size2).toBeGreaterThan(0);
+    });
   });
 });

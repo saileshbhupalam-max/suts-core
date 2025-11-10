@@ -149,4 +149,40 @@ describe('ReferralTriggerDetector - Additional Coverage', () => {
 
     expect(result.shouldRefer).toBe(false);
   });
+
+  it('should handle unknown tech adoption style', () => {
+    const highDelightEvents: TelemetryEvent[] = [
+      {
+        personaId: 'persona_1',
+        eventType: 'action',
+        action: 'use_feature',
+        emotionalState: { delight: 0.9 },
+        metadata: {},
+        timestamp: new Date(),
+      },
+    ];
+
+    mockPersona.techAdoption = 'Unknown' as unknown as 'Early adopter';
+    const result = detector.detectReferralTrigger(mockPersona, highDelightEvents);
+
+    expect(result.probability).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should handle unknown collaboration style', () => {
+    const highDelightEvents: TelemetryEvent[] = [
+      {
+        personaId: 'persona_1',
+        eventType: 'action',
+        action: 'use_feature',
+        emotionalState: { delight: 0.9 },
+        metadata: {},
+        timestamp: new Date(),
+      },
+    ];
+
+    mockPersona.collaborationStyle = 'Unknown' as unknown as 'Solo';
+    const result = detector.detectReferralTrigger(mockPersona, highDelightEvents);
+
+    expect(result.probability).toBeGreaterThanOrEqual(0);
+  });
 });

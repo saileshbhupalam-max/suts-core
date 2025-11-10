@@ -139,6 +139,18 @@ describe('NetworkValueCalculator', () => {
 
       expect(value).toBe(1);
     });
+
+    it('should return 0 for zero users', () => {
+      const value = calculator.calculateOdlyzkoTillyValue(0);
+
+      expect(value).toBe(0);
+    });
+
+    it('should return 0 for negative users', () => {
+      const value = calculator.calculateOdlyzkoTillyValue(-5);
+
+      expect(value).toBe(0);
+    });
   });
 
   describe('compareModels', () => {
