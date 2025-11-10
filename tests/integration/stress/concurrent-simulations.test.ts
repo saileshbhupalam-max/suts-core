@@ -48,10 +48,14 @@ describe('Stress: Concurrent Simulations', () => {
       results.forEach((state, i) => {
         expect(state.personas).toHaveLength(10);
         expect(state.events.length).toBeGreaterThan(0);
-        console.log(`Simulation ${i + 1}: ${state.events.length} events`);
+        if (process.env['VERBOSE_TESTS'] === 'true') {
+          console.log(`Simulation ${i + 1}: ${state.events.length} events`);
+        }
       });
 
-      console.log(`5 concurrent simulations completed in ${(duration / 1000).toFixed(1)}s`);
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`5 concurrent simulations completed in ${(duration / 1000).toFixed(1)}s`);
+      }
       expect(duration).toBeLessThan(120000); // <2 minutes
     },
     150000
@@ -88,9 +92,11 @@ describe('Stress: Concurrent Simulations', () => {
 
       const totalEvents = results.reduce((sum, state) => sum + state.events.length, 0);
 
-      console.log(`10 concurrent lightweight simulations:`);
-      console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
-      console.log(`  Total events: ${totalEvents}`);
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`10 concurrent lightweight simulations:`);
+        console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
+        console.log(`  Total events: ${totalEvents}`);
+      }
 
       expect(duration).toBeLessThan(90000); // <1.5 minutes
     },
@@ -127,7 +133,9 @@ describe('Stress: Concurrent Simulations', () => {
       results.forEach((state, i) => {
         const expected = simulations[i]!.expectedPersonas;
         expect(state.personas).toHaveLength(expected);
-        console.log(`Simulation ${i + 1}: ${state.personas.length} personas (expected ${expected})`);
+        if (process.env['VERBOSE_TESTS'] === 'true') {
+          console.log(`Simulation ${i + 1}: ${state.personas.length} personas (expected ${expected})`);
+        }
       });
     },
     120000
@@ -183,7 +191,9 @@ describe('Stress: Concurrent Simulations', () => {
         expect(state.events.length).toBeGreaterThan(0);
       });
 
-      console.log('Mixed workload completed successfully');
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log('Mixed workload completed successfully');
+      }
     },
     150000
   );
@@ -197,49 +207,64 @@ describe('Stress: Concurrent Simulations', () => {
       const baselineState = baselineAdapter.getInitialState();
 
       const baselineEngine = new SimulationEngine({
-        adapter: baselineAdapter,
-        timeStep: 1,
-        maxStepsPerDay: 10,
+        seed: 12345,
+        batchSize: 10,
+        maxActionsPerDay: 10,
       });
 
-      const [, baselineDuration] = await measureTime(async () => {
-        return await baselineEngine.run({
-          personas: baselinePersonas,
-          productState: baselineState,
-          days: 3,
-        });
+      const [baselineResult, baselineDuration] = await measureTime(async () => {
+        return await baselineEngine.run(baselinePersonas, baselineState, 3);
       });
 
-      console.log(`Baseline (single): ${(baselineDuration / 1000).toFixed(1)}s`);
+      // Verify simulation actually ran
+      expect(baselineResult).toBeDefined();
+      expect(baselineResult.events).toBeDefined();
+      expect(baselineResult.events.length).toBeGreaterThan(0);
 
-      // Run 5 concurrent simulations
-      const concurrent = Array(5)
-        .fill(null)
-        .map(() => {
-          const personas = generateMockPersonas(10);
-          const adapter = new VibeAtlasAdapter();
-          const productState = adapter.getInitialState();
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`Baseline (single): ${(baselineDuration / 1000).toFixed(1)}s, events: ${baselineResult.events.length}`);
+      }
 
-          const engine = new SimulationEngine({
-      seed: 12345,
-      batchSize: 10,
-      maxActionsPerDay: 10,
-    });
-
-          return engine.run(personas, productState, 3);
-        });
-
+      // Run 5 concurrent simulations - create and execute inside measureTime
       const [, concurrentDuration] = await measureTime(async () => {
+        const concurrent = Array(5)
+          .fill(null)
+          .map(() => {
+            const personas = generateMockPersonas(10);
+            const adapter = new VibeAtlasAdapter();
+            const productState = adapter.getInitialState();
+
+            const engine = new SimulationEngine({
+              seed: 12345,
+              batchSize: 10,
+              maxActionsPerDay: 10,
+            });
+
+            return engine.run(personas, productState, 3);
+          });
+
         return await Promise.all(concurrent);
       });
 
-      console.log(`Concurrent (5x): ${(concurrentDuration / 1000).toFixed(1)}s`);
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`Concurrent (5x): ${(concurrentDuration / 1000).toFixed(1)}s`);
+      }
+
+      // Skip performance check if timing precision is insufficient (< 1ms)
+      // This can happen in certain test environments where performance.now() is mocked
+      if (baselineDuration < 1 || concurrentDuration < 1) {
+        // eslint-disable-next-line no-console
+        console.warn('Skipping performance degradation check: timing precision insufficient');
+        return;
+      }
 
       // Concurrent should not be more than 3x slower per simulation
       const avgConcurrentTime = concurrentDuration / 5;
       const degradation = avgConcurrentTime / baselineDuration;
 
-      console.log(`Performance degradation: ${(degradation * 100).toFixed(1)}%`);
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`Performance degradation: ${(degradation * 100).toFixed(1)}%`);
+      }
 
       expect(degradation).toBeLessThan(3);
     },

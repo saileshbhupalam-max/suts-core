@@ -131,19 +131,19 @@ export class VibeAtlasAdapter implements ISimpleProductAdapter {
   getAvailableActions(state: ProductState, persona: PersonaProfile): UserAction[] {
     const actions: UserAction[] = [];
 
-    if (state.features.tryMode === true) {
+    if (state.features['tryMode'] === true) {
       actions.push(...getTryModeActions(state, persona));
     }
 
-    if (state.features.tokenCounter === true) {
+    if (state.features['tokenCounter'] === true) {
       actions.push(...getTokenCounterActions(state, persona));
     }
 
-    if (state.features.contextPreview === true) {
+    if (state.features['contextPreview'] === true) {
       actions.push(...getContextPreviewActions(state, persona));
     }
 
-    if (state.features.dashboard === true) {
+    if (state.features['dashboard'] === true) {
       actions.push(...getDashboardActions(state, persona));
     }
 
@@ -199,7 +199,7 @@ export class VibeAtlasAdapter implements ISimpleProductAdapter {
 
     if (action.feature === 'tryMode') {
       if (isTryModeActive(newState) === true) {
-        const tokensToUse = (action.metadata?.tokensUsed as number) ?? 1000;
+        const tokensToUse = (action.metadata?.['tokensUsed'] as number) ?? 1000;
         newState = useTryModeTokens(newState, tokensToUse);
         newState = updateTokenCount(newState, tokensToUse);
         newState = updateDashboardMetrics(newState, {
@@ -212,8 +212,8 @@ export class VibeAtlasAdapter implements ISimpleProductAdapter {
     } else if (action.feature === 'tokenCounter') {
       newState = toggleTokenCounter(newState);
     } else if (action.feature === 'contextPreview') {
-      const before = (action.metadata?.beforeContext as string) ?? 'Previous context';
-      const after = (action.metadata?.afterContext as string) ?? 'Updated context';
+      const before = (action.metadata?.['beforeContext'] as string) ?? 'Previous context';
+      const after = (action.metadata?.['afterContext'] as string) ?? 'Updated context';
       newState = showContextPreview(newState, before, after);
     } else if (action.feature === 'dashboard') {
       if (action.description.includes('Export') === true || action.description.includes('export') === true) {
@@ -233,7 +233,7 @@ export class VibeAtlasAdapter implements ISimpleProductAdapter {
     let newState = { ...state };
 
     if (action.feature === 'contextPreview') {
-      const position = (action.metadata?.position as 'sidebar' | 'modal' | 'inline') ?? 'sidebar';
+      const position = (action.metadata?.['position'] as 'sidebar' | 'modal' | 'inline') ?? 'sidebar';
       newState = changePreviewPosition(newState, position);
     }
 

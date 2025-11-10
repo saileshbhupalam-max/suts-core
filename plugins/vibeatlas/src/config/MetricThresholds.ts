@@ -104,44 +104,44 @@ export function evaluateMetrics(
   checkMetric(
     'onboarding',
     'completionRate',
-    metrics.onboardingCompletionRate,
+    metrics['onboardingCompletionRate'],
     thresholds.onboarding.completionRate
   );
   checkMetric(
     'onboarding',
     'timeToFirstValue',
-    metrics.onboardingTimeToFirstValue,
+    metrics['onboardingTimeToFirstValue'],
     thresholds.onboarding.timeToFirstValue,
     true
   );
   checkMetric(
     'onboarding',
     'frustrationScore',
-    metrics.onboardingFrustrationScore,
+    metrics['onboardingFrustrationScore'],
     thresholds.onboarding.frustrationScore,
     true
   );
 
-  checkMetric('engagement', 'dailyActiveUsers', metrics.dailyActiveUsers, thresholds.engagement.dailyActiveUsers);
-  checkMetric('engagement', 'weeklyActiveUsers', metrics.weeklyActiveUsers, thresholds.engagement.weeklyActiveUsers);
+  checkMetric('engagement', 'dailyActiveUsers', metrics['dailyActiveUsers'], thresholds.engagement.dailyActiveUsers);
+  checkMetric('engagement', 'weeklyActiveUsers', metrics['weeklyActiveUsers'], thresholds.engagement.weeklyActiveUsers);
   checkMetric(
     'engagement',
     'monthlyActiveUsers',
-    metrics.monthlyActiveUsers,
+    metrics['monthlyActiveUsers'],
     thresholds.engagement.monthlyActiveUsers
   );
-  checkMetric('engagement', 'sessionDuration', metrics.sessionDuration, thresholds.engagement.sessionDuration);
+  checkMetric('engagement', 'sessionDuration', metrics['sessionDuration'], thresholds.engagement.sessionDuration);
 
-  checkMetric('satisfaction', 'delightScore', metrics.delightScore, thresholds.satisfaction.delightScore);
-  checkMetric('satisfaction', 'nps', metrics.nps, thresholds.satisfaction.nps);
-  checkMetric('satisfaction', 'churnRate', metrics.churnRate, thresholds.satisfaction.churnRate, true);
+  checkMetric('satisfaction', 'delightScore', metrics['delightScore'], thresholds.satisfaction.delightScore);
+  checkMetric('satisfaction', 'nps', metrics['nps'], thresholds.satisfaction.nps);
+  checkMetric('satisfaction', 'churnRate', metrics['churnRate'], thresholds.satisfaction.churnRate, true);
 
-  checkMetric('adoption', 'featureDiscovery', metrics.featureDiscovery, thresholds.adoption.featureDiscovery);
-  checkMetric('adoption', 'featureUsage', metrics.featureUsage, thresholds.adoption.featureUsage);
+  checkMetric('adoption', 'featureDiscovery', metrics['featureDiscovery'], thresholds.adoption.featureDiscovery);
+  checkMetric('adoption', 'featureUsage', metrics['featureUsage'], thresholds.adoption.featureUsage);
   checkMetric(
     'adoption',
     'powerUserConversion',
-    metrics.powerUserConversion,
+    metrics['powerUserConversion'],
     thresholds.adoption.powerUserConversion
   );
 

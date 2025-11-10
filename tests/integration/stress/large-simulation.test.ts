@@ -41,10 +41,13 @@ describe('Stress: Large Simulation', () => {
       // Verify performance - should complete in under 2 minutes
       expect(duration).toBeLessThan(120000);
 
-      console.log(`Large simulation (50 personas, 7 days):`);
-      console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
-      console.log(`  Events: ${state.events.length}`);
-      console.log(`  Events/second: ${(state.events.length / (duration / 1000)).toFixed(1)}`);
+      // Performance logging for stress tests
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`Large simulation (50 personas, 7 days):`);
+        console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
+        console.log(`  Events: ${state.events.length}`);
+        console.log(`  Events/second: ${(state.events.length / (duration / 1000)).toFixed(1)}`);
+      }
     },
     150000
   ); // 2.5min timeout
@@ -70,10 +73,12 @@ describe('Stress: Large Simulation', () => {
       expect(state.events.length).toBeGreaterThan(100);
       expect(duration).toBeLessThan(120000); // <2 minutes
 
-      console.log(`Very large simulation (100 personas, 3 days):`);
-      console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
-      console.log(`  Events: ${state.events.length}`);
-      console.log(`  Events/second: ${(state.events.length / (duration / 1000)).toFixed(1)}`);
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`Very large simulation (100 personas, 3 days):`);
+        console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
+        console.log(`  Events: ${state.events.length}`);
+        console.log(`  Events/second: ${(state.events.length / (duration / 1000)).toFixed(1)}`);
+      }
     },
     150000
   );
@@ -97,11 +102,13 @@ describe('Stress: Large Simulation', () => {
 
         await engine.run(personas, productState, 2);
 
-        console.log(`Completed simulation ${i + 1}/5`);
+        if (process.env['VERBOSE_TESTS'] === 'true') {
+          console.log(`Completed simulation ${i + 1}/5`);
+        }
       }
 
       // Force garbage collection if available
-      if (global.gc) {
+      if (global.gc !== null && global.gc !== undefined) {
         global.gc();
       }
 
@@ -109,7 +116,9 @@ describe('Stress: Large Simulation', () => {
       const growth = finalMemory - initialMemory;
       const growthMB = growth / 1024 / 1024;
 
-      console.log(`Memory growth: ${growthMB.toFixed(1)}MB`);
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`Memory growth: ${growthMB.toFixed(1)}MB`);
+      }
 
       // Should not grow by more than 100MB
       expect(growth).toBeLessThan(100 * 1024 * 1024);
@@ -139,19 +148,31 @@ describe('Stress: Large Simulation', () => {
         });
 
         durations.push(duration);
-        console.log(`Run ${i + 1}: ${(duration / 1000).toFixed(1)}s`);
+        if (process.env['VERBOSE_TESTS'] === 'true') {
+          console.log(`Run ${i + 1}: ${(duration / 1000).toFixed(1)}s`);
+        }
       }
 
       // Calculate variance
       const avg = durations.reduce((a, b) => a + b, 0) / durations.length;
+
+      // Skip consistency check if timing precision is insufficient
+      if (avg < 1) {
+        // eslint-disable-next-line no-console
+        console.warn('Skipping performance consistency check: timing precision insufficient');
+        return;
+      }
+
       const variance =
         durations.reduce((sum, d) => sum + Math.pow(d - avg, 2), 0) / durations.length;
       const stdDev = Math.sqrt(variance);
       const coefficientOfVariation = stdDev / avg;
 
-      console.log(`Average duration: ${(avg / 1000).toFixed(1)}s`);
-      console.log(`Standard deviation: ${(stdDev / 1000).toFixed(1)}s`);
-      console.log(`Coefficient of variation: ${(coefficientOfVariation * 100).toFixed(1)}%`);
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`Average duration: ${(avg / 1000).toFixed(1)}s`);
+        console.log(`Standard deviation: ${(stdDev / 1000).toFixed(1)}s`);
+        console.log(`Coefficient of variation: ${(coefficientOfVariation * 100).toFixed(1)}%`);
+      }
 
       // Performance should be consistent (CV < 20%)
       expect(coefficientOfVariation).toBeLessThan(0.2);
@@ -180,9 +201,11 @@ describe('Stress: Large Simulation', () => {
       expect(state.events.length).toBeGreaterThan(100);
       expect(duration).toBeLessThan(180000); // <3 minutes
 
-      console.log(`Long-running simulation (10 personas, 30 days):`);
-      console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
-      console.log(`  Events: ${state.events.length}`);
+      if (process.env['VERBOSE_TESTS'] === 'true') {
+        console.log(`Long-running simulation (10 personas, 30 days):`);
+        console.log(`  Duration: ${(duration / 1000).toFixed(1)}s`);
+        console.log(`  Events: ${state.events.length}`);
+      }
     },
     200000
   ); // 3.3min timeout

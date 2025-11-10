@@ -33,7 +33,17 @@
       "Bash(do sed -i 's/state\\.data\\./state.userData./g' \"$file\")",
       "Bash(done)",
       "Bash(node scripts/fix-telemetry-ids.js:*)",
-      "Bash(do sed -i 's/^\\(\\s*\\)data: {/\\1userData: {/g' \"$file\")"
+      "Bash(do sed -i 's/^\\(\\s*\\)data: {/\\1userData: {/g' \"$file\")",
+      "Bash(npm run:*)",
+      "Bash(node -e:*)",
+      "Bash(node:*)",
+      "Bash(npx madge:*)",
+      "Bash(nul)",
+      "Bash(npx eslint:*)",
+      "Bash(test:*)",
+      "Bash(cd:*)",
+      "Bash(git log:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []

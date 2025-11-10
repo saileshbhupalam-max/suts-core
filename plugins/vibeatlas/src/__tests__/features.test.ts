@@ -54,7 +54,7 @@ describe('TryModeFeature', () => {
 
   it('should enable try mode', () => {
     const state = enableTryMode(initialState, 100000, 14);
-    const tryMode = state.userData.tryMode as { enabled: boolean; tokensRemaining: number; activated: boolean } | undefined;
+    const tryMode = state.userData['tryMode'] as { enabled: boolean; tokensRemaining: number; activated: boolean } | undefined;
 
     expect(tryMode).toBeDefined();
     expect(tryMode?.enabled).toBe(true);
@@ -66,7 +66,7 @@ describe('TryModeFeature', () => {
     let state = enableTryMode(initialState, 100000, 14);
     state = useTryModeTokens(state, 5000);
 
-    const tryMode = state.userData.tryMode as { tokensUsed: number; tokensRemaining: number } | undefined;
+    const tryMode = state.userData['tryMode'] as { tokensUsed: number; tokensRemaining: number } | undefined;
 
     expect(tryMode?.tokensUsed).toBe(5000);
     expect(tryMode?.tokensRemaining).toBe(95000);
@@ -76,7 +76,7 @@ describe('TryModeFeature', () => {
     let state = enableTryMode(initialState, 1000, 14);
     state = useTryModeTokens(state, 1500);
 
-    const tryMode = state.userData.tryMode as { enabled: boolean; tokensRemaining: number } | undefined;
+    const tryMode = state.userData['tryMode'] as { enabled: boolean; tokensRemaining: number } | undefined;
 
     expect(tryMode?.enabled).toBe(false);
     expect(tryMode?.tokensRemaining).toBe(0);
@@ -86,7 +86,7 @@ describe('TryModeFeature', () => {
     let state = enableTryMode(initialState, 100000, 14);
     state = expireTryMode(state);
 
-    const tryMode = state.userData.tryMode as { enabled: boolean } | undefined;
+    const tryMode = state.userData['tryMode'] as { enabled: boolean } | undefined;
 
     expect(tryMode?.enabled).toBe(false);
   });
@@ -126,7 +126,7 @@ describe('TokenCounterFeature', () => {
 
   it('should initialize token counter', () => {
     const state = initializeTokenCounter(initialState);
-    const counter = state.userData.tokenCounter as { visible: boolean; currentTokens: number } | undefined;
+    const counter = state.userData['tokenCounter'] as { visible: boolean; currentTokens: number } | undefined;
 
     expect(counter).toBeDefined();
     expect(counter?.visible).toBe(true);
@@ -137,7 +137,7 @@ describe('TokenCounterFeature', () => {
     let state = initializeTokenCounter(initialState);
     state = updateTokenCount(state, 50000);
 
-    const counter = state.userData.tokenCounter as { currentTokens: number } | undefined;
+    const counter = state.userData['tokenCounter'] as { currentTokens: number } | undefined;
 
     expect(counter?.currentTokens).toBe(50000);
   });
@@ -159,10 +159,10 @@ describe('TokenCounterFeature', () => {
 
   it('should toggle token counter visibility', () => {
     let state = initializeTokenCounter(initialState);
-    const initialVisibility = (state.userData.tokenCounter as { visible: boolean } | undefined)?.visible;
+    const initialVisibility = (state.userData['tokenCounter'] as { visible: boolean } | undefined)?.visible;
 
     state = toggleTokenCounter(state);
-    const toggledVisibility = (state.userData.tokenCounter as { visible: boolean } | undefined)?.visible;
+    const toggledVisibility = (state.userData['tokenCounter'] as { visible: boolean } | undefined)?.visible;
 
     expect(toggledVisibility).toBe(initialVisibility === false);
   });
@@ -192,7 +192,7 @@ describe('ContextPreviewFeature', () => {
 
   it('should initialize context preview', () => {
     const state = initializeContextPreview(initialState);
-    const preview = state.userData.contextPreview as { enabled: boolean; showing: boolean } | undefined;
+    const preview = state.userData['contextPreview'] as { enabled: boolean; showing: boolean } | undefined;
 
     expect(preview).toBeDefined();
     expect(preview?.enabled).toBe(true);
@@ -203,7 +203,7 @@ describe('ContextPreviewFeature', () => {
     let state = initializeContextPreview(initialState);
     state = showContextPreview(state, 'before', 'after');
 
-    const preview = state.userData.contextPreview as {
+    const preview = state.userData['contextPreview'] as {
       showing: boolean;
       beforeContext: string;
       afterContext: string;
@@ -221,7 +221,7 @@ describe('ContextPreviewFeature', () => {
     state = showContextPreview(state, 'before', 'after');
     state = hideContextPreview(state);
 
-    const preview = state.userData.contextPreview as { showing: boolean } | undefined;
+    const preview = state.userData['contextPreview'] as { showing: boolean } | undefined;
 
     expect(preview?.showing).toBe(false);
   });
@@ -230,7 +230,7 @@ describe('ContextPreviewFeature', () => {
     let state = initializeContextPreview(initialState);
     state = changePreviewPosition(state, 'modal');
 
-    const preview = state.userData.contextPreview as { position: string } | undefined;
+    const preview = state.userData['contextPreview'] as { position: string } | undefined;
 
     expect(preview?.position).toBe('modal');
   });
@@ -270,7 +270,7 @@ describe('DashboardFeature', () => {
 
   it('should initialize dashboard', () => {
     const state = initializeDashboard(initialState);
-    const dashboard = state.userData.dashboard as { opened: boolean; sharedCount: number } | undefined;
+    const dashboard = state.userData['dashboard'] as { opened: boolean; sharedCount: number } | undefined;
 
     expect(dashboard).toBeDefined();
     expect(dashboard?.opened).toBe(false);
@@ -281,7 +281,7 @@ describe('DashboardFeature', () => {
     let state = initializeDashboard(initialState);
     state = openDashboard(state);
 
-    const dashboard = state.userData.dashboard as { opened: boolean } | undefined;
+    const dashboard = state.userData['dashboard'] as { opened: boolean } | undefined;
 
     expect(dashboard?.opened).toBe(true);
   });
@@ -291,7 +291,7 @@ describe('DashboardFeature', () => {
     state = openDashboard(state);
     state = closeDashboard(state);
 
-    const dashboard = state.userData.dashboard as { opened: boolean } | undefined;
+    const dashboard = state.userData['dashboard'] as { opened: boolean } | undefined;
 
     expect(dashboard?.opened).toBe(false);
   });
@@ -300,7 +300,7 @@ describe('DashboardFeature', () => {
     let state = initializeDashboard(initialState);
     state = shareDashboard(state);
 
-    const dashboard = state.userData.dashboard as { sharedCount: number; lastShared: Date | null } | undefined;
+    const dashboard = state.userData['dashboard'] as { sharedCount: number; lastShared: Date | null } | undefined;
 
     expect(dashboard?.sharedCount).toBe(1);
     expect(dashboard?.lastShared).toBeDefined();
@@ -310,7 +310,7 @@ describe('DashboardFeature', () => {
     let state = initializeDashboard(initialState);
     state = exportDashboard(state);
 
-    const dashboard = state.userData.dashboard as { exportedCount: number; lastExported: Date | null } | undefined;
+    const dashboard = state.userData['dashboard'] as { exportedCount: number; lastExported: Date | null } | undefined;
 
     expect(dashboard?.exportedCount).toBe(1);
     expect(dashboard?.lastExported).toBeDefined();

@@ -4,23 +4,17 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { PersonaProfileSchema } from '@core/models';
+import { PersonaProfileSchema, type PersonaProfile } from '../../../packages/core/src/models/index';
 import { SimulationEngine } from '../../../packages/simulation/src/index';
 import { VibeAtlasAdapter } from '../../../plugins/vibeatlas/src/index';
 import { loadFixture } from '../helpers/test-utils';
-import type { PersonaProfile } from '@core/models';
 
 describe('Contract: Persona Generator -> Simulation Engine', () => {
   it('should validate fixture personas match PersonaProfile schema', () => {
     const personas = loadFixture<PersonaProfile[]>('personas.json');
 
-    personas.forEach((persona, index) => {
+    personas.forEach((persona) => {
       const result = PersonaProfileSchema.safeParse(persona);
-
-      if (!result.success) {
-        console.error(`Persona ${index} validation failed:`, result.error.errors);
-      }
-
       expect(result.success).toBe(true);
     });
   });

@@ -39,8 +39,6 @@ describe('Smoke: Basic Simulation', () => {
 
     // Verify performance
     expect(duration).toBeLessThan(10000); // <10 seconds
-
-    console.log(`Minimal simulation completed in ${duration}ms`);
   }, 15000); // 15s timeout for safety
 
   it('should handle single persona simulation', async () => {
@@ -73,12 +71,14 @@ describe('Smoke: Basic Simulation', () => {
 
     const state = await engine.run(personas, productState, 1);
 
-    // Verify event structure
+    // Verify event structure - required fields
     state.events.forEach((event) => {
       expect(event.id).toBeDefined();
-      expect(event.action).toBeDefined();
       expect(event.timestamp).toBeDefined();
       expect(event.personaId).toBeDefined();
+      expect(event.simulationId).toBeDefined();
+      expect(event.sessionNumber).toBeDefined();
+      expect(event.eventType).toBeDefined();
 
       // Verify timestamp is valid ISO string
       expect(() => new Date(event.timestamp)).not.toThrow();

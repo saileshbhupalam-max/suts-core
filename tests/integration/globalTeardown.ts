@@ -6,7 +6,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export default async function globalTeardown(): Promise<void> {
+export default function globalTeardown(): void {
+  // eslint-disable-next-line no-console
   console.log('\n=== Integration Test Suite Teardown ===\n');
 
   // Clean up test output directories
@@ -19,6 +20,7 @@ export default async function globalTeardown(): Promise<void> {
     if (fs.existsSync(dir)) {
       try {
         fs.rmSync(dir, { recursive: true, force: true });
+        // eslint-disable-next-line no-console
         console.log(`Cleaned up: ${dir}`);
       } catch (error) {
         console.warn(`Failed to clean up ${dir}:`, error);
@@ -26,5 +28,6 @@ export default async function globalTeardown(): Promise<void> {
     }
   }
 
+  // eslint-disable-next-line no-console
   console.log('\nTeardown complete.\n');
 }

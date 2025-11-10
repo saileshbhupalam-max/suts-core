@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from '@jest/globals';
-import { EventCollector } from '../../../packages/telemetry/src/index';
+import { EventCollector, MetricsCalculator } from '../../../packages/telemetry/src/index';
 import { AnalysisEngine } from '../../../packages/analysis/src/index';
 import { SimulationEngine } from '../../../packages/simulation/src/index';
 import { VibeAtlasAdapter } from '../../../plugins/vibeatlas/src/index';
@@ -25,13 +25,20 @@ describe('Contract: Telemetry -> Analysis Engine', () => {
     const state = await engine.run(personas, productState, 2);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
     const events = collector.query({});
 
     // Should not throw
     const analyzer = new AnalysisEngine();
-    await expect(analyzer.analyzeFriction(events)).resolves.not.toThrow();
-    await expect(analyzer.analyzeValue(events)).resolves.not.toThrow();
+    expect(() => analyzer.analyzeFriction(events)).not.toThrow();
+    expect(() => analyzer.analyzeValue(events)).not.toThrow();
   });
 
   it('should produce valid friction analysis results', async () => {
@@ -48,19 +55,27 @@ describe('Contract: Telemetry -> Analysis Engine', () => {
     const state = await engine.run(personas, productState, 2);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
     const events = collector.query({});
 
     const analyzer = new AnalysisEngine();
-    const friction = await analyzer.analyzeFriction(events);
+    const friction = analyzer.analyzeFriction(events);
 
     // Friction should be an array
     expect(Array.isArray(friction)).toBe(true);
 
     // Each friction point should have required fields
     friction.forEach((point) => {
-      expect(point.id).toBeDefined();
-      expect(point.type).toBeDefined();
+      expect(point.location).toBeDefined();
+      expect(point.location.action).toBeDefined();
+
       expect(point.severity).toBeDefined();
       expect(typeof point.severity).toBe('number');
       expect(point.severity).toBeGreaterThanOrEqual(0);
@@ -71,6 +86,12 @@ describe('Contract: Telemetry -> Analysis Engine', () => {
 
       expect(point.description).toBeDefined();
       expect(typeof point.description).toBe('string');
+
+      expect(point.priority).toBeDefined();
+      expect(typeof point.priority).toBe('number');
+
+      expect(point.confidence).toBeDefined();
+      expect(typeof point.confidence).toBe('number');
     });
   });
 
@@ -88,41 +109,55 @@ describe('Contract: Telemetry -> Analysis Engine', () => {
     const state = await engine.run(personas, productState, 2);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
     const events = collector.query({});
 
     const analyzer = new AnalysisEngine();
-    const value = await analyzer.analyzeValue(events);
+    const value = analyzer.analyzeValue(events);
 
     // Value should be an array
     expect(Array.isArray(value)).toBe(true);
 
     // Each value moment should have required fields
     value.forEach((moment) => {
-      expect(moment.id).toBeDefined();
-      expect(moment.type).toBeDefined();
-      expect(moment.impact).toBeDefined();
-      expect(typeof moment.impact).toBe('number');
-      expect(moment.impact).toBeGreaterThanOrEqual(0);
-      expect(moment.impact).toBeLessThanOrEqual(1);
+      expect(moment.action).toBeDefined();
+      expect(moment.eventType).toBeDefined();
+
+      expect(moment.delightScore).toBeDefined();
+      expect(typeof moment.delightScore).toBe('number');
+      expect(moment.delightScore).toBeGreaterThanOrEqual(0);
+      expect(moment.delightScore).toBeLessThanOrEqual(1);
 
       expect(moment.frequency).toBeDefined();
       expect(typeof moment.frequency).toBe('number');
 
       expect(moment.description).toBeDefined();
       expect(typeof moment.description).toBe('string');
+
+      expect(moment.priority).toBeDefined();
+      expect(typeof moment.priority).toBe('number');
+
+      expect(moment.confidence).toBeDefined();
+      expect(typeof moment.confidence).toBe('number');
     });
   });
 
-  it('should handle empty event arrays gracefully', async () => {
+  it('should handle empty event arrays gracefully', () => {
     const analyzer = new AnalysisEngine();
 
     // Should not throw with empty arrays
-    await expect(analyzer.analyzeFriction([])).resolves.not.toThrow();
-    await expect(analyzer.analyzeValue([])).resolves.not.toThrow();
+    expect(() => analyzer.analyzeFriction([])).not.toThrow();
+    expect(() => analyzer.analyzeValue([])).not.toThrow();
 
-    const friction = await analyzer.analyzeFriction([]);
-    const value = await analyzer.analyzeValue([]);
+    const friction = analyzer.analyzeFriction([]);
+    const value = analyzer.analyzeValue([]);
 
     expect(Array.isArray(friction)).toBe(true);
     expect(Array.isArray(value)).toBe(true);
@@ -142,14 +177,26 @@ describe('Contract: Telemetry -> Analysis Engine', () => {
     const state = await engine.run(personas, productState, 2);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
+    const events = collector.query({});
 
     // Should not throw when calculating metrics
-    const { MetricsCalculator } = require('../../../packages/telemetry/src/index');
     const calculator = new MetricsCalculator();
 
+    // MetricsCalculator needs a cohort parameter
     expect(() => {
-      calculator.calculateRetention(state.events);
+      calculator.calculateRetention(events, 'test-cohort', 7);
+    }).not.toThrow();
+
+    expect(() => {
+      calculator.calculateViralCoefficient(events);
     }).not.toThrow();
   });
 });

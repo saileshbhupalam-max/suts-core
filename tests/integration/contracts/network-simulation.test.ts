@@ -25,21 +25,28 @@ describe('Contract: Simulation -> Network Effects', () => {
     const state = await engine.run(personas, productState, 2);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
     const events = collector.query({});
 
     // Should work with NetworkSimulator
     const networkSim = new NetworkSimulator({
-      baseReferralRate: 0.1,
-      viralityThreshold: 0.7,
+      baseReferralProbability: 0.1,
+      delightThreshold: 0.7,
     });
 
     expect(() => {
-      networkSim.simulateReferrals(events, personas);
+      networkSim.simulateReferrals(personas, events);
     }).not.toThrow();
   });
 
-  it('should generate referral events from delighted personas', async () => {
+  it('should generate referral graph from delighted personas', async () => {
     const personas = generateMockPersonas(5);
     const adapter = new VibeAtlasAdapter();
     const productState = adapter.getInitialState();
@@ -53,27 +60,29 @@ describe('Contract: Simulation -> Network Effects', () => {
     const state = await engine.run(personas, productState, 2);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
     const events = collector.query({});
 
     const networkSim = new NetworkSimulator({
-      baseReferralRate: 0.3,
-      viralityThreshold: 0.5,
+      baseReferralProbability: 0.3,
+      delightThreshold: 0.5,
     });
 
-    const referralEvents = networkSim.simulateReferrals(events, personas);
+    const graph = networkSim.simulateReferrals(personas, events);
 
-    // Should return array
-    expect(Array.isArray(referralEvents)).toBe(true);
-
-    // Each referral event should be valid
-    referralEvents.forEach((event) => {
-      expect(event.id).toBeDefined();
-      expect(event.action).toBeDefined();
-      expect(event.timestamp).toBeDefined();
-      expect(event.personaId).toBeDefined();
-      expect(event.metadata).toBeDefined();
-    });
+    // Should return a ReferralGraph object
+    expect(graph).toBeDefined();
+    expect(typeof graph).toBe('object');
+    expect(graph.nodes).toBeDefined();
+    expect(graph.totalUsers).toBeDefined();
+    expect(typeof graph.totalUsers).toBe('number');
   });
 
   it('should calculate network metrics from simulation', async () => {
@@ -90,16 +99,25 @@ describe('Contract: Simulation -> Network Effects', () => {
     const state = await engine.run(personas, productState, 3);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
     const events = collector.query({});
 
     const networkSim = new NetworkSimulator({
-      baseReferralRate: 0.2,
-      viralityThreshold: 0.6,
+      baseReferralProbability: 0.2,
+      delightThreshold: 0.6,
     });
 
-    // Calculate k-factor
-    const kFactor = networkSim.calculateKFactor(events, personas.length);
+    const graph = networkSim.simulateReferrals(personas, events);
+
+    // Calculate viral coefficient (k-factor)
+    const kFactor = networkSim.calculateViralCoefficient(graph);
 
     expect(typeof kFactor).toBe('number');
     expect(kFactor).toBeGreaterThanOrEqual(0);
@@ -119,31 +137,37 @@ describe('Contract: Simulation -> Network Effects', () => {
     const state = await engine.run(personas, productState, 2);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
     const events = collector.query({});
 
     const networkSim = new NetworkSimulator({
-      baseReferralRate: 0.15,
-      viralityThreshold: 0.7,
+      baseReferralProbability: 0.15,
+      delightThreshold: 0.7,
     });
 
-    const referralEvents = networkSim.simulateReferrals(events, personas);
-    const graph = networkSim.buildReferralGraph([...events, ...referralEvents]);
+    const graph = networkSim.simulateReferrals(personas, events);
 
     // Graph should be an object
     expect(typeof graph).toBe('object');
     expect(graph).not.toBeNull();
 
-    // Should have nodes for personas
+    // Should have nodes for personas (Map structure)
     expect(graph.nodes).toBeDefined();
-    expect(Array.isArray(graph.nodes)).toBe(true);
+    expect(graph.nodes instanceof Map).toBe(true);
 
-    // Should have edges for referrals
-    expect(graph.edges).toBeDefined();
-    expect(Array.isArray(graph.edges)).toBe(true);
+    // Should have totalUsers count
+    expect(graph.totalUsers).toBeDefined();
+    expect(typeof graph.totalUsers).toBe('number');
   });
 
-  it('should identify viral loops in network', async () => {
+  it('should calculate network metrics including growth projection', async () => {
     const personas = generateMockPersonas(6);
     const adapter = new VibeAtlasAdapter();
     const productState = adapter.getInitialState();
@@ -157,27 +181,37 @@ describe('Contract: Simulation -> Network Effects', () => {
     const state = await engine.run(personas, productState, 3);
 
     const collector = new EventCollector();
-    state.events.forEach((e) => collector.trackEvent(e));
+    state.events.forEach((e) => collector.trackEvent({
+      ...e,
+      timestamp: new Date(e.timestamp),
+      action: e.action ?? '',
+      emotionalState: e.emotionalState ?? { frustration: 0, confidence: 0, delight: 0, confusion: 0 },
+    }));
+    // Flush events from batch queue to storage
+    collector.flush();
     const events = collector.query({});
 
     const networkSim = new NetworkSimulator({
-      baseReferralRate: 0.25,
-      viralityThreshold: 0.5,
+      baseReferralProbability: 0.25,
+      delightThreshold: 0.5,
     });
 
-    const referralEvents = networkSim.simulateReferrals(events, personas);
-    const viralLoops = networkSim.identifyViralLoops([...events, ...referralEvents]);
+    const graph = networkSim.simulateReferrals(personas, events);
+    const kFactor = networkSim.calculateViralCoefficient(graph);
 
-    // Should return array
-    expect(Array.isArray(viralLoops)).toBe(true);
+    // Calculate metrics from graph
+    const metrics = networkSim.calculateMetrics(graph);
 
-    // Each viral loop should have required properties
-    viralLoops.forEach((loop) => {
-      expect(loop.trigger).toBeDefined();
-      expect(loop.strength).toBeDefined();
-      expect(typeof loop.strength).toBe('number');
-      expect(loop.strength).toBeGreaterThanOrEqual(0);
-      expect(loop.strength).toBeLessThanOrEqual(1);
-    });
+    expect(metrics).toBeDefined();
+    expect(typeof metrics).toBe('object');
+    expect(metrics.kFactor).toBeDefined();
+    expect(typeof metrics.kFactor).toBe('number');
+    expect(metrics.kFactor).toBeGreaterThanOrEqual(0);
+
+    // Predict growth
+    const projection = networkSim.predictGrowth(personas.length, kFactor, 30);
+    expect(projection).toBeDefined();
+    expect(projection.dataPoints).toBeDefined();
+    expect(Array.isArray(projection.dataPoints)).toBe(true);
   });
 });

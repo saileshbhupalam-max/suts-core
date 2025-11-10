@@ -3,6 +3,7 @@
  * Extends base configuration with integration-specific settings
  */
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const baseConfig = require('./jest.config');
 
 module.exports = {

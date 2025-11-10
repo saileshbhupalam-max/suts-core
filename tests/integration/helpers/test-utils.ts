@@ -6,7 +6,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import type { PersonaProfile, TelemetryEvent, ProductState } from '@core/models';
+import type { PersonaProfile, ProductState } from '../../../packages/core/src/index';
+import type { TelemetryEvent } from '../../../packages/telemetry/src/types';
 
 /**
  * Generate mock persona profiles for testing
@@ -89,23 +90,28 @@ export function generateMockEvents(count: number): TelemetryEvent[] {
 
   return Array(count)
     .fill(null)
-    .map((_, i) => {
-      const timestamp = new Date(Date.now() - i * 1000).toISOString();
+    .map((_, i): TelemetryEvent => {
+      const timestamp = new Date(Date.now() - i * 1000);
       return {
         id: crypto.randomUUID(),
-        action: actions[i % actions.length]!,
-        timestamp,
         personaId: personaIds[i % personaIds.length]!,
+        eventType: 'action',
+        action: actions[i % actions.length]!,
+        emotionalState: {
+          frustration: Math.random() * 0.5,
+          confidence: Math.random() * 0.5 + 0.5,
+          delight: Math.random() * 0.5,
+          confusion: Math.random() * 0.3,
+        },
         metadata: {
           test: true,
           index: i,
-        },
-        success: i % 10 !== 0, // 10% failure rate
-        duration: Math.floor(Math.random() * 1000),
-        context: {
+          simulationId: 'test-simulation',
+          sessionNumber: 1,
           day: Math.floor(i / 100),
         },
-        emotionalImpact: ((i % 10) - 5) / 10, // -0.5 to 0.5
+        timestamp,
+        cohort: i % 3 === 0 ? 'cohort-a' : i % 3 === 1 ? 'cohort-b' : 'cohort-c',
       };
     });
 }
@@ -115,35 +121,39 @@ export function generateMockEvents(count: number): TelemetryEvent[] {
  */
 export function generateMockProductState(): ProductState {
   return {
+    version: '1.0.0',
     features: {
       onboarding: {
         enabled: true,
-        variant: 'default',
+        description: 'Onboarding feature',
       },
       'try-mode': {
         enabled: true,
-        variant: 'default',
+        description: 'Try mode feature',
       },
     },
     userData: {},
-    uiElements: [
-      {
-        id: 'welcome-screen',
+    uiElements: {
+      'welcome-screen': {
         type: 'modal',
         visible: true,
+        properties: {},
       },
-      {
-        id: 'main-dashboard',
+      'main-dashboard': {
         type: 'view',
         visible: true,
+        properties: {},
       },
-    ],
-    systemState: {
-      installed: true,
-      activated: true,
-      configured: false,
     },
-    version: '1.0.0',
+    config: {
+      systemState: {
+        installed: true,
+        activated: true,
+        configured: false,
+      },
+    },
+    environment: 'development',
+    metadata: {},
   };
 }
 
@@ -205,11 +215,12 @@ export async function waitFor(
 
 /**
  * Measure execution time of a function
+ * Returns duration in milliseconds with microsecond precision
  */
 export async function measureTime<T>(fn: () => Promise<T>): Promise<[T, number]> {
-  const start = Date.now();
+  const start = performance.now();
   const result = await fn();
-  const duration = Date.now() - start;
+  const duration = performance.now() - start;
   return [result, duration];
 }
 
@@ -218,7 +229,7 @@ export async function measureTime<T>(fn: () => Promise<T>): Promise<[T, number]>
  */
 export function assertDefined<T>(value: T | undefined | null, message?: string): asserts value is T {
   if (value === undefined || value === null) {
-    throw new Error(message || 'Expected value to be defined');
+    throw new Error(message ?? 'Expected value to be defined');
   }
 }
 
@@ -233,7 +244,7 @@ export function getMockApiKey(): string {
  * Check if running in CI environment
  */
 export function isCI(): boolean {
-  return process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
+  return process.env['CI'] === 'true' || process.env['GITHUB_ACTIONS'] === 'true';
 }
 
 /**
