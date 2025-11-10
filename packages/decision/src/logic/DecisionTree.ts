@@ -53,10 +53,13 @@ export class DecisionTree {
       (sum, c) => sum + c.weight,
       0
     );
-    const weightedScore = children.reduce(
-      (sum, node, i) => sum + node.score * this.criteria[i].weight,
-      0
-    );
+    const weightedScore = children.reduce((sum, node, i) => {
+      const criterion = this.criteria[i];
+      if (criterion === undefined) {
+        return sum;
+      }
+      return sum + node.score * criterion.weight;
+    }, 0);
     const normalizedScore = totalWeight > 0 ? weightedScore / totalWeight : 0;
 
     return {

@@ -93,7 +93,7 @@ describe('SequenceOptimizer', () => {
 
       const sequenced = optimizer.optimize(insights);
 
-      expect(sequenced[0].insight.insight.id).toBe('high');
+      expect(sequenced[0]!.insight.insight.id).toBe('high');
     });
 
     it('should handle empty array', () => {

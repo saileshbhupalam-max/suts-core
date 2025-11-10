@@ -63,9 +63,9 @@ describe('DecisionSystem', () => {
       const prioritized = system.prioritize(insights);
 
       expect(prioritized.length).toBe(3);
-      expect(prioritized[0].ranking).toBe(1);
-      expect(prioritized[1].ranking).toBe(2);
-      expect(prioritized[2].ranking).toBe(3);
+      expect(prioritized[0]!.ranking).toBe(1);
+      expect(prioritized[1]!.ranking).toBe(2);
+      expect(prioritized[2]!.ranking).toBe(3);
     });
 
     it('should calculate all scores', () => {
@@ -88,7 +88,7 @@ describe('DecisionSystem', () => {
       ];
 
       const prioritized = system.prioritize(insights);
-      expect(prioritized[0].insight.id).toBe('high');
+      expect(prioritized[0]!.insight.id).toBe('high');
     });
 
     it('should handle empty array', () => {

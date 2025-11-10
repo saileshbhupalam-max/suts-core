@@ -27,8 +27,6 @@ import {
 } from './prediction/RevenuePredictor';
 
 import { ExperimentDesigner } from './recommendation/ExperimentDesigner';
-import { FixSuggester } from './recommendation/FixSuggester';
-import { SequenceOptimizer } from './recommendation/SequenceOptimizer';
 import { RiskAssessor } from './recommendation/RiskAssessor';
 
 import { GoNoGoEngine } from './logic/GoNoGoEngine';

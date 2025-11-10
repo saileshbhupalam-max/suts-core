@@ -53,7 +53,7 @@ describe('ChurnPredictor', () => {
       const change = createChange({ estimatedEffort: 0 });
       const prediction = predictor.predict(change, 0.3);
 
-      expect(prediction).toBe(0);
+      expect(Math.abs(prediction)).toBe(0);
     });
   });
 

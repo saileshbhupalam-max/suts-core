@@ -14,14 +14,12 @@ export class GoNoGoEngine {
   private readonly thresholdEvaluator: ThresholdEvaluator;
   private readonly confidenceCalculator: ConfidenceCalculator;
   private readonly decisionTree: DecisionTree;
-  private readonly config: DecisionConfig;
 
   /**
    * Create GO/NO-GO engine
    * @param config - Decision configuration
    */
   constructor(config: DecisionConfig = {}) {
-    this.config = config;
     this.thresholdEvaluator = new ThresholdEvaluator(config.thresholds);
     this.confidenceCalculator = new ConfidenceCalculator();
     this.decisionTree = new DecisionTree();

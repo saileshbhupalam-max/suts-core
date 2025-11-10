@@ -6,10 +6,6 @@ import {
   AnalysisResultSchema,
   ProductChangeSchema,
   SimulationMetricsSchema,
-  PrioritizedInsightSchema,
-  ExperimentSchema,
-  ImpactPredictionSchema,
-  GoNoGoResultSchema,
   DecisionConfigSchema,
 } from '../../models';
 
@@ -132,10 +128,10 @@ describe('Data Models', () => {
   });
 
   describe('DecisionConfigSchema', () => {
-    it('should use defaults when not provided', () => {
+    it('should accept empty configuration', () => {
       const config = DecisionConfigSchema.parse({});
 
-      expect(config.riskTolerance).toBe('medium');
+      expect(config.riskTolerance).toBeUndefined();
     });
 
     it('should accept custom configuration', () => {

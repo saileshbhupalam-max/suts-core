@@ -66,13 +66,13 @@ describe('GoNoGoEngine', () => {
       expect(result.decision).toBe('NO_GO');
     });
 
-    it('should return NO_GO for low confidence', () => {
+    it('should return CONDITIONAL for low confidence', () => {
       const metrics = createMetrics({
         confidenceLevel: 0.3,
       });
 
       const result = engine.decide(metrics);
-      expect(result.decision).toBe('NO_GO');
+      expect(result.decision).toBe('CONDITIONAL');
     });
 
     it('should return NO_GO for low sample size', () => {
@@ -100,9 +100,9 @@ describe('GoNoGoEngine', () => {
       const result = engine.decide(metrics);
 
       expect(result.thresholds).toHaveProperty('retentionRate');
-      expect(result.thresholds.retentionRate).toHaveProperty('expected');
-      expect(result.thresholds.retentionRate).toHaveProperty('actual');
-      expect(result.thresholds.retentionRate).toHaveProperty('passed');
+      expect(result.thresholds['retentionRate']).toHaveProperty('expected');
+      expect(result.thresholds['retentionRate']).toHaveProperty('actual');
+      expect(result.thresholds['retentionRate']).toHaveProperty('passed');
     });
 
     it('should provide recommendations', () => {

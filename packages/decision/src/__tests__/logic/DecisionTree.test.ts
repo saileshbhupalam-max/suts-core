@@ -118,7 +118,7 @@ describe('DecisionTree', () => {
       const result = customTree.evaluate(metrics);
 
       expect(result.children.length).toBe(1);
-      expect(result.children[0].name).toBe('Custom');
+      expect(result.children[0]!.name).toBe('Custom');
     });
   });
 });

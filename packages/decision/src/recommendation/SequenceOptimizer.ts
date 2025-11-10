@@ -31,11 +31,10 @@ export class SequenceOptimizer {
     );
 
     const sequenced: SequencedChange[] = [];
-    const completed: Set<string> = new Set() = new Set();
 
     // Build sequence considering dependencies
     for (const insight of sorted) {
-      const dependencies = this.identifyDependencies(insight, completed);
+      const dependencies = this.identifyDependencies(insight);
       const blockers = this.identifyBlockers(insight, sequenced);
 
       sequenced.push({
@@ -45,8 +44,6 @@ export class SequenceOptimizer {
         blockers,
         reasoning: this.generateReasoning(insight, dependencies, blockers),
       });
-
-      completed.add(insight.insight.id);
     }
 
     return this.reorderByDependencies(sequenced);
@@ -54,23 +51,14 @@ export class SequenceOptimizer {
 
   /**
    * Identify dependencies for an insight
-   * @param insight - The insight
-   * @param completed - Set of completed insight IDs
+   * @param _insight - The insight
    * @returns Set of dependency IDs
    */
-  private identifyDependencies(
-    insight: PrioritizedInsight, _completed: Set<string> = new Set(),
-  ): Set<string> {
+  private identifyDependencies(_insight: PrioritizedInsight): Set<string> {
     const dependencies = new Set<string>();
 
     // Infrastructure and performance fixes should come first
-    if (
-      insight.insight.type !== 'performance' &&
-      insight.insight.type !== 'ux'
-    ) {
-      // Look for performance issues in completed set
-      // This is a simplified heuristic
-    }
+    // This is a simplified heuristic - could be enhanced with actual dependency analysis
 
     return dependencies;
   }

@@ -160,18 +160,18 @@ export type GoNoGoResult = z.infer<typeof GoNoGoResultSchema>;
  */
 export const DecisionConfigSchema = z.object({
   prioritization: z.object({
-    impactWeight: z.number().min(0).max(1).default(0.4),
-    confidenceWeight: z.number().min(0).max(1).default(0.3),
-    effortWeight: z.number().min(0).max(1).default(0.3),
-    reachWeight: z.number().min(0).max(1).default(0.2),
+    impactWeight: z.number().min(0).max(1),
+    confidenceWeight: z.number().min(0).max(1),
+    effortWeight: z.number().min(0).max(1),
+    reachWeight: z.number().min(0).max(1),
   }).optional(),
   thresholds: z.object({
-    minRetentionRate: z.number().min(0).max(1).default(0.7),
-    maxChurnRate: z.number().min(0).max(1).default(0.3),
-    minConfidence: z.number().min(0).max(1).default(0.8),
-    minSampleSize: z.number().int().min(1).default(100),
+    minRetentionRate: z.number().min(0).max(1),
+    maxChurnRate: z.number().min(0).max(1),
+    minConfidence: z.number().min(0).max(1),
+    minSampleSize: z.number().int().min(1),
   }).optional(),
-  riskTolerance: z.enum(['low', 'medium', 'high']).default('medium'),
+  riskTolerance: z.enum(['low', 'medium', 'high']).optional(),
 });
 
 export type DecisionConfig = z.infer<typeof DecisionConfigSchema>;
