@@ -3,7 +3,8 @@
  * Processes persona actions and updates state
  */
 
-import type { ActionType, EmotionalState, PersonaProfile } from '@suts/core';
+import { ActionType } from '@suts/core';
+import type { EmotionalState, PersonaProfile } from '@suts/core';
 import type { ProductState } from '../types';
 
 /**
@@ -162,7 +163,7 @@ export class ActionProcessor {
     }
 
     // Adjust based on action complexity
-    const complexActions = ['CONFIGURE', 'CUSTOMIZE', 'USE_FEATURE'];
+    const complexActions = [ActionType.CONFIGURE, ActionType.CUSTOMIZE, ActionType.USE_FEATURE];
     if (complexActions.includes(action.type)) {
       probability -= 0.1;
     }

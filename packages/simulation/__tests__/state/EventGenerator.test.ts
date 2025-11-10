@@ -3,7 +3,7 @@
  */
 
 import { EventGenerator, type EventContext } from '../../src/state/EventGenerator';
-import { ACTION_TYPES } from '@suts/core';
+import { ActionType } from '@suts/core';
 import { type PersonaAction, type ActionResult } from '../../src/state/ActionProcessor';
 
 describe('EventGenerator', () => {
@@ -28,7 +28,7 @@ describe('EventGenerator', () => {
 
   it('should generate action event', () => {
     const action: PersonaAction = {
-      type: ACTION_TYPES.USE_FEATURE,
+      type: ActionType.USE_FEATURE,
       timestamp: new Date(),
       personaId: mockContext.personaId,
       target: 'feature1',
@@ -43,7 +43,7 @@ describe('EventGenerator', () => {
     expect(event.id).toBeDefined();
     expect(event.personaId).toBe(mockContext.personaId);
     expect(event.eventType).toBe('action');
-    expect(event.action).toBe(ACTION_TYPES.USE_FEATURE);
+    expect(event.action).toBe(ActionType.USE_FEATURE);
     expect(event.timestamp).toBe(action.timestamp.toISOString());
     expect(event.context['sessionId']).toBe(mockContext.sessionId);
     expect(event.context['day']).toBe(mockContext.day);
@@ -65,7 +65,7 @@ describe('EventGenerator', () => {
   });
 
   it('should generate decision event', () => {
-    const decision = 'CONFIGURE';
+    const decision = ActionType.CONFIGURE;
     const reasoning = 'Need to set up the tool';
     const timestamp = new Date();
 
@@ -101,7 +101,7 @@ describe('EventGenerator', () => {
 
   it('should generate multiple events from action result', () => {
     const action: PersonaAction = {
-      type: ACTION_TYPES.CONFIGURE,
+      type: ActionType.CONFIGURE,
       timestamp: new Date(),
       personaId: mockContext.personaId,
       success: false,
@@ -133,7 +133,7 @@ describe('EventGenerator', () => {
 
   it('should generate emotion event for significant emotional change', () => {
     const action: PersonaAction = {
-      type: ACTION_TYPES.USE_FEATURE,
+      type: ActionType.USE_FEATURE,
       timestamp: new Date(),
       personaId: mockContext.personaId,
       success: true,
@@ -158,7 +158,7 @@ describe('EventGenerator', () => {
 
   it('should not generate emotion event for minor emotional change', () => {
     const action: PersonaAction = {
-      type: ACTION_TYPES.READ_DOCS,
+      type: ActionType.READ_DOCS,
       timestamp: new Date(),
       personaId: mockContext.personaId,
       success: true,
@@ -183,7 +183,7 @@ describe('EventGenerator', () => {
 
   it('should not generate emotion event when all emotional impact values are undefined', () => {
     const action: PersonaAction = {
-      type: ACTION_TYPES.READ_DOCS,
+      type: ActionType.READ_DOCS,
       timestamp: new Date(),
       personaId: mockContext.personaId,
       success: true,
@@ -205,7 +205,7 @@ describe('EventGenerator', () => {
 
   it('should include emotional state in all events', () => {
     const action: PersonaAction = {
-      type: ACTION_TYPES.INSTALL,
+      type: ActionType.INSTALL,
       timestamp: new Date(),
       personaId: mockContext.personaId,
       success: true,
@@ -219,7 +219,7 @@ describe('EventGenerator', () => {
 
   it('should generate unique event IDs', () => {
     const action: PersonaAction = {
-      type: ACTION_TYPES.USE_FEATURE,
+      type: ActionType.USE_FEATURE,
       timestamp: new Date(),
       personaId: mockContext.personaId,
       success: true,

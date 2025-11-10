@@ -3,8 +3,8 @@
  * Time-step simulation loop with parallel persona processing
  */
 
-import type { PersonaProfile, TelemetryEvent, EmotionalState, ActionType } from '@suts/core';
-import { ACTION_TYPES } from '@suts/core';
+import type { PersonaProfile, TelemetryEvent, EmotionalState } from '@suts/core';
+import { ActionType } from '@suts/core';
 import type { ProductState } from './types';
 import { PersonaState, StateTransitionMachine } from './state/StateTransitions';
 import { ActionProcessor, type PersonaAction } from './state/ActionProcessor';
@@ -474,18 +474,18 @@ export class SimulationLoop {
    */
   private getAvailableActions(state: PersonaState): ActionType[] {
     const allActions: ActionType[] = [
-      ACTION_TYPES.INSTALL,
-      ACTION_TYPES.CONFIGURE,
-      ACTION_TYPES.USE_FEATURE,
-      ACTION_TYPES.READ_DOCS,
-      ACTION_TYPES.SEEK_HELP,
-      ACTION_TYPES.CUSTOMIZE,
-      ACTION_TYPES.SHARE,
-      ACTION_TYPES.UNINSTALL,
+      ActionType.INSTALL,
+      ActionType.CONFIGURE,
+      ActionType.USE_FEATURE,
+      ActionType.READ_DOCS,
+      ActionType.SEEK_HELP,
+      ActionType.CUSTOMIZE,
+      ActionType.SHARE,
+      ActionType.UNINSTALL,
     ];
 
     if (state === PersonaState.NEW) {
-      return [ACTION_TYPES.INSTALL, ACTION_TYPES.READ_DOCS];
+      return [ActionType.INSTALL, ActionType.READ_DOCS];
     }
 
     return allActions;
