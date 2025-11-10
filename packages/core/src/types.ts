@@ -2,6 +2,8 @@
  * Core types for SUTS
  */
 
+import type { PersonaProfile } from './models';
+
 /**
  * Emotional state of a simulated user
  */
@@ -43,4 +45,17 @@ export interface SimulationConfig {
   calibrationData?: Record<string, unknown>;
   createdAt: Date;
   createdBy: string;
+}
+
+/**
+ * Interface for persona generation
+ */
+export interface IPersonaGenerator {
+  /**
+   * Generate personas from stakeholder analysis documents
+   * @param docs - Array of analysis documents (text/markdown)
+   * @param count - Number of personas to generate
+   * @returns Promise resolving to array of generated personas
+   */
+  generateFromAnalysis(docs: string[], count: number): Promise<PersonaProfile[]>;
 }

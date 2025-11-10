@@ -30,3 +30,37 @@ export const SimulationEventSchema = z.object({
 });
 
 export type SimulationEvent = z.infer<typeof SimulationEventSchema>;
+
+/**
+ * Persona profile schema
+ */
+export const PersonaProfileSchema = z.object({
+  id: z.string(),
+  archetype: z.string(),
+  role: z.string(),
+  experienceLevel: z.enum(['Novice', 'Intermediate', 'Expert']),
+  companySize: z.enum(['Startup', 'SMB', 'Enterprise']),
+  techStack: z.array(z.string()),
+  painPoints: z.array(z.string()),
+  goals: z.array(z.string()),
+  fears: z.array(z.string()),
+  values: z.array(z.string()),
+  riskTolerance: z.number().min(0).max(1),
+  patienceLevel: z.number().min(0).max(1),
+  techAdoption: z.enum(['Early adopter', 'Early majority', 'Late majority', 'Laggard']),
+  learningStyle: z.enum(['Trial-error', 'Documentation', 'Video', 'Peer learning']),
+  evaluationCriteria: z.array(z.string()),
+  dealBreakers: z.array(z.string()),
+  delightTriggers: z.array(z.string()),
+  referralTriggers: z.array(z.string()),
+  typicalWorkflow: z.string(),
+  timeAvailability: z.string(),
+  collaborationStyle: z.enum(['Solo', 'Team', 'Community-driven']),
+  state: z.record(z.unknown()),
+  history: z.array(z.record(z.unknown())),
+  confidenceScore: z.number().min(0).max(1),
+  lastUpdated: z.string(),
+  source: z.string(),
+});
+
+export type PersonaProfile = z.infer<typeof PersonaProfileSchema>;
