@@ -129,7 +129,7 @@ export function calculateFrictionScore(events: PostHogEvent[]): MetricResult {
   };
 
   const weightedFriction = frictionEvents.reduce((sum, e) => {
-    const severity = e.properties.severity as keyof typeof severityWeights;
+    const severity = e.properties['severity'] as keyof typeof severityWeights;
     return sum + (severityWeights[severity] ?? 0);
   }, 0);
 
@@ -165,7 +165,7 @@ export function calculateDelightScore(events: PostHogEvent[]): MetricResult {
   };
 
   const weightedDelight = delightEvents.reduce((sum, e) => {
-    const impact = e.properties.impact as keyof typeof impactWeights;
+    const impact = e.properties['impact'] as keyof typeof impactWeights;
     return sum + (impactWeights[impact] ?? 0);
   }, 0);
 
