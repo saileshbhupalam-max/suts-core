@@ -55,63 +55,68 @@ describe('EventMapper', () => {
 
     expect(event.event).toContain('vibeatlas');
     expect(event.distinctId).toBe(earlyAdopter.id);
-    expect(event.properties.feature).toBe('contextPreview');
-    expect(event.properties.experienceLevel).toBe(earlyAdopter.experienceLevel);
+    expect(event.properties['feature']).toBe('contextPreview');
+    expect(event.properties['experienceLevel']).toBe(earlyAdopter.experienceLevel);
   });
 
   it('should map onboarding event', () => {
     const event = mapOnboardingEvent(1, true, 60, earlyAdopter);
 
     expect(event.event).toBe('vibeatlas_onboarding_step');
-    expect(event.properties.step).toBe(1);
-    expect(event.properties.completed).toBe(true);
-    expect(event.properties.duration).toBe(60);
+    expect(event.properties['step']).toBe(1);
+    expect(event.properties['completed']).toBe(true);
+    expect(event.properties['duration']).toBe(60);
   });
 
   it('should map engagement event', () => {
     const event = mapEngagementEvent('dashboard', 300, 'success', earlyAdopter);
 
     expect(event.event).toBe('vibeatlas_feature_engagement');
-    expect(event.properties.feature).toBe('dashboard');
-    expect(event.properties.duration).toBe(300);
-    expect(event.properties.outcome).toBe('success');
+    expect(event.properties['feature']).toBe('dashboard');
+    expect(event.properties['duration']).toBe(300);
+    expect(event.properties['outcome']).toBe('success');
   });
 
   it('should map friction event', () => {
     const event = mapFrictionEvent('tryMode', 'Token limit unclear', 'medium', skepticalDev);
 
     expect(event.event).toBe('vibeatlas_friction_encountered');
-    expect(event.properties.feature).toBe('tryMode');
-    expect(event.properties.severity).toBe('medium');
+    expect(event.properties['feature']).toBe('tryMode');
+    expect(event.properties['severity']).toBe('medium');
   });
 
   it('should map delight event', () => {
     const event = mapDelightEvent('contextPreview', 'First use', 'major', earlyAdopter);
 
     expect(event.event).toBe('vibeatlas_delight_moment');
-    expect(event.properties.feature).toBe('contextPreview');
-    expect(event.properties.impact).toBe('major');
+    expect(event.properties['feature']).toBe('contextPreview');
+    expect(event.properties['impact']).toBe('major');
   });
 
   it('should map referral event', () => {
     const event = mapReferralEvent('Great features', earlyAdopter);
 
     expect(event.event).toBe('vibeatlas_referral');
-    expect(event.properties.reason).toBe('Great features');
+    expect(event.properties['reason']).toBe('Great features');
   });
 
   it('should map churn event', () => {
     const event = mapChurnEvent('Too expensive', 'tryMode', skepticalDev);
 
     expect(event.event).toBe('vibeatlas_churn');
-    expect(event.properties.reason).toBe('Too expensive');
-    expect(event.properties.feature).toBe('tryMode');
+    expect(event.properties['reason']).toBe('Too expensive');
+    expect(event.properties['feature']).toBe('tryMode');
   });
 
   it('should batch map events', () => {
     const actions: UserAction[] = [
       testAction,
-      { type: ActionType.CONFIGURE, feature: 'dashboard', description: 'Setup', expectedOutcome: 'Ready' },
+      {
+        type: ActionType.CONFIGURE,
+        feature: 'dashboard',
+        description: 'Setup',
+        expectedOutcome: 'Ready',
+      },
     ];
     const emotionalStates = [
       { frustration: 0.1, confidence: 0.9, delight: 0.8, confusion: 0.0 },
@@ -255,12 +260,12 @@ describe('MetricCalculator', () => {
     const events = createPostHogEvents();
     const metrics = calculateAllMetrics(events);
 
-    expect(metrics.onboardingCompletionRate).toBeDefined();
-    expect(metrics.timeToFirstValue).toBeDefined();
-    expect(metrics.frictionScore).toBeDefined();
-    expect(metrics.delightScore).toBeDefined();
-    expect(metrics.churnRate).toBeDefined();
-    expect(metrics.nps).toBeDefined();
+    expect(metrics['onboardingCompletionRate']).toBeDefined();
+    expect(metrics['timeToFirstValue']).toBeDefined();
+    expect(metrics['frictionScore']).toBeDefined();
+    expect(metrics['delightScore']).toBeDefined();
+    expect(metrics['churnRate']).toBeDefined();
+    expect(metrics['nps']).toBeDefined();
   });
 
   it('should calculate persona metrics', () => {
@@ -276,15 +281,18 @@ describe('MetricCalculator', () => {
     const state: ProductState = {
       features: {},
       uiElements: {},
-      userData: {}, config: {}, environment: "development" as const, metadata: {},
+      userData: {},
+      config: {},
+      environment: 'development' as const,
+      metadata: {},
       version: '1.0.0',
     };
 
     const metrics = calculateAggregatedMetrics(events, [earlyAdopter], state);
 
-    expect(metrics.onboardingCompletionRate).toBeDefined();
-    expect(metrics.delightScore).toBeDefined();
-    expect(metrics.churnRate).toBeDefined();
+    expect(metrics['onboardingCompletionRate']).toBeDefined();
+    expect(metrics['delightScore']).toBeDefined();
+    expect(metrics['churnRate']).toBeDefined();
   });
 
   it('should handle empty events', () => {

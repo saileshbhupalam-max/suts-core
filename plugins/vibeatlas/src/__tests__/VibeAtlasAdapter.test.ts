@@ -32,10 +32,10 @@ describe('VibeAtlasAdapter', () => {
     it('should initialize all UI elements', () => {
       const state = adapter.getInitialState();
 
-      expect(state.uiElements.tryModeBanner).toBeDefined();
-      expect(state.uiElements.tokenCounter).toBeDefined();
-      expect(state.uiElements.contextPreview).toBeDefined();
-      expect(state.uiElements.dashboard).toBeDefined();
+      expect(state.uiElements['tryModeBanner']).toBeDefined();
+      expect(state.uiElements['tokenCounter']).toBeDefined();
+      expect(state.uiElements['contextPreview']).toBeDefined();
+      expect(state.uiElements['dashboard']).toBeDefined();
     });
   });
 
@@ -69,7 +69,9 @@ describe('VibeAtlasAdapter', () => {
       };
 
       const newState = adapter.applyAction(initialState, action);
-      const tryMode = newState.userData['tryMode'] as { enabled: boolean; tokensRemaining: number } | undefined;
+      const tryMode = newState.userData['tryMode'] as
+        | { enabled: boolean; tokensRemaining: number }
+        | undefined;
 
       expect(tryMode).toBeDefined();
       expect(tryMode?.enabled).toBe(true);
