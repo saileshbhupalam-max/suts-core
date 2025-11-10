@@ -1,0 +1,25 @@
+{
+  "name": "@suts/core",
+  "version": "1.0.0",
+  "description": "SUTS Core - Interfaces, types, and data models",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "keywords": [
+    "suts",
+    "core",
+    "types"
+  ],
+  "author": "SUTS Core Team",
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  }
+}
