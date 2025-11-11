@@ -28,6 +28,7 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
+      "@rgs/core/*": ["rgs/core/src/*"],
       "@core/*": ["packages/core/src/*"],
       "@persona/*": ["packages/persona/src/*"],
       "@simulation/*": ["packages/simulation/src/*"],
@@ -45,7 +46,8 @@
     { "path": "./packages/decision" },
     { "path": "./packages/network" },
     { "path": "./packages/cli" },
-    { "path": "./plugins/vibeatlas" }
+    { "path": "./plugins/vibeatlas" },
+    { "path": "./rgs/core" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
