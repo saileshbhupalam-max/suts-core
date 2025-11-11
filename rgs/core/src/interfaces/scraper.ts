@@ -124,15 +124,15 @@ export abstract class BaseScraper implements IScraper {
    */
   validate(signal: WebSignal): boolean {
     // Check required fields
-    if (!signal.id || signal.id.trim().length === 0) {
+    if (signal.id.trim().length === 0) {
       return false;
     }
 
-    if (!signal.content || signal.content.trim().length === 0) {
+    if (signal.content.trim().length === 0) {
       return false;
     }
 
-    if (!signal.url || signal.url.trim().length === 0) {
+    if (signal.url.trim().length === 0) {
       return false;
     }
 
@@ -153,9 +153,9 @@ export abstract class BaseScraper implements IScraper {
   /**
    * Tests connection to source - can be overridden by subclasses
    */
-  async testConnection(): Promise<boolean> {
+  testConnection(): Promise<boolean> {
     // Default implementation - subclasses should override
-    return true;
+    return Promise.resolve(true);
   }
 
   /**
