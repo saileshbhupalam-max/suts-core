@@ -26,6 +26,8 @@ module.exports = {
     '^@suts/persona$': '<rootDir>/../../packages/persona/src',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '\\.d\\.ts$'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/__tests__/', '\\.d\\.ts$'],
   testTimeout: 10000,
   clearMocks: true,
   resetMocks: true,
