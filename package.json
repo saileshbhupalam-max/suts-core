@@ -5,7 +5,8 @@
   "description": "Synthetic User Testing System - A reusable testing framework for simulating realistic user behavior",
   "workspaces": [
     "packages/*",
-    "plugins/*"
+    "plugins/*",
+    "rgs/*"
   ],
   "scripts": {
     "test": "jest --passWithNoTests",

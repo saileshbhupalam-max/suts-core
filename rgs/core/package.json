@@ -1,0 +1,31 @@
+{
+  "name": "@rgs/core",
+  "version": "1.0.0",
+  "description": "RGS Core - Real Grounding System core data models and interfaces",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext .ts --max-warnings 0"
+  },
+  "keywords": [
+    "rgs",
+    "core",
+    "grounding",
+    "web-signals"
+  ],
+  "author": "SUTS Core Team",
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  }
+}
