@@ -2,7 +2,7 @@
  * TaskFlow adapter for SUTS
  */
 
-import type { PersonaProfile } from '@suts/core';
+import type { PersonaProfile, ProductState } from '@suts/core';
 
 export class TaskFlowAdapter {
   constructor(
@@ -13,28 +13,49 @@ export class TaskFlowAdapter {
   /**
    * Convert generic product state to TaskFlow format
    */
-  adaptProductState(genericState: any): TaskFlowState {
+  adaptProductState(genericState: ProductState): TaskFlowState {
+    const features = genericState.features;
+    const projects = this.getFeatureValue(features, 'projects') ?? true;
+    const kanban = this.getFeatureValue(features, 'kanban') ?? true;
+    const gantt = this.getFeatureValue(features, 'gantt') ?? false;
+    const timeTracking = this.getFeatureValue(features, 'timeTracking') ?? true;
+    const collaboration = this.getFeatureValue(features, 'collaboration') ?? true;
+
     return {
       name: this.productName,
       version: this.version,
       features: {
-        projects: genericState.features?.projects?.enabled ?? true,
-        kanban: genericState.features?.kanban?.enabled ?? true,
-        gantt: genericState.features?.gantt?.enabled ?? false,
-        timeTracking: genericState.features?.timeTracking?.enabled ?? true,
-        collaboration: genericState.features?.collaboration?.enabled ?? true
+        projects,
+        kanban,
+        gantt,
+        timeTracking,
+        collaboration
       }
     };
   }
 
   /**
+   * Safely extract feature flag value
+   */
+  private getFeatureValue(features: Record<string, boolean | { enabled: boolean }>, key: string): boolean | undefined {
+    const feature = features[key];
+    if (typeof feature === 'boolean') {
+      return feature;
+    }
+    if (typeof feature === 'object' && feature !== null && 'enabled' in feature) {
+      return feature.enabled;
+    }
+    return undefined;
+  }
+
+  /**
    * Simulate a TaskFlow-specific action
    */
-  async simulateAction(
+  simulateAction(
     action: string,
     persona: PersonaProfile,
     context: TaskFlowState
-  ): Promise<ActionResult> {
+  ): ActionResult {
     switch (action) {
       case 'create_project':
         return this.simulateCreateProject(persona, context);
@@ -47,10 +68,10 @@ export class TaskFlowAdapter {
     }
   }
 
-  private async simulateCreateProject(
+  private simulateCreateProject(
     _persona: PersonaProfile,
     _context: TaskFlowState
-  ): Promise<ActionResult> {
+  ): ActionResult {
     const success = Math.random() > 0.1;
     return {
       success,
@@ -68,10 +89,10 @@ export class TaskFlowAdapter {
     };
   }
 
-  private async simulateAddTask(
+  private simulateAddTask(
     _persona: PersonaProfile,
     _context: TaskFlowState
-  ): Promise<ActionResult> {
+  ): ActionResult {
     return {
       success: true,
       duration: 10000,
@@ -88,10 +109,10 @@ export class TaskFlowAdapter {
     };
   }
 
-  private async simulateMoveToKanban(
+  private simulateMoveToKanban(
     _persona: PersonaProfile,
     context: TaskFlowState
-  ): Promise<ActionResult> {
+  ): ActionResult {
     if (!context.features.kanban) {
       return {
         success: false,
@@ -149,6 +170,6 @@ interface ActionResult {
   };
   telemetry: {
     event: string;
-    properties: Record<string, any>;
+    properties: Record<string, unknown>;
   };
 }

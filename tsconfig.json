@@ -1,4 +1,5 @@
 {
+  "files": [],
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
@@ -40,7 +41,9 @@
     { "path": "./packages/persona" },
     { "path": "./packages/simulation" },
     { "path": "./packages/telemetry" },
+    { "path": "./packages/analysis" },
     { "path": "./packages/decision" },
+    { "path": "./packages/network" },
     { "path": "./packages/cli" },
     { "path": "./plugins/vibeatlas" }
   ],

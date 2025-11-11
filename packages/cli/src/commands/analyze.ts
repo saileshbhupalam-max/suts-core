@@ -52,27 +52,35 @@ export async function analyzeCommand(options: AnalyzeOptions): Promise<void> {
     const outputDir = options.output ?? './suts-analysis';
     saveAnalysisResults(outputDir, frictionPoints, valueMoments, goNoGo);
 
-    if (!options.json) {
+    if (!(options.json ?? false)) {
       logger.success('Analysis completed');
       logger.info(`Results saved to: ${outputDir}`);
 
       // Display summary
+      // eslint-disable-next-line no-console
       console.log('\nAnalysis Results:');
+      // eslint-disable-next-line no-console
       console.log(`  Friction Points: ${frictionPoints.length}`);
+      // eslint-disable-next-line no-console
       console.log(`  Value Moments: ${valueMoments.length}`);
+      // eslint-disable-next-line no-console
       console.log(
         `  Positioning Score: ${(goNoGo.metrics.positioning * 100).toFixed(1)}%`
       );
+      // eslint-disable-next-line no-console
       console.log(
         `  Retention Score: ${(goNoGo.metrics.retention * 100).toFixed(1)}%`
       );
+      // eslint-disable-next-line no-console
       console.log(
         `  Viral Coefficient: ${(goNoGo.metrics.viral * 100).toFixed(1)}%`
       );
+      // eslint-disable-next-line no-console
       console.log(
         `  Decision: ${goNoGo.decision === 'go' ? 'GO ✓' : 'NO-GO ✗'}`
       );
     } else {
+      // eslint-disable-next-line no-console
       console.log(
         JSON.stringify({ frictionPoints, valueMoments, goNoGo }, null, 2)
       );

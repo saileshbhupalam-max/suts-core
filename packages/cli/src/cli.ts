@@ -13,6 +13,14 @@ import {
 } from './commands';
 
 /**
+ * Package.json structure
+ */
+interface PackageJson {
+  version: string;
+  [key: string]: unknown;
+}
+
+/**
  * Get package version
  * @returns Package version string
  */
@@ -20,8 +28,8 @@ function getVersion(): string {
   try {
     const packageJson = JSON.parse(
       readFileSync(join(__dirname, '../package.json'), 'utf-8')
-    );
-    return packageJson.version as string;
+    ) as PackageJson;
+    return packageJson.version;
   } catch {
     return '1.0.0';
   }

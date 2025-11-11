@@ -172,7 +172,7 @@ describe('ResultsWriter', () => {
         path.join(testOutputDir, 'summary.json'),
         'utf-8'
       );
-      const summaryData = JSON.parse(summaryContent);
+      const summaryData = JSON.parse(summaryContent) as { totalPersonas: number };
       expect(summaryData.totalPersonas).toBe(1);
     });
 

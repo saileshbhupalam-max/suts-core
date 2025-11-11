@@ -3,13 +3,11 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "composite": true
+    "noEmit": true
   },
   "include": ["src/**/*"],
-  "exclude": ["__tests__/**/*", "src/**/*.test.ts"],
   "references": [
-    { "path": "../core" },
-    { "path": "../telemetry" },
-    { "path": "../persona" }
+    { "path": "../../packages/core" },
+    { "path": "../../packages/simulation" }
   ]
 }

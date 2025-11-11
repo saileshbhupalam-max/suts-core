@@ -37,7 +37,7 @@ describe('generate-personas command', () => {
     expect(fs.existsSync(testOutputFile)).toBe(true);
 
     const content = fs.readFileSync(testOutputFile, 'utf-8');
-    const personas = JSON.parse(content);
+    const personas = JSON.parse(content) as unknown[];
 
     expect(Array.isArray(personas)).toBe(true);
     expect(personas.length).toBe(10);
@@ -126,10 +126,10 @@ describe('generate-personas command', () => {
     await generatePersonasCommand(options);
 
     const content = fs.readFileSync(testOutputFile, 'utf-8');
-    const personas = JSON.parse(content);
+    const personas = JSON.parse(content) as Array<{ background: string }>;
 
     // Check that personas have different backgrounds
-    const backgrounds = new Set(personas.map((p: { background: string }) => p.background));
+    const backgrounds = new Set(personas.map((p) => p.background));
     expect(backgrounds.size).toBeGreaterThan(1);
   });
 
@@ -143,10 +143,10 @@ describe('generate-personas command', () => {
     await generatePersonasCommand(options);
 
     const content = fs.readFileSync(testOutputFile, 'utf-8');
-    const personas = JSON.parse(content);
+    const personas = JSON.parse(content) as Array<{ goals: string[] }>;
 
     // Check that personas have goals
-    personas.forEach((persona: { goals: string[] }) => {
+    personas.forEach((persona) => {
       expect(Array.isArray(persona.goals)).toBe(true);
       expect(persona.goals.length).toBeGreaterThan(0);
     });
@@ -175,9 +175,9 @@ describe('generate-personas command', () => {
     await generatePersonasCommand(options);
 
     const content = fs.readFileSync(testOutputFile, 'utf-8');
-    const personas = JSON.parse(content);
+    const personas = JSON.parse(content) as Array<{ id: string }>;
 
-    const ids = personas.map((p: { id: string }) => p.id);
+    const ids = personas.map((p) => p.id);
     const uniqueIds = new Set(ids);
     expect(uniqueIds.size).toBe(personas.length);
   });

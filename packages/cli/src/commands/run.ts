@@ -41,7 +41,7 @@ export async function runCommand(options: RunOptions): Promise<void> {
     // Initialize status reporter
     const reporter = new StatusReporter(
       Boolean(options.verbose),
-      !Boolean(options.json)
+      !(options.json ?? false)
     );
 
     // Start simulation
@@ -57,11 +57,13 @@ export async function runCommand(options: RunOptions): Promise<void> {
     writer.writeResults(results);
 
     // Display summary
-    if (!options.json) {
+    if (!(options.json ?? false)) {
       const summary = SummaryGenerator.generateTextSummary(results);
+      // eslint-disable-next-line no-console
       console.log(summary);
       reporter.getLogger().success(`Results saved to: ${outputDir}`);
     } else {
+      // eslint-disable-next-line no-console
       console.log(JSON.stringify(results, null, 2));
     }
   } catch (error) {

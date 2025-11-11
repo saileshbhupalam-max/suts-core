@@ -52,7 +52,7 @@ describe('run command', () => {
     await runCommand(options);
 
     const personasFile = path.join(testOutputDir, 'personas.json');
-    const personas = JSON.parse(fs.readFileSync(personasFile, 'utf-8'));
+    const personas = JSON.parse(fs.readFileSync(personasFile, 'utf-8')) as unknown[];
 
     expect(personas.length).toBe(20);
   });
@@ -68,7 +68,7 @@ describe('run command', () => {
     await runCommand(options);
 
     const summaryFile = path.join(testOutputDir, 'summary.json');
-    const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf-8'));
+    const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf-8')) as { simulationDays: number };
 
     expect(summary.simulationDays).toBe(5);
   });
@@ -84,7 +84,7 @@ describe('run command', () => {
     await runCommand(options);
 
     const summaryFile = path.join(testOutputDir, 'summary.json');
-    const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf-8'));
+    const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf-8')) as { productPlugin: string };
 
     expect(summary.productPlugin).toBe('custom-product');
   });

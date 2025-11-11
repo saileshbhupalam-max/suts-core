@@ -30,6 +30,7 @@ export class Logger {
    * @param message - Message to log
    */
   public info(message: string): void {
+    // eslint-disable-next-line no-console
     console.log(chalk.blue('ℹ'), message);
   }
 
@@ -38,6 +39,7 @@ export class Logger {
    * @param message - Message to log
    */
   public warn(message: string): void {
+    // eslint-disable-next-line no-console
     console.log(chalk.yellow('⚠'), message);
   }
 
@@ -54,6 +56,7 @@ export class Logger {
    * @param message - Message to log
    */
   public success(message: string): void {
+    // eslint-disable-next-line no-console
     console.log(chalk.green('✓'), message);
   }
 
@@ -63,6 +66,7 @@ export class Logger {
    */
   public debug(message: string): void {
     if (this.verbose) {
+      // eslint-disable-next-line no-console
       console.log(chalk.gray('⋮'), chalk.gray(message));
     }
   }

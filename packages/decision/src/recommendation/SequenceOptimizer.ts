@@ -122,7 +122,7 @@ export class SequenceOptimizer {
       parts.push('Has blockers that should be resolved first');
     }
 
-    return parts.join('; ') || 'Standard priority';
+    return parts.length > 0 ? parts.join('; ') : 'Standard priority';
   }
 
   /**
@@ -155,7 +155,7 @@ export class SequenceOptimizer {
       // Visit dependencies first
       for (const depId of change.dependencies) {
         const dep = sequenced.find((s) => s.insight.insight.id === depId);
-        if (dep) {
+        if (dep !== undefined) {
           visit(dep);
         }
       }

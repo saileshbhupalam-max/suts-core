@@ -51,10 +51,11 @@ export async function generatePersonasCommand(
       );
     }
 
-    if (!options.json) {
+    if (!(options.json ?? false)) {
       logger.success(`Generated ${personas.length} personas`);
       logger.info(`Saved to: ${absolutePath}`);
     } else {
+      // eslint-disable-next-line no-console
       console.log(JSON.stringify(personas, null, 2));
     }
   } catch (error) {
