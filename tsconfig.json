@@ -35,7 +35,8 @@
       "@simulation/*": ["packages/simulation/src/*"],
       "@telemetry/*": ["packages/telemetry/src/*"],
       "@decision/*": ["packages/decision/src/*"],
-      "@cli/*": ["packages/cli/src/*"]
+      "@cli/*": ["packages/cli/src/*"],
+      "@rgs/utils/*": ["rgs/utils/src/*"]
     }
   },
   "references": [
@@ -49,7 +50,8 @@
     { "path": "./packages/cli" },
     { "path": "./plugins/vibeatlas" },
     { "path": "./rgs/core" },
-    { "path": "./rgs/storage" }
+    { "path": "./rgs/storage" },
+    { "path": "./rgs/utils" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
