@@ -61,7 +61,12 @@ export class ConfigLoader {
    */
   constructor(configPath: string = './rgs.config.json') {
     this.configPath = configPath;
-    this.config = { ...DEFAULT_CONFIG };
+    // Deep copy to avoid mutating DEFAULT_CONFIG
+    this.config = {
+      storage: { ...DEFAULT_CONFIG.storage },
+      scraping: { ...DEFAULT_CONFIG.scraping },
+      sources: [...DEFAULT_CONFIG.sources],
+    };
   }
 
   /**
@@ -122,37 +127,41 @@ export class ConfigLoader {
    */
   private loadFromEnv(): void {
     // Storage type
-    if (process.env['RGS_STORAGE_TYPE']) {
-      const type = process.env['RGS_STORAGE_TYPE'];
-      if (type === 'filesystem' || type === 'memory') {
-        this.config.storage.type = type;
+    const storageType = process.env['RGS_STORAGE_TYPE'];
+    if (storageType !== undefined && storageType.length > 0) {
+      if (storageType === 'filesystem' || storageType === 'memory') {
+        this.config.storage.type = storageType;
       }
     }
 
     // Storage path
-    if (process.env['RGS_STORAGE_PATH']) {
-      this.config.storage.path = process.env['RGS_STORAGE_PATH'];
+    const storagePath = process.env['RGS_STORAGE_PATH'];
+    if (storagePath !== undefined && storagePath.length > 0) {
+      this.config.storage.path = storagePath;
     }
 
     // Rate limit
-    if (process.env['RGS_RATE_LIMIT']) {
-      const rateLimit = parseInt(process.env['RGS_RATE_LIMIT'], 10);
+    const rateLimitStr = process.env['RGS_RATE_LIMIT'];
+    if (rateLimitStr !== undefined && rateLimitStr.length > 0) {
+      const rateLimit = parseInt(rateLimitStr, 10);
       if (!isNaN(rateLimit) && rateLimit > 0) {
         this.config.scraping.rateLimit = rateLimit;
       }
     }
 
     // Timeout
-    if (process.env['RGS_TIMEOUT']) {
-      const timeout = parseInt(process.env['RGS_TIMEOUT'], 10);
+    const timeoutStr = process.env['RGS_TIMEOUT'];
+    if (timeoutStr !== undefined && timeoutStr.length > 0) {
+      const timeout = parseInt(timeoutStr, 10);
       if (!isNaN(timeout) && timeout > 0) {
         this.config.scraping.timeout = timeout;
       }
     }
 
     // Retries
-    if (process.env['RGS_RETRIES']) {
-      const retries = parseInt(process.env['RGS_RETRIES'], 10);
+    const retriesStr = process.env['RGS_RETRIES'];
+    if (retriesStr !== undefined && retriesStr.length > 0) {
+      const retries = parseInt(retriesStr, 10);
       if (!isNaN(retries) && retries >= 0) {
         this.config.scraping.retries = retries;
       }
@@ -162,10 +171,7 @@ export class ConfigLoader {
   /**
    * Merge two configuration objects
    */
-  private mergeConfigs(
-    base: RGSConfig,
-    override: Partial<RGSConfig>
-  ): RGSConfig {
+  private mergeConfigs(base: RGSConfig, override: Partial<RGSConfig>): RGSConfig {
     return {
       storage: {
         ...base.storage,
@@ -185,9 +191,7 @@ export class ConfigLoader {
  * @param configPath - Path to rgs.config.json
  * @returns Loaded configuration
  */
-export async function loadConfig(
-  configPath?: string
-): Promise<RGSConfig> {
+export async function loadConfig(configPath?: string): Promise<RGSConfig> {
   const loader = new ConfigLoader(configPath);
   return loader.load();
 }

@@ -139,9 +139,17 @@ describe('ConfigLoader', () => {
       expect(config.scraping.retries).toBe(5);
     });
 
-    it.skip('should ignore invalid environment variables', async () => {
+    it('should ignore invalid environment variables', async () => {
       const uniquePath = `.test-config-invalid-${Date.now()}.json`;
 
+      // Explicitly clear all RGS env vars first
+      delete process.env['RGS_STORAGE_TYPE'];
+      delete process.env['RGS_STORAGE_PATH'];
+      delete process.env['RGS_RATE_LIMIT'];
+      delete process.env['RGS_TIMEOUT'];
+      delete process.env['RGS_RETRIES'];
+
+      // Now set invalid values
       process.env['RGS_STORAGE_TYPE'] = 'invalid';
       process.env['RGS_RATE_LIMIT'] = 'not-a-number';
       process.env['RGS_TIMEOUT'] = '-1000';
@@ -180,8 +188,15 @@ describe('ConfigLoader', () => {
       await expect(loader.load()).rejects.toThrow();
     });
 
-    it.skip('should merge file config with defaults', async () => {
+    it('should merge file config with defaults', async () => {
       const uniquePath = `.test-config-merge-${Date.now()}.json`;
+
+      // Explicitly clear all RGS env vars first
+      delete process.env['RGS_STORAGE_TYPE'];
+      delete process.env['RGS_STORAGE_PATH'];
+      delete process.env['RGS_RATE_LIMIT'];
+      delete process.env['RGS_TIMEOUT'];
+      delete process.env['RGS_RETRIES'];
 
       const partialConfig = {
         scraping: {
