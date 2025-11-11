@@ -1,0 +1,155 @@
+{
+  "simulation": {
+    "name": "VibeAtlas V4 Final Validation (Real Adapter)",
+    "description": "Final validation with real VibeAtlasAdapter - 100 personas over 14 days for GO/NO-GO decision",
+    "product": "vibeatlas",
+    "adapter": "../../plugins/vibeatlas/src/VibeAtlasAdapter",
+    "personas": 100,
+    "days": 14,
+    "seed": 42
+  },
+  "personas": {
+    "archetypes": [
+      {
+        "name": "Tech-Savvy Developer",
+        "role": "Senior Developer",
+        "experienceLevel": "Expert",
+        "companySize": "Enterprise",
+        "techStack": ["TypeScript", "React", "Node.js", "Python"],
+        "painPoints": ["token costs", "context management", "session tracking"],
+        "goals": ["reduce costs", "improve efficiency", "optimize workflow"],
+        "riskTolerance": 0.7,
+        "patienceLevel": 0.6,
+        "techAdoption": "Early adopter"
+      },
+      {
+        "name": "Curious Beginner",
+        "role": "Junior Developer",
+        "experienceLevel": "Beginner",
+        "companySize": "Startup",
+        "techStack": ["JavaScript", "HTML", "CSS"],
+        "painPoints": ["learning curve", "tool complexity"],
+        "goals": ["learn quickly", "build confidence"],
+        "riskTolerance": 0.5,
+        "patienceLevel": 0.4,
+        "techAdoption": "Early majority"
+      },
+      {
+        "name": "Pragmatic Engineer",
+        "role": "Full Stack Developer",
+        "experienceLevel": "Intermediate",
+        "companySize": "Mid-market",
+        "techStack": ["Python", "Django", "PostgreSQL"],
+        "painPoints": ["feature overload", "unclear value"],
+        "goals": ["solve specific problems", "avoid distractions"],
+        "riskTolerance": 0.4,
+        "patienceLevel": 0.5,
+        "techAdoption": "Late majority"
+      }
+    ],
+    "distribution": {
+      "Tech-Savvy Developer": 0.3,
+      "Curious Beginner": 0.35,
+      "Pragmatic Engineer": 0.35
+    }
+  },
+  "features": {
+    "tokenCounter": {
+      "enabled": true,
+      "description": "Real-time token usage tracking with savings visualization",
+      "rolloutPercentage": 100
+    },
+    "contextPreview": {
+      "enabled": true,
+      "description": "Before/after context preview with optimization controls",
+      "rolloutPercentage": 100
+    },
+    "tryMode": {
+      "enabled": true,
+      "description": "14-day trial with guided onboarding",
+      "rolloutPercentage": 100
+    },
+    "dashboard": {
+      "enabled": true,
+      "description": "Comprehensive analytics dashboard with export options",
+      "rolloutPercentage": 100
+    },
+    "persistentMemory": {
+      "enabled": true,
+      "description": "Cross-session context retention and retrieval",
+      "rolloutPercentage": 100
+    },
+    "performanceOpt": {
+      "enabled": true,
+      "description": "Automatic performance monitoring and optimization",
+      "rolloutPercentage": 100
+    },
+    "autoCapture": {
+      "enabled": true,
+      "description": "Automatic event tracking and telemetry",
+      "rolloutPercentage": 100
+    },
+    "sessionReports": {
+      "enabled": true,
+      "description": "End-of-session summary reports",
+      "rolloutPercentage": 100
+    },
+    "mcpServer": {
+      "enabled": true,
+      "description": "MCP server integration for external tools",
+      "rolloutPercentage": 80
+    }
+  },
+  "scenarios": [
+    {
+      "name": "First-Time Installation",
+      "description": "User installs extension for the first time",
+      "trigger": "day === 1 && session === 1",
+      "expectedBehaviors": [
+        "Try mode activates automatically",
+        "Token counter appears in status bar",
+        "Welcome notification shown"
+      ]
+    },
+    {
+      "name": "Heavy Usage Day",
+      "description": "User has multiple coding sessions with high token usage",
+      "trigger": "session >= 5 && tokenUsage > 10000",
+      "expectedBehaviors": [
+        "Dashboard shows meaningful savings",
+        "Context preview optimization kicks in",
+        "Performance remains stable"
+      ]
+    },
+    {
+      "name": "Trial Expiry Decision",
+      "description": "User reaches end of 14-day trial",
+      "trigger": "tryMode.daysRemaining === 0",
+      "expectedBehaviors": [
+        "Clear value proposition shown",
+        "Easy path to keep or uninstall",
+        "No dark patterns or friction"
+      ]
+    }
+  ],
+  "thresholds": {
+    "positioning": {
+      "target": 0.60,
+      "description": "At least 60% of users understand what VibeAtlas does and its value"
+    },
+    "retention": {
+      "target": 0.80,
+      "description": "At least 80% retention after trial period"
+    },
+    "viral": {
+      "target": 0.25,
+      "description": "At least 25% likelihood of users recommending to others"
+    }
+  },
+  "analysis": {
+    "enableFrictionDetection": true,
+    "enableValueMomentTracking": true,
+    "enableCohortAnalysis": true,
+    "confidenceThreshold": 0.90
+  }
+}
