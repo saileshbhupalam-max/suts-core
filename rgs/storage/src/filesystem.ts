@@ -173,9 +173,7 @@ export class FileSystemStorage implements IStorage {
   /**
    * Group signals by source and date
    */
-  private groupSignalsBySourceAndDate(
-    signals: WebSignal[]
-  ): Map<string, WebSignal[]> {
+  private groupSignalsBySourceAndDate(signals: WebSignal[]): Map<string, WebSignal[]> {
     const grouped = new Map<string, WebSignal[]>();
 
     for (const signal of signals) {
@@ -222,10 +220,7 @@ export class FileSystemStorage implements IStorage {
   /**
    * Append data to file or create new file
    */
-  private async appendOrCreateFile<T>(
-    filePath: string,
-    newData: T[]
-  ): Promise<void> {
+  private async appendOrCreateFile<T>(filePath: string, newData: T[]): Promise<void> {
     let existingData: T[] = [];
 
     try {
@@ -234,11 +229,7 @@ export class FileSystemStorage implements IStorage {
         existingData = JSON.parse(content) as T[];
       }
     } catch (error) {
-      if (
-        error instanceof Error &&
-        'code' in error &&
-        error.code !== 'ENOENT'
-      ) {
+      if (error instanceof Error && 'code' in error && error.code !== 'ENOENT') {
         throw error;
       }
       // File doesn't exist, will create new
@@ -251,41 +242,38 @@ export class FileSystemStorage implements IStorage {
   /**
    * Apply signal filter
    */
-  private applySignalFilter(
-    signals: WebSignal[],
-    filter?: SignalFilter
-  ): WebSignal[] {
-    if (!filter) {
+  private applySignalFilter(signals: WebSignal[], filter?: SignalFilter): WebSignal[] {
+    if (filter === undefined) {
       return signals;
     }
 
     return signals.filter((signal) => {
-      if (filter.source && signal.source !== filter.source) {
+      if (filter.source !== undefined && signal.source !== filter.source) {
         return false;
       }
 
-      if (filter.type && signal.type !== filter.type) {
+      if (filter.type !== undefined && signal.type !== filter.type) {
         return false;
       }
 
-      if (filter.sentiment && signal.sentiment !== filter.sentiment) {
+      if (filter.sentiment !== undefined && signal.sentiment !== filter.sentiment) {
         return false;
       }
 
       const signalDate = new Date(signal.timestamp);
 
-      if (filter.startDate && signalDate < filter.startDate) {
+      if (filter.startDate !== undefined && signalDate < filter.startDate) {
         return false;
       }
 
-      if (filter.endDate && signalDate > filter.endDate) {
+      if (filter.endDate !== undefined && signalDate > filter.endDate) {
         return false;
       }
 
       if (
-        filter.tags &&
+        filter.tags !== undefined &&
         filter.tags.length > 0 &&
-        signal.tags &&
+        signal.tags !== undefined &&
         !filter.tags.some((tag) => signal.tags?.includes(tag))
       ) {
         return false;
@@ -299,7 +287,7 @@ export class FileSystemStorage implements IStorage {
    * Apply insight query filter (simple text search)
    */
   private applyInsightQuery(insights: Insight[], query?: string): Insight[] {
-    if (!query || query.trim() === '') {
+    if (query === undefined || query.trim().length === 0) {
       return insights;
     }
 

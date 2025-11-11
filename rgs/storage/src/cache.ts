@@ -1,10 +1,4 @@
-import {
-  IStorage,
-  WebSignal,
-  Insight,
-  SignalFilter,
-  StorageError,
-} from './interfaces/storage';
+import { IStorage, WebSignal, Insight, SignalFilter, StorageError } from './interfaces/storage';
 
 /**
  * Cache entry with timestamp for LRU eviction
@@ -47,7 +41,7 @@ export class InMemoryCache implements IStorage {
    * Save web signals to cache
    * Uses LRU eviction when capacity is exceeded
    */
-  async saveSignals(signals: WebSignal[]): Promise<void> {
+  saveSignals(signals: WebSignal[]): Promise<void> {
     try {
       for (const signal of signals) {
         // Update access time for existing entries
@@ -65,23 +59,24 @@ export class InMemoryCache implements IStorage {
           timestamp: Date.now(),
         });
       }
+      return Promise.resolve();
     } catch (error) {
-      throw new StorageError('Failed to save signals to cache', error);
+      return Promise.reject(new StorageError('Failed to save signals to cache', error));
     }
   }
 
   /**
    * Load web signals from cache with optional filtering
    */
-  async loadSignals(filter?: SignalFilter): Promise<WebSignal[]> {
+  loadSignals(filter?: SignalFilter): Promise<WebSignal[]> {
     try {
       const allSignals = Array.from(this.signals.values())
         .sort((a, b) => b.timestamp - a.timestamp) // Most recently used first
         .map((entry) => entry.data);
 
-      return this.applySignalFilter(allSignals, filter);
+      return Promise.resolve(this.applySignalFilter(allSignals, filter));
     } catch (error) {
-      throw new StorageError('Failed to load signals from cache', error);
+      return Promise.reject(new StorageError('Failed to load signals from cache', error));
     }
   }
 
@@ -89,7 +84,7 @@ export class InMemoryCache implements IStorage {
    * Save insights to cache
    * Uses LRU eviction when capacity is exceeded
    */
-  async saveInsights(insights: Insight[]): Promise<void> {
+  saveInsights(insights: Insight[]): Promise<void> {
     try {
       for (const insight of insights) {
         // Update access time for existing entries
@@ -107,23 +102,24 @@ export class InMemoryCache implements IStorage {
           timestamp: Date.now(),
         });
       }
+      return Promise.resolve();
     } catch (error) {
-      throw new StorageError('Failed to save insights to cache', error);
+      return Promise.reject(new StorageError('Failed to save insights to cache', error));
     }
   }
 
   /**
    * Load insights from cache with optional query filtering
    */
-  async loadInsights(query?: string): Promise<Insight[]> {
+  loadInsights(query?: string): Promise<Insight[]> {
     try {
       const allInsights = Array.from(this.insights.values())
         .sort((a, b) => b.timestamp - a.timestamp) // Most recently used first
         .map((entry) => entry.data);
 
-      return this.applyInsightQuery(allInsights, query);
+      return Promise.resolve(this.applyInsightQuery(allInsights, query));
     } catch (error) {
-      throw new StorageError('Failed to load insights from cache', error);
+      return Promise.reject(new StorageError('Failed to load insights from cache', error));
     }
   }
 
@@ -187,41 +183,38 @@ export class InMemoryCache implements IStorage {
   /**
    * Apply signal filter
    */
-  private applySignalFilter(
-    signals: WebSignal[],
-    filter?: SignalFilter
-  ): WebSignal[] {
-    if (!filter) {
+  private applySignalFilter(signals: WebSignal[], filter?: SignalFilter): WebSignal[] {
+    if (filter === undefined) {
       return signals;
     }
 
     return signals.filter((signal) => {
-      if (filter.source && signal.source !== filter.source) {
+      if (filter.source !== undefined && signal.source !== filter.source) {
         return false;
       }
 
-      if (filter.type && signal.type !== filter.type) {
+      if (filter.type !== undefined && signal.type !== filter.type) {
         return false;
       }
 
-      if (filter.sentiment && signal.sentiment !== filter.sentiment) {
+      if (filter.sentiment !== undefined && signal.sentiment !== filter.sentiment) {
         return false;
       }
 
       const signalDate = new Date(signal.timestamp);
 
-      if (filter.startDate && signalDate < filter.startDate) {
+      if (filter.startDate !== undefined && signalDate < filter.startDate) {
         return false;
       }
 
-      if (filter.endDate && signalDate > filter.endDate) {
+      if (filter.endDate !== undefined && signalDate > filter.endDate) {
         return false;
       }
 
       if (
-        filter.tags &&
+        filter.tags !== undefined &&
         filter.tags.length > 0 &&
-        signal.tags &&
+        signal.tags !== undefined &&
         !filter.tags.some((tag) => signal.tags?.includes(tag))
       ) {
         return false;
@@ -235,7 +228,7 @@ export class InMemoryCache implements IStorage {
    * Apply insight query filter (simple text search)
    */
   private applyInsightQuery(insights: Insight[], query?: string): Insight[] {
-    if (!query || query.trim() === '') {
+    if (query === undefined || query.trim().length === 0) {
       return insights;
     }
 
