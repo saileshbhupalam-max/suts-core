@@ -1,0 +1,33 @@
+{
+  "simulation": {
+    "personas": 100,
+    "days": 14,
+    "actions": 2104,
+    "duration": "0.05s",
+    "timestamp": "2025-11-11T07:30:33.789Z"
+  },
+  "metrics": {
+    "positioning": {
+      "percentage": 71.3375796178344,
+      "target": 60,
+      "pass": true
+    },
+    "retention": {
+      "percentage": 79,
+      "target": 80,
+      "pass": false
+    },
+    "viral": {
+      "percentage": 28.000000000000004,
+      "target": 25,
+      "pass": true
+    },
+    "confidence": 90
+  },
+  "decision": {
+    "recommendation": "ITERATE",
+    "reasoning": "Most targets met, iteration needed",
+    "timestamp": "2025-11-11T07:30:33.789Z"
+  },
+  "topValueMoments": []
+}
