@@ -1,42 +1,19 @@
 /**
- * SUTS VibeAtlas Plugin
- * Product adapter for VibeAtlas VS Code extension
+ * VibeAtlas Plugin Entry Point
+ * Exports adapter and related types
  */
 
-export * from './VibeAtlasAdapter';
-export * from './config/VibeAtlasConfig';
-export * from './config/FeatureFlags';
-export * from './config/MetricThresholds';
-export * from './features/TryModeFeature';
-export * from './features/TokenCounterFeature';
-export * from './features/ContextPreviewFeature';
-export * from './features/DashboardFeature';
-export * from './scenarios/OnboardingScenario';
-export * from './scenarios/DailyUsageScenario';
-export * from './scenarios/FrictionScenario';
-export {
-  getDelightMoments,
-  identifyLikelyDelights,
-  getDelightActions,
-  simulateDelightEncounter,
-  calculateReferralProbability,
-} from './scenarios/DelightScenario';
-export type { DelightMoment } from './scenarios/DelightScenario';
-export * from './telemetry/EventMapper';
-export {
-  calculateOnboardingCompletionRate,
-  calculateTimeToFirstValue,
-  calculateFeatureAdoptionRate,
-  calculateAverageSessionDuration,
-  calculateFrictionScore,
-  calculateChurnRate,
-  calculateReferralRate,
-  calculateNPS,
-  calculateAllMetrics,
-  calculatePersonaMetrics,
-  calculateAggregatedMetrics,
-} from './telemetry/MetricCalculator';
-export type { MetricResult } from './telemetry/MetricCalculator';
-export * from './testdata/PersonaTemplates';
-export * from './testdata/ScenarioLibrary';
-export * from './testdata/ExpectedOutcomes';
+export { VibeAtlasAdapter } from './VibeAtlasAdapter';
+export type { VibeAtlasState } from './models/VibeAtlasState';
+export type { Feature } from './features/Feature';
+
+// Export all features
+export { TokenCounterFeature } from './features/TokenCounter';
+export { ContextPreviewFeature } from './features/ContextPreview';
+export { TryModeFeature } from './features/TryMode';
+export { DashboardFeature } from './features/Dashboard';
+export { PersistentMemoryFeature } from './features/PersistentMemory';
+export { PerformanceOptFeature } from './features/PerformanceOpt';
+export { AutoCaptureFeature } from './features/AutoCapture';
+export { SessionReportsFeature } from './features/SessionReports';
+export { MCPServerFeature } from './features/MCPServer';
