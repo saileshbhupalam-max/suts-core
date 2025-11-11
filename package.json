@@ -5,7 +5,8 @@
   "description": "Synthetic User Testing System - A reusable testing framework for simulating realistic user behavior",
   "workspaces": [
     "packages/*",
-    "plugins/*"
+    "plugins/*",
+    "rgs/*"
   ],
   "scripts": {
     "test": "jest --passWithNoTests",
@@ -44,6 +45,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.3.1",
     "zod": "^3.22.4"
   },

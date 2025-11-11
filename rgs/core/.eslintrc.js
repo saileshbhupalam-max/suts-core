@@ -4,14 +4,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',
-    project: [
-      './tsconfig.json',
-      './packages/*/tsconfig.json',
-      './packages/*/tsconfig.test.json',
-      './examples/*/tsconfig.json',
-      './plugins/*/tsconfig.json',
-      './rgs/*/tsconfig.json'
-    ],
+    project: './tsconfig.json',
     tsconfigRootDir: __dirname
   },
   plugins: ['@typescript-eslint'],
@@ -25,50 +18,6 @@ module.exports = {
     es2022: true,
     jest: true
   },
-  overrides: [
-    {
-      files: ['**/packages/core/__tests__/**/*.ts', 'packages/core/__tests__/**/*.ts'],
-      parserOptions: {
-        project: './packages/core/tsconfig.test.json'
-      }
-    },
-    {
-      files: ['packages/cli/**/__tests__/**/*.ts'],
-      parserOptions: {
-        project: './packages/cli/tsconfig.json'
-      }
-    },
-    {
-      files: ['packages/telemetry/**/__tests__/**/*.ts', 'packages/telemetry/src/**/*.test.ts'],
-      parserOptions: {
-        project: './packages/telemetry/tsconfig.test.json'
-      }
-    },
-    {
-      files: ['packages/analysis/**/__tests__/**/*.ts', 'packages/analysis/src/**/*.test.ts'],
-      parserOptions: {
-        project: './packages/analysis/tsconfig.test.json'
-      }
-    },
-    {
-      files: ['packages/decision/**/__tests__/**/*.ts', 'packages/decision/src/**/*.test.ts'],
-      parserOptions: {
-        project: './packages/decision/tsconfig.test.json'
-      }
-    },
-    {
-      files: ['packages/persona/**/__tests__/**/*.ts', 'packages/persona/src/**/*.test.ts'],
-      parserOptions: {
-        project: './packages/persona/tsconfig.test.json'
-      }
-    },
-    {
-      files: ['packages/simulation/**/__tests__/**/*.ts', 'packages/simulation/src/**/*.test.ts'],
-      parserOptions: {
-        project: './packages/simulation/tsconfig.test.json'
-      }
-    }
-  ],
   rules: {
     '@typescript-eslint/explicit-function-return-type': ['error', {
       allowExpressions: true,
@@ -123,5 +72,5 @@ module.exports = {
       }
     ]
   },
-  ignorePatterns: ['dist', 'coverage', 'node_modules', '*.js', '!.eslintrc.js', '!jest.config*.js']
+  ignorePatterns: ['dist', 'coverage', 'node_modules', '*.js', '!.eslintrc.js', '__tests__']
 };
