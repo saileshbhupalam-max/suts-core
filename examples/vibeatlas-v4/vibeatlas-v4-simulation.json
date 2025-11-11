@@ -1,0 +1,28 @@
+{
+  "simulation": {
+    "product": "vibeatlas",
+    "personas": 100,
+    "days": 14
+  },
+
+  "personas": {
+    "analysisFiles": [
+      "./examples/vibeatlas-v4/analysis/developer-personas.md",
+      "./examples/vibeatlas-v4/analysis/competitor-analysis.md",
+      "./examples/vibeatlas-v4/analysis/user-pain-points.md"
+    ],
+    "diversity": 0.8
+  },
+
+  "thresholds": {
+    "positioning": 0.60,
+    "retention": 0.80,
+    "viral": 0.25
+  },
+
+  "output": {
+    "directory": "./suts-results/vibeatlas-v4",
+    "format": "json",
+    "generateReport": true
+  }
+}

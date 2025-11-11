@@ -1,0 +1,13 @@
+[
+  {
+    "id": "value-1",
+    "description": "Successful feature usage",
+    "impact": 0.8,
+    "frequency": 0.6,
+    "affectedPersonas": [
+      "persona-1",
+      "persona-2",
+      "persona-3"
+    ]
+  }
+]

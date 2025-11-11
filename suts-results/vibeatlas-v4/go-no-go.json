@@ -1,0 +1,10 @@
+{
+  "decision": "no-go",
+  "confidence": 0.5903280638177862,
+  "reasoning": "One or more key metrics below threshold. Product needs improvement before launch.",
+  "metrics": {
+    "positioning": 0.7527617778858582,
+    "retention": 0.75,
+    "viral": 0.2682224135675007
+  }
+}

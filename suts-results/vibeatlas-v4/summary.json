@@ -1,0 +1,9 @@
+{
+  "totalPersonas": 100,
+  "totalEvents": 7000,
+  "simulationDays": 14,
+  "productPlugin": "vibeatlas",
+  "startTime": "2025-11-11T06:05:28.834Z",
+  "endTime": "2025-11-11T06:05:29.402Z",
+  "duration": 568
+}

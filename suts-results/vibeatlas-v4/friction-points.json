@@ -1,0 +1,12 @@
+[
+  {
+    "id": "friction-1",
+    "description": "Complex onboarding process",
+    "severity": 0.7,
+    "frequency": 0.3,
+    "affectedPersonas": [
+      "persona-1",
+      "persona-2"
+    ]
+  }
+]
