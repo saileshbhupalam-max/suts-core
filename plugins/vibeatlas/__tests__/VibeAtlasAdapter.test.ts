@@ -50,7 +50,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should initialize all features', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
       expect(state['features']['tokenCounter']).toBe(true);
       expect(state['features']['contextPreview']).toBe(true);
       expect(state['features']['tryMode']).toBe(true);
@@ -65,7 +65,7 @@ describe('VibeAtlasAdapter', () => {
 
   describe('getInitialState', () => {
     it('should return complete VibeAtlas state', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
 
       expect(state['version']).toBe('0.4.0');
       expect(state['buildNumber']).toBe('040001');
@@ -81,7 +81,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should have all V4 features enabled', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
 
       expect(state['features']['tokenCounter']).toBe(true);
       expect(state['features']['tryMode']).toBe(true);
@@ -90,7 +90,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should initialize tokenCounter state correctly', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
 
       expect(state.tokenCounter.sessionTokens).toBe(0);
       expect(state.tokenCounter.totalTokens).toBe(0);
@@ -99,7 +99,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should initialize tryMode state correctly', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
 
       expect(state.tryMode.enabled).toBe(false);
       expect(state.tryMode.daysRemaining).toBe(14);
@@ -108,7 +108,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should initialize dashboard state correctly', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
 
       expect(state.dashboard.totalSavings).toBe(0);
       expect(state.dashboard.sessionsTracked).toBe(0);
@@ -117,7 +117,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should initialize performance state correctly', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
 
       expect(state.performanceOptimization.avgResponseTime).toBe(50);
       expect(state.performanceOptimization.optimizationLevel).toBe('medium');
@@ -233,7 +233,7 @@ describe('VibeAtlasAdapter', () => {
 
   describe('getAvailableActions', () => {
     it('should return appropriate actions for skeptical persona', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
       const actions = adapter.getAvailableActions(state, mockPersona);
 
       expect(actions.length).toBeGreaterThan(0);
@@ -247,7 +247,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should return token counter actions for cost-focused persona', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
       const actions = adapter.getAvailableActions(state, mockPersona);
 
       const tokenAction = actions.find(a => a.feature === 'tokenCounter');
@@ -258,7 +258,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should return context preview actions for quality-focused persona', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
       const actions = adapter.getAvailableActions(state, mockPersona);
 
       const previewAction = actions.find(a => a.feature === 'contextPreview');
@@ -269,7 +269,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should return persistent memory actions for expert persona', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
       const actions = adapter.getAvailableActions(state, mockPersona);
 
       const memoryAction = actions.find(a => a.feature === 'persistentMemory');
@@ -277,7 +277,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should not return share action when savings are low', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
       const actions = adapter.getAvailableActions(state, mockPersona);
 
       const shareAction = actions.find(a => a.type === ActionType.SHARE && a.feature === 'dashboard');
@@ -285,7 +285,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should return share action when savings are high', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
       state.tokenCounter.savingsPercent = 40;
 
       const actions = adapter.getAvailableActions(state, mockPersona);
@@ -295,7 +295,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should not return disabled feature actions', () => {
-      const state = adapter.getInitialState();
+      const state = adapter.getInitialState() as VibeAtlasState;
       state['features']['mcpServer'] = false;
 
       const actions = adapter.getAvailableActions(state, mockPersona);
@@ -307,7 +307,7 @@ describe('VibeAtlasAdapter', () => {
 
   describe('integration scenarios', () => {
     it('should handle full try mode lifecycle', () => {
-      let state = adapter.getInitialState();
+      let state = adapter.getInitialState() as VibeAtlasState;
 
       // Activate try mode
       const activateAction: UserAction = {
@@ -331,7 +331,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should handle coding session with token tracking', () => {
-      let state = adapter.getInitialState();
+      let state = adapter.getInitialState() as VibeAtlasState;
 
       const codingAction: UserAction = {
         type: ActionType.USE_FEATURE,
@@ -346,7 +346,7 @@ describe('VibeAtlasAdapter', () => {
     });
 
     it('should handle dashboard export workflow', () => {
-      let state = adapter.getInitialState();
+      let state = adapter.getInitialState() as VibeAtlasState;
 
       // View dashboard
       const viewAction: UserAction = {

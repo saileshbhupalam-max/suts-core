@@ -39,3 +39,4 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+packages/network/__tests__/

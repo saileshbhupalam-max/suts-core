@@ -165,7 +165,7 @@ export class VibeAtlasAdapter implements ISimpleProductAdapter {
         enabled: false,
         connectionsActive: 0,
       },
-    };
+    } as ProductState;
   }
 
   /**

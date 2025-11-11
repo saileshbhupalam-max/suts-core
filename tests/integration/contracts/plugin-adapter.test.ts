@@ -106,7 +106,7 @@ describe('Contract: IProductAdapter Interface', () => {
 
   it('should maintain state consistency across actions', () => {
     const adapter = new VibeAtlasAdapter();
-    let state = adapter.getInitialState();
+    let state = adapter.getInitialState() as ProductState;
 
     // Apply multiple actions
     for (let i = 0; i < 5; i++) {
