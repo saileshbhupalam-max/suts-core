@@ -1,0 +1,38 @@
+{
+  "name": "@rgs/scraper-reddit",
+  "version": "1.0.0",
+  "description": "RGS Reddit Scraper - Reddit scraping implementation using snoowrap",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext .ts --max-warnings 0",
+    "ci": "npm run type-check && npm run lint && npm run test:coverage"
+  },
+  "keywords": [
+    "rgs",
+    "reddit",
+    "scraper",
+    "web-signals"
+  ],
+  "author": "SUTS Core Team",
+  "license": "MIT",
+  "dependencies": {
+    "@rgs/core": "workspace:*",
+    "@rgs/utils": "workspace:*",
+    "snoowrap": "^1.23.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  }
+}
