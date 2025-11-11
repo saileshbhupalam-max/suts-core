@@ -32,7 +32,7 @@ describe('Logger', () => {
       logger.info('test message');
 
       expect(outputMock).toHaveBeenCalledTimes(1);
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.level).toBe(LogLevel.INFO);
       expect(entry.message).toBe('test message');
     });
@@ -47,7 +47,7 @@ describe('Logger', () => {
       logger.warn('warning message');
 
       expect(outputMock).toHaveBeenCalledTimes(1);
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.level).toBe(LogLevel.WARN);
     });
 
@@ -56,7 +56,7 @@ describe('Logger', () => {
       logger.error('error message', undefined, error);
 
       expect(outputMock).toHaveBeenCalledTimes(1);
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.level).toBe(LogLevel.ERROR);
       expect(entry.error).toBeDefined();
       expect(entry.error?.message).toBe('test error');
@@ -79,21 +79,21 @@ describe('Logger', () => {
       const context = { userId: '123', action: 'scrape' };
       logger.info('test message', context);
 
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.context).toEqual(context);
     });
 
     it('should not include empty context', () => {
       logger.info('test message', {});
 
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.context).toBeUndefined();
     });
 
     it('should handle undefined context', () => {
       logger.info('test message');
 
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.context).toBeUndefined();
     });
   });
@@ -103,7 +103,7 @@ describe('Logger', () => {
       const error = new Error('test error');
       logger.error('error occurred', undefined, error);
 
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.error).toBeDefined();
       expect(entry.error?.name).toBe('Error');
       expect(entry.error?.message).toBe('test error');
@@ -115,7 +115,7 @@ describe('Logger', () => {
       const error = new Error('test error', { cause });
       logger.error('error occurred', undefined, error);
 
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.error?.cause).toBeDefined();
     });
   });
@@ -124,7 +124,7 @@ describe('Logger', () => {
     it('should include ISO timestamp', () => {
       logger.info('test');
 
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
     });
 
@@ -132,8 +132,8 @@ describe('Logger', () => {
       logger.info('first');
       logger.info('second');
 
-      const entry1: LogEntry = outputMock.mock.calls[0]?.[0];
-      const entry2: LogEntry = outputMock.mock.calls[1]?.[0];
+      const entry1 = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
+      const entry2 = (outputMock.mock.calls[1] as [LogEntry] | undefined)?.[0] as LogEntry;
 
       // Timestamps should be close but may differ
       expect(entry1.timestamp).toBeDefined();
@@ -147,10 +147,10 @@ describe('Logger', () => {
 
       childLogger.info('test message', { postId: '123' });
 
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.context).toEqual({
         scraper: 'reddit',
-        postId: '123'
+        postId: '123',
       });
     });
 
@@ -167,7 +167,7 @@ describe('Logger', () => {
 
       childLogger.info('test', { version: '2' });
 
-      const entry: LogEntry = outputMock.mock.calls[0]?.[0];
+      const entry = (outputMock.mock.calls[0] as [LogEntry] | undefined)?.[0] as LogEntry;
       expect(entry.context?.['scraper']).toBe('reddit');
       expect(entry.context?.['version']).toBe('2'); // Child context overrides parent
     });
@@ -190,8 +190,9 @@ describe('Logger', () => {
       jsonLogger.info('test message');
 
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
-      const output = consoleLogSpy.mock.calls[0]?.[0];
-      expect(() => JSON.parse(output as string)).not.toThrow();
+      const output = (consoleLogSpy.mock.calls[0] as [string] | undefined)?.[0] as string;
+      const parsed: unknown = JSON.parse(output);
+      expect(parsed).toBeDefined();
     });
 
     it('should output plain text when json is false', () => {
@@ -200,7 +201,7 @@ describe('Logger', () => {
       plainLogger.info('test message', { key: 'value' });
 
       expect(consoleLogSpy).toHaveBeenCalledTimes(1);
-      const output = consoleLogSpy.mock.calls[0]?.[0] as string;
+      const output = (consoleLogSpy.mock.calls[0] as [string] | undefined)?.[0] as string;
       expect(output).toContain('INFO');
       expect(output).toContain('test message');
     });

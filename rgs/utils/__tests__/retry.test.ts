@@ -3,7 +3,7 @@
  */
 
 import { RetryPolicy, withRetry } from '../src/retry';
-import { ScraperError, NetworkError, AuthenticationError } from '../src/errors';
+import { NetworkError, AuthenticationError } from '../src/errors';
 
 describe('RetryPolicy', () => {
   beforeEach(() => {
@@ -21,18 +21,12 @@ describe('RetryPolicy', () => {
     });
 
     it('should throw error for invalid maxRetries', () => {
-      expect(() => new RetryPolicy({ maxRetries: -1 })).toThrow(
-        'maxRetries must be non-negative'
-      );
+      expect(() => new RetryPolicy({ maxRetries: -1 })).toThrow('maxRetries must be non-negative');
     });
 
     it('should throw error for invalid backoffMs', () => {
-      expect(() => new RetryPolicy({ backoffMs: 0 })).toThrow(
-        'backoffMs must be positive'
-      );
-      expect(() => new RetryPolicy({ backoffMs: -100 })).toThrow(
-        'backoffMs must be positive'
-      );
+      expect(() => new RetryPolicy({ backoffMs: 0 })).toThrow('backoffMs must be positive');
+      expect(() => new RetryPolicy({ backoffMs: -100 })).toThrow('backoffMs must be positive');
     });
 
     it('should throw error for invalid maxBackoffMs', () => {
@@ -42,12 +36,8 @@ describe('RetryPolicy', () => {
     });
 
     it('should throw error for invalid jitter', () => {
-      expect(() => new RetryPolicy({ jitter: -0.1 })).toThrow(
-        'jitter must be between 0 and 1'
-      );
-      expect(() => new RetryPolicy({ jitter: 1.5 })).toThrow(
-        'jitter must be between 0 and 1'
-      );
+      expect(() => new RetryPolicy({ jitter: -0.1 })).toThrow('jitter must be between 0 and 1');
+      expect(() => new RetryPolicy({ jitter: 1.5 })).toThrow('jitter must be between 0 and 1');
     });
   });
 
@@ -75,7 +65,8 @@ describe('RetryPolicy', () => {
   describe('retry on retryable errors', () => {
     it('should retry on retryable ScraperError', async () => {
       const policy = new RetryPolicy({ maxRetries: 2, backoffMs: 100 });
-      const fn = jest.fn()
+      const fn = jest
+        .fn()
         .mockRejectedValueOnce(new NetworkError('Network error', 'test', 503, true))
         .mockResolvedValueOnce('success');
 
@@ -92,9 +83,9 @@ describe('RetryPolicy', () => {
 
     it('should not retry on non-retryable errors', async () => {
       const policy = new RetryPolicy({ maxRetries: 3 });
-      const fn = jest.fn().mockRejectedValue(
-        new AuthenticationError('Invalid credentials', 'test')
-      );
+      const fn = jest
+        .fn()
+        .mockRejectedValue(new AuthenticationError('Invalid credentials', 'test'));
 
       await expect(policy.execute(fn)).rejects.toThrow('Invalid credentials');
 
@@ -107,11 +98,12 @@ describe('RetryPolicy', () => {
       const fn = jest.fn().mockRejectedValue(error);
 
       const promise = policy.execute(fn);
+      const expectation = expect(promise).rejects.toThrow('Network error');
 
       // Advance through all retries
       await jest.advanceTimersByTimeAsync(1000);
 
-      await expect(promise).rejects.toThrow('Network error');
+      await expectation;
       expect(fn).toHaveBeenCalledTimes(3); // Initial + 2 retries
     });
   });
@@ -123,6 +115,7 @@ describe('RetryPolicy', () => {
       const fn = jest.fn().mockRejectedValue(error);
 
       const promise = policy.execute(fn);
+      const expectation = expect(promise).rejects.toThrow('Network error');
 
       // First retry: 100ms
       await jest.advanceTimersByTimeAsync(100);
@@ -136,7 +129,7 @@ describe('RetryPolicy', () => {
       await jest.advanceTimersByTimeAsync(400);
       expect(fn).toHaveBeenCalledTimes(4);
 
-      await expect(promise).rejects.toThrow('Network error');
+      await expectation;
     });
 
     it('should cap backoff at maxBackoffMs', async () => {
@@ -144,12 +137,13 @@ describe('RetryPolicy', () => {
         maxRetries: 3,
         backoffMs: 100,
         maxBackoffMs: 200,
-        jitter: 0
+        jitter: 0,
       });
       const error = new NetworkError('Network error', 'test', 503, true);
       const fn = jest.fn().mockRejectedValue(error);
 
       const promise = policy.execute(fn);
+      const expectation = expect(promise).rejects.toThrow('Network error');
 
       // First retry: 100ms
       await jest.advanceTimersByTimeAsync(100);
@@ -163,7 +157,7 @@ describe('RetryPolicy', () => {
       await jest.advanceTimersByTimeAsync(200);
       expect(fn).toHaveBeenCalledTimes(4);
 
-      await expect(promise).rejects.toThrow('Network error');
+      await expectation;
     });
 
     it('should apply jitter to backoff delays', async () => {
@@ -172,12 +166,13 @@ describe('RetryPolicy', () => {
       const fn = jest.fn().mockRejectedValue(error);
 
       const promise = policy.execute(fn);
+      const expectation = expect(promise).rejects.toThrow('Network error');
 
       // With 50% jitter, delay should be between 50ms and 150ms
       // We can't predict exact value due to randomness, but can verify it retries
       await jest.advanceTimersByTimeAsync(200);
 
-      await expect(promise).rejects.toThrow('Network error');
+      await expectation;
       expect(fn).toHaveBeenCalledTimes(2); // Initial + 1 retry
     });
   });
@@ -185,7 +180,8 @@ describe('RetryPolicy', () => {
   describe('retry all errors mode', () => {
     it('should retry all errors when retryAllErrors is true', async () => {
       const policy = new RetryPolicy({ maxRetries: 2, backoffMs: 100, retryAllErrors: true });
-      const fn = jest.fn()
+      const fn = jest
+        .fn()
         .mockRejectedValueOnce(new Error('Generic error'))
         .mockResolvedValueOnce('success');
 
@@ -215,16 +211,18 @@ describe('RetryPolicy', () => {
       const fn = jest.fn().mockRejectedValue(error);
 
       const promise = policy.execute(fn, { maxRetries: 3 });
+      const expectation = expect(promise).rejects.toThrow('Network error');
 
       await jest.advanceTimersByTimeAsync(800);
 
-      await expect(promise).rejects.toThrow('Network error');
+      await expectation;
       expect(fn).toHaveBeenCalledTimes(4); // Initial + 3 retries
     });
 
     it('should override retryAllErrors per execution', async () => {
       const policy = new RetryPolicy({ maxRetries: 2, backoffMs: 100 });
-      const fn = jest.fn()
+      const fn = jest
+        .fn()
         .mockRejectedValueOnce(new Error('Generic error'))
         .mockResolvedValueOnce('success');
 
@@ -244,17 +242,19 @@ describe('RetryPolicy', () => {
       const fn = jest.fn().mockRejectedValue(error);
 
       const promise = policy.executeWithRetries(fn, 2);
+      const expectation = expect(promise).rejects.toThrow('Network error');
 
       await jest.advanceTimersByTimeAsync(300);
 
-      await expect(promise).rejects.toThrow('Network error');
+      await expectation;
       expect(fn).toHaveBeenCalledTimes(3); // Initial + 2 retries
     });
   });
 
   describe('withRetry helper', () => {
     it('should create and execute retry policy', async () => {
-      const fn = jest.fn()
+      const fn = jest
+        .fn()
         .mockRejectedValueOnce(new NetworkError('Network error', 'test', 503, true))
         .mockResolvedValueOnce('success');
 
@@ -284,16 +284,18 @@ describe('RetryPolicy', () => {
       const fn = jest.fn().mockRejectedValue(error);
 
       const promise = policy.execute(fn);
+      const expectation = expect(promise).rejects.toBe(error);
 
       await jest.advanceTimersByTimeAsync(400);
 
-      await expect(promise).rejects.toBe(error);
+      await expectation;
     });
 
     it('should handle successful retry after failures', async () => {
       const policy = new RetryPolicy({ maxRetries: 3, backoffMs: 50 });
       const error = new NetworkError('Network error', 'test', 503, true);
-      const fn = jest.fn()
+      const fn = jest
+        .fn()
         .mockRejectedValueOnce(error)
         .mockRejectedValueOnce(error)
         .mockResolvedValueOnce('success');
