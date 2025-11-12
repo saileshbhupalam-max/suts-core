@@ -30,13 +30,14 @@
     "paths": {
       "@rgs/core/*": ["rgs/core/src/*"],
       "@rgs/storage/*": ["rgs/storage/src/*"],
+      "@rgs/utils/*": ["rgs/utils/src/*"],
+      "@rgs/reporter/*": ["rgs/reporter/src/*"],
       "@core/*": ["packages/core/src/*"],
       "@persona/*": ["packages/persona/src/*"],
       "@simulation/*": ["packages/simulation/src/*"],
       "@telemetry/*": ["packages/telemetry/src/*"],
       "@decision/*": ["packages/decision/src/*"],
-      "@cli/*": ["packages/cli/src/*"],
-      "@rgs/utils/*": ["rgs/utils/src/*"]
+      "@cli/*": ["packages/cli/src/*"]
     }
   },
   "references": [
@@ -51,7 +52,8 @@
     { "path": "./plugins/vibeatlas" },
     { "path": "./rgs/core" },
     { "path": "./rgs/storage" },
-    { "path": "./rgs/utils" }
+    { "path": "./rgs/utils" },
+    { "path": "./rgs/reporter" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
