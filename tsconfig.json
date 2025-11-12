@@ -34,6 +34,7 @@
       "@rgs/scraper-reddit/*": ["rgs/scrapers/reddit/src/*"],
       "@rgs/analysis-sentiment/*": ["rgs/analysis/sentiment/src/*"],
       "@rgs/analysis-themes/*": ["rgs/analysis/themes/src/*"],
+      "@rgs/pipeline/*": ["rgs/pipeline/src/*"],
       "@core/*": ["packages/core/src/*"],
       "@persona/*": ["packages/persona/src/*"],
       "@simulation/*": ["packages/simulation/src/*"],
@@ -57,7 +58,8 @@
     { "path": "./rgs/utils" },
     { "path": "./rgs/scrapers/reddit" },
     { "path": "./rgs/analysis/sentiment" },
-    { "path": "./rgs/analysis/themes" }
+    { "path": "./rgs/analysis/themes" },
+    { "path": "./rgs/pipeline" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
