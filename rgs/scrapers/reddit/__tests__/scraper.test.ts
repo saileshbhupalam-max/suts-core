@@ -99,6 +99,25 @@ describe('RedditScraper', () => {
 
       expect(() => new RedditScraper()).toThrow(ScraperError);
     });
+
+    it('should handle non-Error exceptions in constructor', () => {
+      // Mock createRedditConfig to throw a non-Error value
+      jest.mock('../src/config', () => {
+        const actual = jest.requireActual('../src/config');
+        return {
+          ...actual,
+          createRedditConfig: jest.fn(() => {
+            // eslint-disable-next-line no-throw-literal
+            throw 'String error';
+          }),
+        };
+      });
+
+      // Reset environment to trigger initialization error path
+      delete process.env['REDDIT_CLIENT_ID'];
+
+      expect(() => new RedditScraper()).toThrow(ScraperError);
+    });
   });
 
   describe('scrape', () => {
@@ -270,16 +289,9 @@ describe('RedditScraper', () => {
       await expect(scraper.scrape()).rejects.toThrow('Failed to scrape any signals');
     });
 
-    it('should validate signals and filter invalid ones', async () => {
-      const invalidPost = {
-        ...mockPosts[0]!,
-        id: 'invalid',
-        title: '', // Invalid - empty title
-        selftext: '', // Invalid - empty body
-      };
-
+    it('should handle regular Error (non-ScraperError) and convert to ScraperError', async () => {
       const mockClient = {
-        getPosts: jest.fn().mockResolvedValue([...mockPosts, invalidPost]),
+        getPosts: jest.fn().mockRejectedValue(new Error('Regular error')),
       };
 
       (RedditClient as jest.MockedClass<typeof RedditClient>).mockImplementation(
@@ -290,10 +302,79 @@ describe('RedditScraper', () => {
         subreddits: ['vscode'],
       });
 
+      await expect(scraper.scrape()).rejects.toThrow(ScraperError);
+      await expect(scraper.scrape()).rejects.toThrow('Failed to scrape any signals');
+    });
+
+    it('should handle non-Error exceptions and convert to ScraperError', async () => {
+      const mockClient = {
+        getPosts: jest.fn().mockRejectedValue('String error'),
+      };
+
+      (RedditClient as jest.MockedClass<typeof RedditClient>).mockImplementation(
+        () => mockClient as unknown as RedditClient
+      );
+
+      const scraper = new RedditScraper({
+        subreddits: ['vscode'],
+      });
+
+      await expect(scraper.scrape()).rejects.toThrow(ScraperError);
+      await expect(scraper.scrape()).rejects.toThrow('Failed to scrape any signals');
+    });
+
+    it('should validate signals and filter invalid ones', async () => {
+      const mockLogger = {
+        info: jest.fn(),
+        debug: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+      };
+
+      (Logger as jest.MockedClass<typeof Logger>).mockImplementation(
+        () => mockLogger as unknown as Logger
+      );
+
+      const mockClient = {
+        getPosts: jest.fn().mockResolvedValue(mockPosts),
+      };
+
+      (RedditClient as jest.MockedClass<typeof RedditClient>).mockImplementation(
+        () => mockClient as unknown as RedditClient
+      );
+
+      const scraper = new RedditScraper({
+        subreddits: ['vscode'],
+      });
+
+      // Spy on the validate method and make it return false for one specific signal
+      const validateSpy = jest.spyOn(scraper, 'validate');
+      let callCount = 0;
+      validateSpy.mockImplementation(() => {
+        callCount++;
+        // Make the first signal invalid
+        if (callCount === 1) {
+          return false;
+        }
+        // All other signals are valid
+        return true;
+      });
+
       const signals = await scraper.scrape();
 
-      // Should only have valid signals
-      expect(signals).toHaveLength(2);
+      // Should have filtered out the first invalid signal
+      expect(signals).toHaveLength(1);
+
+      // Should have logged warning for invalid signal
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        'Invalid signal filtered out',
+        expect.objectContaining({
+          signalId: expect.stringMatching(/^reddit-/),
+          subreddit: 'vscode',
+        })
+      );
+
+      validateSpy.mockRestore();
     });
   });
 

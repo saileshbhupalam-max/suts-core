@@ -69,6 +69,15 @@ describe('RedditClient', () => {
 
       expect(() => new RedditClient(mockConfig, mockRateLimiter)).toThrow(AuthenticationError);
     });
+
+    it('should throw AuthenticationError with undefined cause if error is not Error instance', () => {
+      (Snoowrap as jest.MockedClass<typeof Snoowrap>).mockImplementation(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw 'String error';
+      });
+
+      expect(() => new RedditClient(mockConfig, mockRateLimiter)).toThrow(AuthenticationError);
+    });
   });
 
   describe('getSubreddit', () => {
@@ -230,6 +239,20 @@ describe('RedditClient', () => {
       expect(mockSubreddit.getTop).toHaveBeenCalledWith({ time: 'week', limit: 10 });
     });
 
+    it('should default to hot posts for unknown sort type', async () => {
+      const mockSubreddit = {
+        getHot: jest.fn().mockResolvedValue(mockPosts),
+      };
+
+      mockSnoowrapInstance.getSubreddit.mockReturnValue(mockSubreddit as never);
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+      const result = await client.getPosts('vscode', { limit: 10, sort: 'controversial' as 'hot' });
+
+      expect(result).toHaveLength(2);
+      expect(mockSubreddit.getHot).toHaveBeenCalledWith({ limit: 10 });
+    });
+
     it('should handle deleted author', async () => {
       const postsWithDeletedAuthor = [
         {
@@ -248,6 +271,137 @@ describe('RedditClient', () => {
       const result = await client.getPosts('vscode', { limit: 10, sort: 'hot' });
 
       expect(result[0]?.author.name).toBe('[deleted]');
+    });
+
+    it('should handle posts with removed property', async () => {
+      const postsWithRemoved = [
+        {
+          ...mockPosts[0],
+          removed: true,
+        },
+      ];
+
+      const mockSubreddit = {
+        getHot: jest.fn().mockResolvedValue(postsWithRemoved),
+      };
+
+      mockSnoowrapInstance.getSubreddit.mockReturnValue(mockSubreddit as never);
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+      const result = await client.getPosts('vscode', { limit: 10, sort: 'hot' });
+
+      expect((result[0] as { removed?: boolean })?.removed).toBe(true);
+    });
+
+    it('should handle posts without optional properties', async () => {
+      const postsWithoutOptional = [
+        {
+          id: 'post1',
+          title: 'Test Post',
+          selftext: 'Body',
+          author: { name: 'user1' },
+          created_utc: 1699999999,
+          permalink: '/r/vscode/comments/post1/',
+          subreddit: { display_name: 'vscode' },
+          score: 100,
+          num_comments: 10,
+          upvote_ratio: 0.9,
+          url: 'https://reddit.com/r/vscode/comments/post1/',
+          is_self: true,
+        },
+      ];
+
+      const mockSubreddit = {
+        getHot: jest.fn().mockResolvedValue(postsWithoutOptional),
+      };
+
+      mockSnoowrapInstance.getSubreddit.mockReturnValue(mockSubreddit as never);
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+      const result = await client.getPosts('vscode', { limit: 10, sort: 'hot' });
+
+      expect(result[0]).not.toHaveProperty('removed');
+      expect(result[0]).not.toHaveProperty('author_fullname');
+    });
+
+    it('should handle posts with empty selftext', async () => {
+      const postsWithEmptySelftext = [
+        {
+          ...mockPosts[0],
+          selftext: '',
+        },
+      ];
+
+      const mockSubreddit = {
+        getHot: jest.fn().mockResolvedValue(postsWithEmptySelftext),
+      };
+
+      mockSnoowrapInstance.getSubreddit.mockReturnValue(mockSubreddit as never);
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+      const result = await client.getPosts('vscode', { limit: 10, sort: 'hot' });
+
+      expect(result[0]?.selftext).toBe('');
+    });
+
+    it('should handle posts with empty author name', async () => {
+      const postsWithEmptyAuthor = [
+        {
+          ...mockPosts[0],
+          author: { name: '' },
+        },
+      ];
+
+      const mockSubreddit = {
+        getHot: jest.fn().mockResolvedValue(postsWithEmptyAuthor),
+      };
+
+      mockSnoowrapInstance.getSubreddit.mockReturnValue(mockSubreddit as never);
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+      const result = await client.getPosts('vscode', { limit: 10, sort: 'hot' });
+
+      expect(result[0]?.author.name).toBe('[deleted]');
+    });
+
+    it('should handle posts with empty subreddit display name', async () => {
+      const postsWithEmptySubreddit = [
+        {
+          ...mockPosts[0],
+          subreddit: { display_name: '' },
+        },
+      ];
+
+      const mockSubreddit = {
+        getHot: jest.fn().mockResolvedValue(postsWithEmptySubreddit),
+      };
+
+      mockSnoowrapInstance.getSubreddit.mockReturnValue(mockSubreddit as never);
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+      const result = await client.getPosts('vscode', { limit: 10, sort: 'hot' });
+
+      expect(result[0]?.subreddit.display_name).toBe('vscode');
+    });
+
+    it('should handle posts with undefined subreddit', async () => {
+      const postsWithUndefinedSubreddit = [
+        {
+          ...mockPosts[0],
+          subreddit: undefined,
+        },
+      ];
+
+      const mockSubreddit = {
+        getHot: jest.fn().mockResolvedValue(postsWithUndefinedSubreddit),
+      };
+
+      mockSnoowrapInstance.getSubreddit.mockReturnValue(mockSubreddit as never);
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+      const result = await client.getPosts('vscode', { limit: 10, sort: 'hot' });
+
+      expect(result[0]?.subreddit.display_name).toBe('vscode');
     });
 
     it('should throw NetworkError on rate limit', async () => {
@@ -272,6 +426,48 @@ describe('RedditClient', () => {
       const client = new RedditClient(mockConfig, mockRateLimiter);
 
       await expect(client.getPosts('nonexistent', { limit: 10, sort: 'hot' })).rejects.toThrow(
+        NetworkError
+      );
+    });
+
+    it('should throw generic NetworkError on unknown error', async () => {
+      mockSnoowrapInstance.getSubreddit.mockImplementation(() => {
+        throw new Error('Unknown error');
+      });
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+
+      await expect(client.getPosts('vscode', { limit: 10, sort: 'hot' })).rejects.toThrow(
+        NetworkError
+      );
+      await expect(client.getPosts('vscode', { limit: 10, sort: 'hot' })).rejects.toMatchObject({
+        source: 'reddit',
+        retryable: true,
+      });
+    });
+
+    it('should handle null error in rate limit check', async () => {
+      mockSnoowrapInstance.getSubreddit.mockImplementation(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw null;
+      });
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+
+      await expect(client.getPosts('vscode', { limit: 10, sort: 'hot' })).rejects.toThrow(
+        NetworkError
+      );
+    });
+
+    it('should handle undefined error in not found check', async () => {
+      mockSnoowrapInstance.getSubreddit.mockImplementation(() => {
+        // eslint-disable-next-line no-throw-literal
+        throw undefined;
+      });
+
+      const client = new RedditClient(mockConfig, mockRateLimiter);
+
+      await expect(client.getPosts('vscode', { limit: 10, sort: 'hot' })).rejects.toThrow(
         NetworkError
       );
     });
