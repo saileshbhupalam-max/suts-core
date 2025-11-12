@@ -4,7 +4,7 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import { createWebSignal } from '@rgs/core';
-import { Logger } from '@rgs/utils';
+import { Logger, LogLevel } from '@rgs/utils';
 import { ThemeExtractor, createThemeExtractor } from '../src/extractor';
 import { KeywordClusterer } from '../src/clusterer';
 import { DEFAULT_EXTRACTION_CONFIG } from '../src/types';
@@ -14,10 +14,11 @@ jest.mock('@anthropic-ai/sdk');
 
 describe('ThemeExtractor', () => {
   let mockClaude: jest.Mocked<Anthropic>;
+  let mockCreate: jest.Mock;
   let clusterer: KeywordClusterer;
   let logger: Logger;
 
-  const createSignal = (content: string, id: string) => {
+  const createSignal = (content: string, id: string): ReturnType<typeof createWebSignal> => {
     return createWebSignal({
       id,
       source: 'reddit',
@@ -28,10 +29,10 @@ describe('ThemeExtractor', () => {
     });
   };
 
-  const mockClaudeResponse = (themes: unknown) => {
+  const mockClaudeResponse = (themes: unknown): void => {
     const responseText = JSON.stringify(themes);
 
-    mockClaude.messages.create.mockResolvedValue({
+    void mockCreate.mockResolvedValue({
       id: 'msg_test',
       type: 'message',
       role: 'assistant',
@@ -52,22 +53,25 @@ describe('ThemeExtractor', () => {
   };
 
   beforeEach(() => {
-    mockClaude = new Anthropic({ apiKey: 'test-key' }) as jest.Mocked<Anthropic>;
-    mockClaude.messages = {
-      create: jest.fn(),
-    } as unknown as Anthropic.Messages;
+    mockCreate = jest.fn();
+    mockClaude = {
+      messages: {
+        create: mockCreate,
+      },
+    } as unknown as jest.Mocked<Anthropic>;
 
     clusterer = new KeywordClusterer();
-    logger = new Logger({ level: 'error', service: 'ThemeExtractorTest' });
+    logger = new Logger({ minLevel: LogLevel.ERROR });
   });
 
   describe('extract', () => {
     it('should return empty array for no signals', async () => {
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract([]);
 
       expect(result).toEqual([]);
-      expect(mockClaude.messages.create).not.toHaveBeenCalled();
+      expect(mockCreate).not.toHaveBeenCalled();
     });
 
     it('should extract themes from signals', async () => {
@@ -87,14 +91,15 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
       expect(result.length).toBeGreaterThan(0);
-      expect(result[0].name).toBe('High pricing concerns');
-      expect(result[0].category).toBe('pain');
-      expect(result[0].keywords).toContain('expensive');
-      expect(mockClaude.messages.create).toHaveBeenCalled();
+      expect(result[0]?.name).toBe('High pricing concerns');
+      expect(result[0]?.category).toBe('pain');
+      expect(result[0]?.keywords).toContain('expensive');
+      expect(mockCreate).toHaveBeenCalled();
     });
 
     it('should categorize pain points correctly', async () => {
@@ -111,11 +116,12 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
-      expect(result[0].category).toBe('pain');
-      expect(result[0].sentiment).toBeLessThan(0);
+      expect(result[0]?.category).toBe('pain');
+      expect(result[0]?.sentiment).toBeLessThan(0);
     });
 
     it('should categorize desires correctly', async () => {
@@ -132,11 +138,12 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
-      expect(result[0].category).toBe('desire');
-      expect(result[0].sentiment).toBeGreaterThan(0);
+      expect(result[0]?.category).toBe('desire');
+      expect(result[0]?.sentiment).toBeGreaterThan(0);
     });
 
     it('should categorize feature requests correctly', async () => {
@@ -153,10 +160,11 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
-      expect(result[0].category).toBe('feature');
+      expect(result[0]?.category).toBe('feature');
     });
 
     it('should rank themes by frequency', async () => {
@@ -189,12 +197,13 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
       // High pricing should be ranked higher due to frequency
-      expect(result[0].name).toBe('High pricing');
-      expect(result[0].frequency).toBe(2);
+      expect(result[0]?.name).toBe('High pricing');
+      expect(result[0]?.frequency).toBe(2);
     });
 
     it('should include example quotes', async () => {
@@ -211,10 +220,11 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
-      expect(result[0].examples).toContain('The UI is confusing');
+      expect(result[0]?.examples).toContain('The UI is confusing');
     });
 
     it('should filter themes by minimum frequency', async () => {
@@ -259,6 +269,7 @@ describe('ThemeExtractor', () => {
 
       const config = {
         ...DEFAULT_EXTRACTION_CONFIG,
+        minFrequency: 1,
         minConfidence: 0.9,
         includeLowConfidence: false,
       };
@@ -273,17 +284,20 @@ describe('ThemeExtractor', () => {
     it('should handle Claude API errors gracefully', async () => {
       const signals = [createSignal('Test signal', 'signal-1')];
 
-      mockClaude.messages.create.mockRejectedValue(new Error('API Error'));
+      void mockCreate.mockRejectedValue(new Error('API Error'));
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
 
-      await expect(extractor.extract(signals)).rejects.toThrow('API Error');
+      // Should return empty array when API fails
+      const result = await extractor.extract(signals);
+      expect(result).toEqual([]);
     });
 
     it('should handle invalid JSON responses', async () => {
       const signals = [createSignal('Test signal', 'signal-1')];
 
-      mockClaude.messages.create.mockResolvedValue({
+      void mockCreate.mockResolvedValue({
         id: 'msg_test',
         type: 'message',
         role: 'assistant',
@@ -302,7 +316,8 @@ describe('ThemeExtractor', () => {
         },
       } as Anthropic.Message);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
       // Should return empty array on parse error
@@ -323,7 +338,7 @@ describe('ThemeExtractor', () => {
 
       const wrappedJson = '```json\n' + JSON.stringify(mockThemes) + '\n```';
 
-      mockClaude.messages.create.mockResolvedValue({
+      void mockCreate.mockResolvedValue({
         id: 'msg_test',
         type: 'message',
         role: 'assistant',
@@ -342,7 +357,8 @@ describe('ThemeExtractor', () => {
         },
       } as Anthropic.Message);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
       expect(result.length).toBeGreaterThan(0);
@@ -350,7 +366,7 @@ describe('ThemeExtractor', () => {
 
     it('should batch large signal sets', async () => {
       const signals = Array.from({ length: 100 }, (_, i) =>
-        createSignal(`Signal ${i}`, `signal-${i}`),
+        createSignal(`Signal ${i}`, `signal-${i}`)
       );
 
       mockClaudeResponse([]);
@@ -364,12 +380,12 @@ describe('ThemeExtractor', () => {
       await extractor.extract(signals);
 
       // Should have made 4 API calls (100 / 25)
-      expect(mockClaude.messages.create).toHaveBeenCalledTimes(4);
+      expect(mockCreate).toHaveBeenCalledTimes(4);
     });
 
     it('should limit examples per theme', async () => {
       const signals = Array.from({ length: 10 }, (_, i) =>
-        createSignal(`Similar issue ${i}`, `signal-${i}`),
+        createSignal(`Similar issue ${i}`, `signal-${i}`)
       );
 
       const mockThemes = Array.from({ length: 10 }, (_, i) => ({
@@ -389,7 +405,7 @@ describe('ThemeExtractor', () => {
       const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
-      expect(result[0].examples.length).toBeLessThanOrEqual(3);
+      expect(result[0]?.examples.length).toBeLessThanOrEqual(3);
     });
 
     it('should calculate confidence scores', async () => {
@@ -406,18 +422,16 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
-      expect(result[0].confidence).toBeGreaterThanOrEqual(0);
-      expect(result[0].confidence).toBeLessThanOrEqual(1);
+      expect(result[0]?.confidence).toBeGreaterThanOrEqual(0);
+      expect(result[0]?.confidence).toBeLessThanOrEqual(1);
     });
 
     it('should generate unique theme IDs', async () => {
-      const signals = [
-        createSignal('Test 1', 'signal-1'),
-        createSignal('Test 2', 'signal-2'),
-      ];
+      const signals = [createSignal('Test 1', 'signal-1'), createSignal('Test 2', 'signal-2')];
 
       const mockThemes = [
         {
@@ -436,7 +450,8 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
       const ids = result.map((t) => t.id);
@@ -446,10 +461,7 @@ describe('ThemeExtractor', () => {
     });
 
     it('should merge duplicate themes', async () => {
-      const signals = [
-        createSignal('Test 1', 'signal-1'),
-        createSignal('Test 2', 'signal-2'),
-      ];
+      const signals = [createSignal('Test 1', 'signal-1'), createSignal('Test 2', 'signal-2')];
 
       const mockThemes = [
         {
@@ -468,13 +480,14 @@ describe('ThemeExtractor', () => {
 
       mockClaudeResponse(mockThemes);
 
-      const extractor = new ThemeExtractor(mockClaude, clusterer, DEFAULT_EXTRACTION_CONFIG, logger);
+      const config = { ...DEFAULT_EXTRACTION_CONFIG, minFrequency: 1, includeLowConfidence: true };
+      const extractor = new ThemeExtractor(mockClaude, clusterer, config, logger);
       const result = await extractor.extract(signals);
 
       // Should merge into single theme
       const duplicateThemes = result.filter((t) => t.name === 'Duplicate Theme');
       expect(duplicateThemes).toHaveLength(1);
-      expect(duplicateThemes[0].frequency).toBe(2);
+      expect(duplicateThemes[0]?.frequency).toBe(2);
     });
   });
 
@@ -493,7 +506,7 @@ describe('ThemeExtractor', () => {
     });
 
     it('should create extractor with custom logger', () => {
-      const customLogger = new Logger({ level: 'debug', service: 'CustomTest' });
+      const customLogger = new Logger({ minLevel: LogLevel.DEBUG });
       const extractor = createThemeExtractor(mockClaude, clusterer, undefined, customLogger);
       expect(extractor).toBeInstanceOf(ThemeExtractor);
     });

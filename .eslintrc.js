@@ -68,6 +68,12 @@ module.exports = {
       parserOptions: {
         project: './packages/simulation/tsconfig.test.json'
       }
+    },
+    {
+      files: ['rgs/**/__tests__/**/*.ts', 'rgs/**/src/**/*.test.ts'],
+      parserOptions: {
+        project: ['./rgs/*/tsconfig.test.json', './rgs/*/*/tsconfig.test.json']
+      }
     }
   ],
   rules: {

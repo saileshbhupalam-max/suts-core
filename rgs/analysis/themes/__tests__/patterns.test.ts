@@ -6,7 +6,10 @@ import { createWebSignal } from '@rgs/core';
 import { PatternDetector, createPatternDetector, DEFAULT_PATTERN_CONFIG } from '../src/patterns';
 
 describe('PatternDetector', () => {
-  const createSignal = (content: string, id: string = 'test-id') => {
+  const createSignal = (
+    content: string,
+    id: string = 'test-id'
+  ): ReturnType<typeof createWebSignal> => {
     return createWebSignal({
       id,
       source: 'reddit',
@@ -178,7 +181,7 @@ describe('PatternDetector', () => {
       const result = detector.detect(signals);
 
       for (let i = 1; i < result.length; i++) {
-        expect(result[i - 1].frequency).toBeGreaterThanOrEqual(result[i].frequency);
+        expect(result[i - 1]?.frequency).toBeGreaterThanOrEqual(result[i]?.frequency ?? 0);
       }
     });
 
@@ -256,8 +259,8 @@ describe('PatternDetector', () => {
       const topPatterns = detector.getTopPatterns(patterns, 2);
 
       expect(topPatterns).toHaveLength(2);
-      expect(topPatterns[0].frequency).toBe(10);
-      expect(topPatterns[1].frequency).toBe(8);
+      expect(topPatterns[0]?.frequency).toBe(10);
+      expect(topPatterns[1]?.frequency).toBe(8);
     });
 
     it('should return all patterns if N is larger than array', () => {
