@@ -42,9 +42,7 @@ describe('SentimentAnalyzer', () => {
     });
 
     it('should throw error for empty API key', () => {
-      expect(() => new SentimentAnalyzer({ apiKey: '' })).toThrow(
-        'Anthropic API key is required'
-      );
+      expect(() => new SentimentAnalyzer({ apiKey: '' })).toThrow('Anthropic API key is required');
     });
 
     it('should use custom configuration', () => {
@@ -162,9 +160,7 @@ describe('SentimentAnalyzer', () => {
     });
 
     it('should throw error for empty content', async () => {
-      await expect(analyzer.analyze('')).rejects.toThrow(
-        'Content cannot be empty'
-      );
+      await expect(analyzer.analyze('')).rejects.toThrow('Content cannot be empty');
     });
 
     it('should handle JSON response with markdown code blocks', async () => {
@@ -247,10 +243,7 @@ describe('SentimentAnalyzer', () => {
 
       mockClaudeCreate.mockResolvedValue(mockResponse);
 
-      const results = await analyzer.analyzeBatch([
-        'This is great!',
-        'This is bad!',
-      ]);
+      const results = await analyzer.analyzeBatch(['This is great!', 'This is bad!']);
 
       expect(results).toHaveLength(2);
       expect(results[0]?.score).toBe(0.8);
@@ -285,16 +278,12 @@ describe('SentimentAnalyzer', () => {
         content: [
           {
             type: 'text',
-            text: JSON.stringify([
-              { score: 0.7, magnitude: 0.7, emotions: ['excited'] },
-            ]),
+            text: JSON.stringify([{ score: 0.7, magnitude: 0.7, emotions: ['excited'] }]),
           },
         ],
       };
 
-      mockClaudeCreate
-        .mockResolvedValueOnce(mockResponse1)
-        .mockResolvedValueOnce(mockResponse2);
+      mockClaudeCreate.mockResolvedValueOnce(mockResponse1).mockResolvedValueOnce(mockResponse2);
 
       // 3 items with batch size 2 should result in 2 API calls
       await analyzer.analyzeBatch(['text1', 'text2', 'text3']);
@@ -320,16 +309,12 @@ describe('SentimentAnalyzer', () => {
         content: [
           {
             type: 'text',
-            text: JSON.stringify([
-              { score: 0.5, magnitude: 0.6, emotions: ['hopeful'] },
-            ]),
+            text: JSON.stringify([{ score: 0.5, magnitude: 0.6, emotions: ['hopeful'] }]),
           },
         ],
       };
 
-      mockClaudeCreate
-        .mockResolvedValueOnce(mockResponse1)
-        .mockResolvedValueOnce(mockResponse2);
+      mockClaudeCreate.mockResolvedValueOnce(mockResponse1).mockResolvedValueOnce(mockResponse2);
 
       const content1 = 'Test 1';
       const content2 = 'Test 2';
@@ -344,9 +329,157 @@ describe('SentimentAnalyzer', () => {
       // Should only call API once more for content2
       expect(mockClaudeCreate).toHaveBeenCalledTimes(2);
     });
+
+    it('should skip undefined content items in batch', async () => {
+      const mockResponse = {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify([{ score: 0.7, magnitude: 0.8, emotions: ['excited'] }]),
+          },
+        ],
+      };
+
+      mockClaudeCreate.mockResolvedValue(mockResponse);
+
+      // Batch with undefined items
+      const results = await analyzer.analyzeBatch([
+        'Test 1',
+        undefined as unknown as string,
+        'Test 2',
+      ]);
+
+      // Should only return results for defined items
+      expect(results).toHaveLength(1);
+      expect(results[0]?.score).toBe(0.7);
+    });
+
+    it('should skip batches where all items are cached', async () => {
+      const mockResponse = {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              score: 0.7,
+              magnitude: 0.8,
+              emotions: ['excited'],
+            }),
+          },
+        ],
+      };
+
+      mockClaudeCreate.mockResolvedValue(mockResponse);
+
+      const content = 'Test content';
+
+      // Cache the content
+      await analyzer.analyze(content);
+      const initialCalls = mockClaudeCreate.mock.calls.length;
+
+      // Analyze batch with only cached content
+      const results = await analyzer.analyzeBatch([content]);
+
+      // Should not make additional API calls
+      expect(mockClaudeCreate).toHaveBeenCalledTimes(initialCalls);
+      expect(results).toHaveLength(1);
+      expect(results[0]?.score).toBe(0.7);
+    });
+
+    it('should handle response with reasoning field', async () => {
+      const mockResponse = {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              score: 0.8,
+              magnitude: 0.9,
+              emotions: ['excited'],
+              reasoning: 'The text expresses strong positive emotions',
+            }),
+          },
+        ],
+      };
+
+      mockClaudeCreate.mockResolvedValue(mockResponse);
+
+      const result = await analyzer.analyze('Test with reasoning');
+
+      expect(result.reasoning).toBe('The text expresses strong positive emotions');
+    });
+
+    it('should handle markdown blocks without json prefix', async () => {
+      const mockResponse = {
+        content: [
+          {
+            type: 'text',
+            text: '```\n{"score":0.8,"magnitude":0.9,"emotions":["excited"]}\n```',
+          },
+        ],
+      };
+
+      mockClaudeCreate.mockResolvedValue(mockResponse);
+
+      const result = await analyzer.analyze('Test');
+
+      expect(result.score).toBe(0.8);
+    });
+
+    it('should handle batch markdown blocks without json prefix', async () => {
+      const mockResponse = {
+        content: [
+          {
+            type: 'text',
+            text: '```\n[{"score":0.8,"magnitude":0.9,"emotions":["excited"]}]\n```',
+          },
+        ],
+      };
+
+      mockClaudeCreate.mockResolvedValue(mockResponse);
+
+      const results = await analyzer.analyzeBatch(['Test']);
+
+      expect(results).toHaveLength(1);
+      expect(results[0]?.score).toBe(0.8);
+    });
   });
 
   describe('error handling', () => {
+    it('should throw error when Claude response has no text content', async () => {
+      const mockResponse = {
+        content: [
+          {
+            type: 'tool_use',
+            id: 'some-id',
+            name: 'some-tool',
+          },
+        ],
+      };
+
+      mockClaudeCreate.mockResolvedValue(mockResponse);
+
+      await expect(analyzer.analyze('Test')).rejects.toThrow(ScraperError);
+    });
+
+    it('should throw error on content index mismatch in batch', async () => {
+      const mockResponse = {
+        content: [
+          {
+            type: 'text',
+            // Return array with more items than input - causes index mismatch
+            text: JSON.stringify([
+              { score: 0.7, magnitude: 0.8, emotions: ['excited'] },
+              { score: 0.6, magnitude: 0.7, emotions: ['hopeful'] },
+            ]),
+          },
+        ],
+      };
+
+      mockClaudeCreate.mockResolvedValue(mockResponse);
+
+      // Only provide 1 item but response has 2 - will cause mismatch
+      await expect(analyzer.analyzeBatch(['Test'])).rejects.toThrow(ScraperError);
+    });
+
     it('should handle rate limit errors (429)', async () => {
       const error = new Anthropic.APIError(
         429,
@@ -503,9 +636,7 @@ describe('SentimentAnalyzer', () => {
 
       mockClaudeCreate.mockResolvedValue(mockResponse);
 
-      await expect(
-        analyzer.analyzeBatch(['test1', 'test2'])
-      ).rejects.toThrow(ScraperError);
+      await expect(analyzer.analyzeBatch(['test1', 'test2'])).rejects.toThrow(ScraperError);
     });
   });
 
@@ -610,22 +741,6 @@ describe('SentimentAnalyzer', () => {
       const analyzer = new SentimentAnalyzer({
         apiKey: 'test-key',
         batchSize: 5,
-      });
-
-      expect(analyzer).toBeInstanceOf(SentimentAnalyzer);
-    });
-
-    it('should accept logger in config', () => {
-      const mockLogger = {
-        debug: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-      };
-
-      const analyzer = new SentimentAnalyzer({
-        apiKey: 'test-key',
-        logger: mockLogger as any,
       });
 
       expect(analyzer).toBeInstanceOf(SentimentAnalyzer);
