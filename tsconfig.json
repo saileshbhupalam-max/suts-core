@@ -30,6 +30,7 @@
     "paths": {
       "@rgs/core/*": ["rgs/core/src/*"],
       "@rgs/storage/*": ["rgs/storage/src/*"],
+      "@rgs/cli/*": ["rgs/cli/src/*"],
       "@core/*": ["packages/core/src/*"],
       "@persona/*": ["packages/persona/src/*"],
       "@simulation/*": ["packages/simulation/src/*"],
@@ -51,7 +52,8 @@
     { "path": "./plugins/vibeatlas" },
     { "path": "./rgs/core" },
     { "path": "./rgs/storage" },
-    { "path": "./rgs/utils" }
+    { "path": "./rgs/utils" },
+    { "path": "./rgs/cli" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
