@@ -10,7 +10,9 @@ module.exports = {
       './packages/*/tsconfig.test.json',
       './examples/*/tsconfig.json',
       './plugins/*/tsconfig.json',
-      './rgs/*/tsconfig.json'
+      './rgs/*/tsconfig.json',
+      './rgs/*/*/tsconfig.json',
+      './rgs/*/*/tsconfig.test.json'
     ],
     tsconfigRootDir: __dirname
   },

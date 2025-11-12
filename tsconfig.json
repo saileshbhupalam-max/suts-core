@@ -32,6 +32,7 @@
       "@rgs/storage/*": ["rgs/storage/src/*"],
       "@rgs/utils/*": ["rgs/utils/src/*"],
       "@rgs/scraper-reddit/*": ["rgs/scrapers/reddit/src/*"],
+      "@rgs/analysis-sentiment/*": ["rgs/analysis/sentiment/src/*"],
       "@core/*": ["packages/core/src/*"],
       "@persona/*": ["packages/persona/src/*"],
       "@simulation/*": ["packages/simulation/src/*"],
@@ -53,7 +54,8 @@
     { "path": "./rgs/core" },
     { "path": "./rgs/storage" },
     { "path": "./rgs/utils" },
-    { "path": "./rgs/scrapers/reddit" }
+    { "path": "./rgs/scrapers/reddit" },
+    { "path": "./rgs/analysis/sentiment" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
