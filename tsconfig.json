@@ -59,6 +59,7 @@
     { "path": "./rgs/storage" },
     { "path": "./rgs/utils" },
     { "path": "./rgs/scrapers/reddit" },
+    { "path": "./rgs/scrapers/hackernews" },
     { "path": "./rgs/analysis/sentiment" },
     { "path": "./rgs/analysis/themes" },
     { "path": "./rgs/cli" },
