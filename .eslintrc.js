@@ -10,7 +10,10 @@ module.exports = {
       './packages/*/tsconfig.test.json',
       './examples/*/tsconfig.json',
       './plugins/*/tsconfig.json',
-      './rgs/*/tsconfig.json'
+      './rgs/tsconfig.json',
+      './rgs/*/tsconfig.json',
+      './rgs/*/*/tsconfig.json',
+      './rgs/*/*/tsconfig.test.json'
     ],
     tsconfigRootDir: __dirname
   },
@@ -66,6 +69,12 @@ module.exports = {
       files: ['packages/simulation/**/__tests__/**/*.ts', 'packages/simulation/src/**/*.test.ts'],
       parserOptions: {
         project: './packages/simulation/tsconfig.test.json'
+      }
+    },
+    {
+      files: ['rgs/**/__tests__/**/*.ts', 'rgs/**/src/**/*.test.ts'],
+      parserOptions: {
+        project: ['./rgs/*/tsconfig.test.json', './rgs/*/*/tsconfig.test.json']
       }
     }
   ],
