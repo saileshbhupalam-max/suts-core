@@ -1,0 +1,37 @@
+{
+  "name": "@rgs/analysis-deduplication",
+  "version": "1.0.0",
+  "description": "RGS Analysis - Multi-source deduplication and quality scoring for web signals",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext .ts --max-warnings 0",
+    "ci": "npm run type-check && npm run lint && npm run test:coverage"
+  },
+  "keywords": [
+    "rgs",
+    "analysis",
+    "deduplication",
+    "quality-scoring",
+    "similarity"
+  ],
+  "author": "SUTS Core Team",
+  "license": "MIT",
+  "dependencies": {
+    "@rgs/core": "workspace:*",
+    "natural": "^6.10.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/natural": "^5.1.5",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  }
+}
