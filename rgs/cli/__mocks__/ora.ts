@@ -13,20 +13,20 @@ const mockOra = (text: string): Ora => {
   let currentText = text;
 
   return {
-    start: () => mockOra(currentText),
-    succeed: (successText?: string) => {
+    start: (): Ora => mockOra(currentText),
+    succeed: (successText?: string): Ora => {
       if (successText !== undefined) {
         currentText = successText;
       }
       return mockOra(currentText);
     },
-    fail: (failText?: string) => {
+    fail: (failText?: string): Ora => {
       if (failText !== undefined) {
         currentText = failText;
       }
       return mockOra(currentText);
     },
-    get text() {
+    get text(): string {
       return currentText;
     },
     set text(value: string) {

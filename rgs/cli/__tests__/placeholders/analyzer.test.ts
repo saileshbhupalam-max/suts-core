@@ -12,7 +12,7 @@ describe('MockAnalyzer', () => {
     analyzer = new MockAnalyzer();
   });
 
-  const createMockSignals = (count: number) => {
+  const createMockSignals = (count: number): ReturnType<typeof createWebSignal>[] => {
     return Array.from({ length: count }, (_, i) =>
       createWebSignal({
         id: `signal-${i}`,
@@ -54,7 +54,7 @@ describe('MockAnalyzer', () => {
 
       expect(sentiment.overall).toBe(0);
       expect(sentiment.distribution.positive).toBe(0);
-      expect(sentiment.distribution.neutral).toBe(0);
+      expect(sentiment.distribution.neutral).toBe(1); // Empty signals default to neutral
       expect(sentiment.distribution.negative).toBe(0);
       expect(sentiment.positiveSignals).toHaveLength(0);
       expect(sentiment.negativeSignals).toHaveLength(0);
@@ -101,7 +101,7 @@ describe('MockAnalyzer', () => {
       const themes = await analyzer.extractThemes(signals);
 
       for (let i = 1; i < themes.length; i++) {
-        expect(themes[i - 1].frequency).toBeGreaterThanOrEqual(themes[i].frequency);
+        expect(themes[i - 1]?.frequency).toBeGreaterThanOrEqual(themes[i]?.frequency ?? 0);
       }
     });
 

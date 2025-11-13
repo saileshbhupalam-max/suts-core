@@ -10,6 +10,7 @@ import { WebSignal, ScrapeConfig, IScraper, BaseScraper, createWebSignal } from 
  * Mock scraper for CLI testing and placeholder functionality
  */
 export class MockScraper extends BaseScraper implements IScraper {
+  // eslint-disable-next-line @typescript-eslint/require-await
   override async scrape(config: ScrapeConfig): Promise<WebSignal[]> {
     // Generate mock signals based on config
     const signals: WebSignal[] = [];
@@ -38,6 +39,7 @@ export class MockScraper extends BaseScraper implements IScraper {
     return signals;
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   override async testConnection(): Promise<boolean> {
     // Mock connection is always successful
     return true;

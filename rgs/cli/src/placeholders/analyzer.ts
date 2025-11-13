@@ -44,13 +44,14 @@ export interface IAnalyzer {
  * Mock analyzer for CLI testing and placeholder functionality
  */
 export class MockAnalyzer implements IAnalyzer {
+  // eslint-disable-next-line @typescript-eslint/require-await
   async analyzeSentiment(signals: WebSignal[]): Promise<SentimentAnalysis> {
     if (signals.length === 0) {
       return createSentimentAnalysis({
         overall: 0,
         distribution: {
           positive: 0,
-          neutral: 0,
+          neutral: 1,
           negative: 0,
         },
         positiveSignals: [],
@@ -59,13 +60,12 @@ export class MockAnalyzer implements IAnalyzer {
     }
 
     // Calculate sentiment from signals
-    const sentimentScores = signals
-      .map((s) => s.sentiment ?? 0)
-      .filter((s) => s !== 0);
+    const sentimentScores = signals.map((s) => s.sentiment ?? 0).filter((s) => s !== 0);
 
-    const overall = sentimentScores.length > 0
-      ? sentimentScores.reduce((sum, s) => sum + s, 0) / sentimentScores.length
-      : 0;
+    const overall =
+      sentimentScores.length > 0
+        ? sentimentScores.reduce((sum, s) => sum + s, 0) / sentimentScores.length
+        : 0;
 
     // Calculate distribution
     const positive = signals.filter((s) => (s.sentiment ?? 0) > 0.2).length / signals.length;
@@ -88,6 +88,7 @@ export class MockAnalyzer implements IAnalyzer {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async extractThemes(signals: WebSignal[]): Promise<Theme[]> {
     if (signals.length === 0) {
       return [];
@@ -118,6 +119,7 @@ export class MockAnalyzer implements IAnalyzer {
     return themes.sort((a, b) => b.frequency - a.frequency).slice(0, 10);
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async extractLanguagePatterns(signals: WebSignal[]): Promise<LanguagePatterns> {
     if (signals.length === 0) {
       return {
@@ -129,9 +131,7 @@ export class MockAnalyzer implements IAnalyzer {
     }
 
     // Extract basic language patterns
-    const words = signals
-      .map((s) => s.content.toLowerCase().split(/\s+/))
-      .flat();
+    const words = signals.map((s) => s.content.toLowerCase().split(/\s+/)).flat();
 
     const wordFreq: Record<string, number> = {};
     words.forEach((word) => {
@@ -142,12 +142,15 @@ export class MockAnalyzer implements IAnalyzer {
 
     // Get top frequent terms
     const topTerms = Object.entries(wordFreq)
-      .sort(([, a], [, b]) => (b as number) - (a as number))
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
-      .reduce((acc, [word, count]) => {
-        acc[word] = count;
-        return acc;
-      }, {} as Record<string, number>);
+      .reduce(
+        (acc, [word, count]) => {
+          acc[word] = count;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
     return {
       commonPhrases: ['mock phrase 1', 'mock phrase 2'],
@@ -167,14 +170,8 @@ export class MockAnalyzer implements IAnalyzer {
     return createInsight({
       themes,
       sentiment,
-      painPoints: [
-        'Mock pain point 1: Performance issues',
-        'Mock pain point 2: Complex UI',
-      ],
-      desires: [
-        'Mock desire 1: Better documentation',
-        'Mock desire 2: More features',
-      ],
+      painPoints: ['Mock pain point 1: Performance issues', 'Mock pain point 2: Complex UI'],
+      desires: ['Mock desire 1: Better documentation', 'Mock desire 2: More features'],
       language: languagePatterns,
       confidence: Math.min(signals.length / 100, 1),
     });

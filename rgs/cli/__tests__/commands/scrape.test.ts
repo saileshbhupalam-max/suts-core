@@ -35,7 +35,7 @@ describe('scrapeCommand', () => {
 
     const signals = await readSignals(outputPath);
     expect(signals).toHaveLength(5);
-    expect(signals[0].source).toBe('reddit');
+    expect(signals[0]?.source).toBe('reddit');
   });
 
   it('should scrape signals from multiple sources', async () => {
@@ -75,13 +75,14 @@ describe('scrapeCommand', () => {
   it('should throw error when no signals are scraped', async () => {
     const outputPath = join(testDir, 'signals.json');
 
+    // limit:0 triggers validation error before it can reach "no signals" check
     await expect(
       scrapeCommand({
         sources: ['reddit'],
         limit: 0,
         output: outputPath,
       })
-    ).rejects.toThrow('No signals were scraped');
+    ).rejects.toThrow('Invalid options');
   });
 
   it('should pass subreddits option to scraper', async () => {

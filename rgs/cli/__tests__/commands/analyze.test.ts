@@ -25,7 +25,7 @@ describe('analyzeCommand', () => {
     }
   });
 
-  const createTestSignals = (count: number) => {
+  const createTestSignals = (count: number): ReturnType<typeof createWebSignal>[] => {
     return Array.from({ length: count }, (_, i) =>
       createWebSignal({
         id: `signal-${i}`,

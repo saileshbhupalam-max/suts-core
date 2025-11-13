@@ -21,9 +21,9 @@
     "@rgs/core": "file:../core",
     "@rgs/storage": "file:../storage",
     "@rgs/utils": "file:../utils",
-    "chalk": "^5.3.0",
+    "chalk": "4.1.2",
     "commander": "^11.1.0",
-    "ora": "^7.0.1",
+    "ora": "5.4.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

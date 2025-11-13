@@ -86,9 +86,9 @@ describe('file I/O utilities', () => {
 
       const readData = await readSignals(filePath);
       expect(readData).toHaveLength(2);
-      expect(readData[0].id).toBe('signal-1');
-      expect(readData[1].id).toBe('signal-2');
-      expect(readData[0].timestamp).toBeInstanceOf(Date);
+      expect(readData[0]?.id).toBe('signal-1');
+      expect(readData[1]?.id).toBe('signal-2');
+      expect(readData[0]?.timestamp).toBeInstanceOf(Date);
     });
 
     it('should preserve all signal properties', async () => {
