@@ -1,0 +1,33 @@
+{
+  "name": "@rgs/reporter",
+  "version": "1.0.0",
+  "description": "RGS Reporter - Generate insights reports in JSON and Markdown formats",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext .ts --max-warnings 0",
+    "ci": "npm run type-check && npm run lint && npm run test:coverage"
+  },
+  "keywords": [
+    "rgs",
+    "reporter",
+    "insights",
+    "report-generator"
+  ],
+  "author": "SUTS Core Team",
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  }
+}

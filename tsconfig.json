@@ -36,6 +36,7 @@
       "@rgs/analysis-themes/*": ["rgs/analysis/themes/src/*"],
       "@rgs/cli/*": ["rgs/cli/src/*"],
       "@rgs/pipeline/*": ["rgs/pipeline/src/*"],
+      "@rgs/reporter/*": ["rgs/reporter/src/*"],
       "@core/*": ["packages/core/src/*"],
       "@persona/*": ["packages/persona/src/*"],
       "@simulation/*": ["packages/simulation/src/*"],
@@ -61,7 +62,8 @@
     { "path": "./rgs/analysis/sentiment" },
     { "path": "./rgs/analysis/themes" },
     { "path": "./rgs/cli" },
-    { "path": "./rgs/pipeline" }
+    { "path": "./rgs/pipeline" },
+    { "path": "./rgs/reporter" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
