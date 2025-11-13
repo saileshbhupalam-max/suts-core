@@ -72,7 +72,7 @@ module.exports = {
       }
     },
     {
-      files: ['rgs/**/__tests__/**/*.ts', 'rgs/**/src/**/*.test.ts'],
+      files: ['rgs/**/__tests__/**/*.ts', 'rgs/**/__mocks__/**/*.ts', 'rgs/**/src/**/*.test.ts'],
       parserOptions: {
         project: ['./rgs/*/tsconfig.test.json', './rgs/*/*/tsconfig.test.json']
       }

@@ -2,7 +2,20 @@
   "permissions": {
     "allow": [
       "Bash(tasklist:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(npm install)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run lint)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run test)",
+      "Bash(npm test)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run ci:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git merge:*)",
+      "Bash(npm run test:coverage:*)"
     ],
     "deny": [],
     "ask": []
