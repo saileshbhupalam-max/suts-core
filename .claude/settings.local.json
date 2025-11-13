@@ -13,7 +13,9 @@
       "Bash(npm install:*)",
       "Bash(npm run ci:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git merge:*)",
+      "Bash(npm run test:coverage:*)"
     ],
     "deny": [],
     "ask": []
