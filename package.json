@@ -49,6 +49,7 @@
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.3.1",
     "snoowrap": "^1.23.0",
+    "twitter-api-v2": "^1.17.0",
     "zod": "^3.22.4"
   },
   "engines": {
