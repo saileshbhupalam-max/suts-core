@@ -24,11 +24,12 @@ describe('TwitterMapper', () => {
       reply_count: 2,
       quote_count: 1,
       impression_count: 100,
+      bookmark_count: 0,
     },
     lang: 'en',
     conversation_id: 'conv123',
     ...overrides,
-  });
+  } as TweetV2);
 
   describe('mapTweetToSignal', () => {
     it('should map a tweet to a WebSignal', () => {
@@ -69,7 +70,13 @@ describe('TwitterMapper', () => {
     });
 
     it('should handle missing public_metrics', () => {
-      const tweet = createMockTweet({ public_metrics: undefined });
+      const tweet = {
+        id: '123456789',
+        text: 'Test tweet content',
+        created_at: '2025-01-01T12:00:00.000Z',
+        author_id: 'user123',
+        conversation_id: 'conv123',
+      } as TweetV2;
       const signal = mapTweetToSignal(tweet);
 
       expect(signal.metadata).toMatchObject({
@@ -81,7 +88,12 @@ describe('TwitterMapper', () => {
     });
 
     it('should handle missing created_at', () => {
-      const tweet = createMockTweet({ created_at: undefined });
+      const tweet = {
+        id: '123456789',
+        text: 'Test tweet content',
+        author_id: 'user123',
+        conversation_id: 'conv123',
+      } as TweetV2;
       const signal = mapTweetToSignal(tweet);
 
       expect(signal.timestamp).toBeInstanceOf(Date);
@@ -89,7 +101,13 @@ describe('TwitterMapper', () => {
     });
 
     it('should handle missing lang', () => {
-      const tweet = createMockTweet({ lang: undefined });
+      const tweet = {
+        id: '123456789',
+        text: 'Test tweet content',
+        created_at: '2025-01-01T12:00:00.000Z',
+        author_id: 'user123',
+        conversation_id: 'conv123',
+      } as TweetV2;
       const signal = mapTweetToSignal(tweet);
 
       expect(signal.metadata).toMatchObject({
@@ -101,10 +119,12 @@ describe('TwitterMapper', () => {
       const tweet = createMockTweet({
         public_metrics: {
           like_count: 5,
-          retweet_count: undefined,
-          reply_count: undefined,
-          quote_count: undefined,
-        } as TweetV2['public_metrics'],
+          retweet_count: 0,
+          reply_count: 0,
+          quote_count: 0,
+          impression_count: 0,
+          bookmark_count: 0,
+        },
       });
       const signal = mapTweetToSignal(tweet);
 
@@ -128,9 +148,9 @@ describe('TwitterMapper', () => {
       const signals = mapTweetsToSignals(tweets);
 
       expect(signals).toHaveLength(3);
-      expect(signals[0].id).toBe('twitter-1');
-      expect(signals[1].id).toBe('twitter-2');
-      expect(signals[2].id).toBe('twitter-3');
+      expect(signals[0]?.id).toBe('twitter-1');
+      expect(signals[1]?.id).toBe('twitter-2');
+      expect(signals[2]?.id).toBe('twitter-3');
     });
 
     it('should handle empty array', () => {
@@ -151,8 +171,8 @@ describe('TwitterMapper', () => {
       const filtered = filterRetweets(tweets);
 
       expect(filtered).toHaveLength(2);
-      expect(filtered[0].id).toBe('1');
-      expect(filtered[1].id).toBe('3');
+      expect(filtered[0]?.id).toBe('1');
+      expect(filtered[1]?.id).toBe('3');
     });
 
     it('should return empty array if all are retweets', () => {
@@ -188,8 +208,8 @@ describe('TwitterMapper', () => {
       const filtered = filterByLanguage(tweets, ['en']);
 
       expect(filtered).toHaveLength(2);
-      expect(filtered[0].id).toBe('1');
-      expect(filtered[1].id).toBe('3');
+      expect(filtered[0]?.id).toBe('1');
+      expect(filtered[1]?.id).toBe('3');
     });
 
     it('should support multiple languages', () => {
@@ -202,20 +222,20 @@ describe('TwitterMapper', () => {
       const filtered = filterByLanguage(tweets, ['en', 'es']);
 
       expect(filtered).toHaveLength(2);
-      expect(filtered[0].id).toBe('1');
-      expect(filtered[1].id).toBe('2');
+      expect(filtered[0]?.id).toBe('1');
+      expect(filtered[1]?.id).toBe('2');
     });
 
     it('should filter out tweets with undefined language', () => {
       const tweets = [
         createMockTweet({ id: '1', lang: 'en' }),
-        createMockTweet({ id: '2', lang: undefined }),
+        { id: '2', text: 'No lang', created_at: '2025-01-01T12:00:00.000Z', author_id: 'user123', conversation_id: 'conv123' } as TweetV2,
       ];
 
       const filtered = filterByLanguage(tweets, ['en']);
 
       expect(filtered).toHaveLength(1);
-      expect(filtered[0].id).toBe('1');
+      expect(filtered[0]?.id).toBe('1');
     });
 
     it('should return empty array if no matches', () => {
@@ -242,12 +262,12 @@ describe('TwitterMapper', () => {
       const deduplicated = deduplicateTweets(tweets);
 
       expect(deduplicated).toHaveLength(3);
-      expect(deduplicated[0].id).toBe('1');
-      expect(deduplicated[1].id).toBe('2');
-      expect(deduplicated[2].id).toBe('3');
+      expect(deduplicated[0]?.id).toBe('1');
+      expect(deduplicated[1]?.id).toBe('2');
+      expect(deduplicated[2]?.id).toBe('3');
       // First occurrence should be kept
-      expect(deduplicated[0].text).toBe('Tweet 1');
-      expect(deduplicated[1].text).toBe('Tweet 2');
+      expect(deduplicated[0]?.text).toBe('Tweet 1');
+      expect(deduplicated[1]?.text).toBe('Tweet 2');
     });
 
     it('should handle array with no duplicates', () => {
@@ -275,6 +295,8 @@ describe('TwitterMapper', () => {
           retweet_count: 50,
           reply_count: 5,
           quote_count: 5,
+          impression_count: 1000,
+          bookmark_count: 10,
         },
       });
 
@@ -292,7 +314,8 @@ describe('TwitterMapper', () => {
           retweet_count: 0,
           reply_count: 0,
           quote_count: 0,
-        impression_count: 0,
+          impression_count: 0,
+          bookmark_count: 0,
         },
       });
 
@@ -301,9 +324,13 @@ describe('TwitterMapper', () => {
     });
 
     it('should return undefined for missing metrics', () => {
-      const tweet = createMockTweet({
-        public_metrics: undefined,
-      });
+      const tweet = {
+        id: '123456789',
+        text: 'Test tweet',
+        created_at: '2025-01-01T12:00:00.000Z',
+        author_id: 'user123',
+        conversation_id: 'conv123',
+      } as TweetV2;
 
       const sentiment = calculateTweetSentiment(tweet);
       expect(sentiment).toBeUndefined();
