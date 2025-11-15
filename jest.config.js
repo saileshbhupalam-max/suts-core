@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/packages', '<rootDir>/plugins', '<rootDir>/tests'],
+  roots: ['<rootDir>/packages', '<rootDir>/plugins', '<rootDir>/tests', '<rootDir>/rgs'],
   testMatch: [
     '**/__tests__/**/*.ts',
     '**/?(*.)+(spec|test).ts'
