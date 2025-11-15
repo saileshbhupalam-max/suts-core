@@ -159,9 +159,9 @@ export class SimilarityCalculator {
     const len2 = str2.length;
 
     // Create a 2D array for dynamic programming
-    const matrix: number[][] = Array(len1 + 1)
-      .fill(null)
-      .map(() => Array(len2 + 1).fill(0));
+    const matrix: number[][] = Array.from({ length: len1 + 1 }, () =>
+      Array.from({ length: len2 + 1 }, () => 0)
+    );
 
     // Initialize first column and row
     for (let i = 0; i <= len1; i++) {
