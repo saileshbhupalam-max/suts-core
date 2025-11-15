@@ -39,6 +39,7 @@
       "@rgs/analysis-sentiment-enhanced/*": ["rgs/analysis/sentiment-enhanced/src/*"],
       "@rgs/analysis-deduplication/*": ["rgs/analysis/deduplication/src/*"],
       "@rgs/analysis-themes/*": ["rgs/analysis/themes/src/*"],
+      "@rgs/analysis-deduplication/*": ["rgs/analysis/deduplication/src/*"],
       "@rgs/cli/*": ["rgs/cli/src/*"],
       "@rgs/pipeline/*": ["rgs/pipeline/src/*"],
       "@rgs/reporter/*": ["rgs/reporter/src/*"],
@@ -71,6 +72,7 @@
     { "path": "./rgs/analysis/sentiment-enhanced" },
     { "path": "./rgs/analysis/deduplication" },
     { "path": "./rgs/analysis/themes" },
+    { "path": "./rgs/analysis/deduplication" },
     { "path": "./rgs/cli" },
     { "path": "./rgs/pipeline" },
     { "path": "./rgs/reporter" }
