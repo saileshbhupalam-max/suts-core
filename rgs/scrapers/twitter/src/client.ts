@@ -249,29 +249,30 @@ export class TwitterClient {
   private handleApiError(error: unknown, context: string): never {
     this.logger.error('Twitter API error', { context, error });
 
-    // Handle twitter-api-v2 specific errors
-    if (error instanceof ApiResponseError) {
-      const statusCode = error.code;
+    // Handle twitter-api-v2 specific errors (check for code property to support mocked errors)
+    if (error instanceof ApiResponseError || (typeof error === 'object' && error !== null && 'code' in error)) {
+      const statusCode = (error as ApiResponseError).code;
+      const apiError = error as ApiResponseError;
 
       // Rate limit error (429)
       if (statusCode === 429) {
-        const resetTime = error.rateLimit?.reset;
+        const resetTime = apiError.rateLimit?.reset;
         const retryAfterMs = resetTime !== undefined ? resetTime * 1000 - Date.now() : undefined;
 
         throw new RateLimitError(
           'Twitter API rate limit exceeded',
           'twitter',
           retryAfterMs,
-          error
+          error instanceof Error ? error : undefined
         );
       }
 
       // Authentication error (401, 403)
       if (statusCode === 401 || statusCode === 403) {
         throw new AuthenticationError(
-          `Twitter API authentication failed: ${error.message}`,
+          `Twitter API authentication failed: ${apiError.message}`,
           'twitter',
-          error
+          error instanceof Error ? error : undefined
         );
       }
 
@@ -282,28 +283,28 @@ export class TwitterClient {
           'twitter',
           statusCode,
           true,
-          error
+          error instanceof Error ? error : undefined
         );
       }
 
       // Other client errors (4xx) - not retryable
       if (statusCode >= 400 && statusCode < 500) {
         throw new ScraperError(
-          `Twitter API client error: ${error.message}`,
+          `Twitter API client error: ${apiError.message}`,
           'twitter',
           false,
-          error
+          error instanceof Error ? error : undefined
         );
       }
 
       // Server errors (5xx) - retryable
       if (statusCode >= 500) {
         throw new NetworkError(
-          `Twitter API server error: ${error.message}`,
+          `Twitter API server error: ${apiError.message}`,
           'twitter',
           statusCode,
           true,
-          error
+          error instanceof Error ? error : undefined
         );
       }
     }

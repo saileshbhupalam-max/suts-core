@@ -2,7 +2,7 @@
  * Tests for Twitter Mapper
  */
 
-import { TweetV2 } from 'twitter-api-v2';
+import { TweetV2, TweetPublicMetricsV2 } from 'twitter-api-v2';
 import {
   mapTweetToSignal,
   mapTweetsToSignals,
@@ -355,14 +355,15 @@ describe('TwitterMapper', () => {
     });
 
     it('should handle partial metrics', () => {
-      const tweet = createMockTweet({
+      const tweet: TweetV2 = {
+        ...createMockTweet({}),
         public_metrics: {
           like_count: 10,
           retweet_count: undefined,
           reply_count: undefined,
           quote_count: undefined,
-        } as TweetV2['public_metrics'],
-      });
+        } as TweetPublicMetricsV2,
+      };
 
       const sentiment = calculateTweetSentiment(tweet);
 
