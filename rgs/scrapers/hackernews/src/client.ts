@@ -124,7 +124,11 @@ export class HackerNewsClient {
    */
   async searchStories(query: string, options: HNSearchOptions = {}): Promise<HNSearchResult> {
     // Allow empty query if there are filters (e.g., for fetching comments by story_id)
-    if (query.trim().length === 0 && options.tags === undefined && options.numericFilters === undefined) {
+    if (
+      query.trim().length === 0 &&
+      options.tags === undefined &&
+      options.numericFilters === undefined
+    ) {
       throw new ScraperError('Query cannot be empty without filters', 'hackernews', false);
     }
 
@@ -232,7 +236,7 @@ export class HackerNewsClient {
 
       // Rate limit error (unlikely with 10k/hour limit)
       if (axiosError.response?.status === 429) {
-        const retryAfter = axiosError.response.headers['retry-after'];
+        const retryAfter = axiosError.response.headers['retry-after'] as string | undefined;
         const retryAfterMs = retryAfter !== undefined ? parseInt(retryAfter, 10) * 1000 : undefined;
         return new RateLimitError(
           'HackerNews API rate limit exceeded',
@@ -264,12 +268,28 @@ export class HackerNewsClient {
       }
 
       // Network errors (retryable)
-      if (axiosError.code === 'ECONNREFUSED' || axiosError.code === 'ETIMEDOUT' || axiosError.code === 'ENOTFOUND') {
-        return new NetworkError('HackerNews API unavailable', 'hackernews', undefined, true, axiosError);
+      if (
+        axiosError.code === 'ECONNREFUSED' ||
+        axiosError.code === 'ETIMEDOUT' ||
+        axiosError.code === 'ENOTFOUND'
+      ) {
+        return new NetworkError(
+          'HackerNews API unavailable',
+          'hackernews',
+          undefined,
+          true,
+          axiosError
+        );
       }
 
       // Generic network error
-      return new NetworkError('HackerNews API network error', 'hackernews', undefined, true, axiosError);
+      return new NetworkError(
+        'HackerNews API network error',
+        'hackernews',
+        undefined,
+        true,
+        axiosError
+      );
     }
 
     // Unknown error

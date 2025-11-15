@@ -9,12 +9,7 @@ import { WebSignal } from '@rgs/core';
 import { Logger } from '@rgs/utils';
 import { HackerNewsClient, HNStory } from './client';
 import { HNConfig } from './config';
-import {
-  mapStoryToSignal,
-  mapCommentToSignal,
-  isValidStory,
-  isValidComment,
-} from './mapper';
+import { mapStoryToSignal, mapCommentToSignal, isValidStory, isValidComment } from './mapper';
 
 /**
  * HackerNews scraper implementation
@@ -134,7 +129,8 @@ export class HackerNewsScraper extends BaseScraper implements IScraper {
         : undefined;
 
     // Search for stories
-    const result = await this.client.searchStories(query,
+    const result = await this.client.searchStories(
+      query,
       numericFilters !== undefined
         ? {
             tags: 'story',
@@ -159,19 +155,18 @@ export class HackerNewsScraper extends BaseScraper implements IScraper {
         continue;
       }
 
-      const story = item as HNStory;
-
+      // isValidStory is a type guard, so item is now HNStory
       // Add story signal
-      signals.push(mapStoryToSignal(story));
+      signals.push(mapStoryToSignal(item));
 
       // Optionally fetch comments for this story
-      if (this.config.includeComments && story.num_comments > 0) {
+      if (this.config.includeComments && item.num_comments > 0) {
         try {
-          const commentSignals = await this.scrapeStoryComments(story);
+          const commentSignals = await this.scrapeStoryComments(item);
           signals.push(...commentSignals);
         } catch (error) {
           this.logger?.warn('Failed to fetch comments', {
-            storyId: story.objectID,
+            storyId: item.objectID,
             error: error instanceof Error ? error.message : String(error),
           });
           // Continue even if comment fetching fails
