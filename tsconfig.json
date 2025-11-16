@@ -42,6 +42,7 @@
       "@rgs/cli/*": ["rgs/cli/src/*"],
       "@rgs/pipeline/*": ["rgs/pipeline/src/*"],
       "@rgs/reporter/*": ["rgs/reporter/src/*"],
+      "@rgs/validation/*": ["rgs/validation/src/*"],
       "@core/*": ["packages/core/src/*"],
       "@persona/*": ["packages/persona/src/*"],
       "@simulation/*": ["packages/simulation/src/*"],
@@ -73,7 +74,8 @@
     { "path": "./rgs/analysis/themes" },
     { "path": "./rgs/cli" },
     { "path": "./rgs/pipeline" },
-    { "path": "./rgs/reporter" }
+    { "path": "./rgs/reporter" },
+    { "path": "./rgs/validation" }
   ],
   "exclude": ["node_modules", "dist", "coverage"]
 }
